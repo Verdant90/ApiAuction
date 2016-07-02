@@ -71,6 +71,10 @@
 
 <h2>WebSocket Test</h2>
 
-<div id="output"></div>
+<div id="output">
+    <input type="button" value="Login" onclick="@("window.location.href='" + @Url.Action("Login", "Account") + "'");" />
+    <input type="button" value="Dodaj aukcję" onclick="@("window.location.href='" + @Url.Action("Image", "Account") + "'");" />
+
+</div>
 
 }

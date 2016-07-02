@@ -1,9 +1,30 @@
 ﻿@model List<ApiAuctionShop.Models.Auctions>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Moje aukcje";
 }
 
-@foreach (var item in Model)
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Count > 0)
 {
-    <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.ImageData))" />
+    <table class="table table-striped grid-table">
+        <tr>
+            <td>Lp.</td>
+            <td>Tytuł</td>
+            <td>Autor</td>
+            <td>Data zakończenia</td>
+            <td>Aktualna cena</td>
+        </tr>
+
+        @foreach (var item in Model.Select((value, i) => new { i = ++i, value }))
+        {
+            <tr>
+                <td>@item.i.</td>
+                <td>@item.value.title</td>
+                <td>@item.value.Signup</td>
+                <td>@item.value.duration</td>
+                <td>@item.value.price</td>
+            </tr>
+        }
+    </table>
 }
