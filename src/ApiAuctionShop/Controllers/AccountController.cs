@@ -188,10 +188,14 @@ namespace Projekt.Controllers
         {
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
 
-            var list = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
+            var list_mine = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
+            var list_all = _context.Auctions.ToList();
+            List<List<Auctions>> lists = new List<List<Auctions>>();
+            lists.Add(list_mine);
+            lists.Add(list_all);
 
             //var list = _context.Auctions.ToList();
-            return View(list);
+            return View(lists);
         }
 
 
