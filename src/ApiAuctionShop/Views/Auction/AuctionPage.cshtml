@@ -1,0 +1,42 @@
+@model Auctions
+@using Projekt.Controllers;
+@{
+    ViewData["Title"] = "Aukcja";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dd>
+            @Html.DisplayFor(model => model.title)
+        </dd>
+        <dd>
+
+            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.ImageData))" />
+        </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.duration)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.duration)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.price)
+        </dd>
+        
+        
+    </dl>
+</div>
+

@@ -20,7 +20,8 @@
         {
             <tr>
                 <td>@item.i.</td>
-                <td>@item.value.title</td>
+                <td>
+                @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new {id = item.value.ID}, null) </td>
                 <td>@item.value.Signup</td>
                 <td>@item.value.duration</td>
                 <td>@item.value.price</td>
@@ -28,3 +29,4 @@
         }
     </table>
 }
+
