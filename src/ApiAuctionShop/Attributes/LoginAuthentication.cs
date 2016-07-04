@@ -12,7 +12,7 @@ namespace ApiAuctionShop.Attributes
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-           var context = ((TodoItemsController)filterContext.Controller).context;
+           var context = ((MobileauctionController)filterContext.Controller).context;
 
             var req = filterContext.HttpContext.Request;
             var auth = req.Headers["Authorization"];
@@ -22,12 +22,12 @@ namespace ApiAuctionShop.Attributes
                 int i = auth.ToString().IndexOf("Basic ");
                 string code = auth.ToString().Substring(i + "Basic ".Length);
 
-
                 var token = Encoding.Default.GetString(Convert.FromBase64String(code));
                 var encrypt = StringCipher.Decrypt(token, Settings.HashPassword);
 
                 var myEmail = context.Logins.Where(s => s.Email == encrypt[0]);
-                if (myEmail.Any() && StringCipher.IsExpiredToken(encrypt[1]) && myEmail.First().IsTokenConfirmed == true) 
+
+                if (myEmail.Any() && StringCipher.IsExpiredToken(encrypt[1]) && myEmail.First().IsTokenConfirmed == true && myEmail.First().Token == code) 
                 {
                     return;
                 }

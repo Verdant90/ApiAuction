@@ -11,6 +11,7 @@ namespace ApiAuctionShop.Models
         public override string Email { get; set; }
         public string ExpireTokenTime { get; set; }
         public bool IsTokenConfirmed { get; set; }
+        public string Token { get; set; }
         //musi być zadeklarowana bo inaczej Auction traktuje jak zwykły object = null
         public ICollection<Auctions> Auction { get; set; } = new List<Auctions>(); 
     }

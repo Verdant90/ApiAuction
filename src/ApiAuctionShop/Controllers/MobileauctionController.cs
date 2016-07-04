@@ -27,12 +27,12 @@ namespace Projekt.Controllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     [LoginAuthentication]
-    public class TodoItemsController : Controller
+    public class MobileauctionController : Controller
     {
         private readonly UserManager<Signup> _userManager;
         private string email;
         public ApplicationDbContext context;
-        public TodoItemsController(ApplicationDbContext _context, UserManager<Signup> userManager, IHttpContextAccessor contextAccessor)
+        public MobileauctionController(ApplicationDbContext _context, UserManager<Signup> userManager, IHttpContextAccessor contextAccessor)
         {
             context = _context;
             _userManager = userManager;
@@ -107,9 +107,6 @@ namespace Projekt.Controllers
                 user.Auction.Add(_auction);
 
                 await _userManager.UpdateAsync(user);
-
-                //context.Auctions.Add(_auction);
-                //context.SaveChanges();
 
                 return new HttpOkObjectResult(value);
             }

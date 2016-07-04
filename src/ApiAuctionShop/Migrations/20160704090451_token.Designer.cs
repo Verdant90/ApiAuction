@@ -8,9 +8,10 @@ using ApiAuctionShop.Database;
 namespace ApiAuctionShop.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160704090451_token")]
+    partial class token
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
@@ -74,8 +75,6 @@ namespace ApiAuctionShop.Migrations
                     b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("SecurityStamp");
-
-                    b.Property<string>("Token");
 
                     b.Property<bool>("TwoFactorEnabled");
 
