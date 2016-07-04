@@ -21,7 +21,7 @@ using System.Linq;
 
 namespace Projekt.Controllers
 {
-
+    
     public class AccountController : Controller
     {
         private readonly UserManager<Signup> _userManager;
@@ -41,6 +41,7 @@ namespace Projekt.Controllers
             _context = context;
         }
 
+        //sprawdzanie tokena (unikalny link) 
         [AllowAnonymous]
         public async Task<IActionResult> Urllogin(string id)
         {
@@ -58,7 +59,7 @@ namespace Projekt.Controllers
             return RedirectToAction("Login", "Account");
         }
         
-
+        //zwroc view logowania
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
@@ -67,7 +68,7 @@ namespace Projekt.Controllers
             return View();
         }
 
-
+        //wysylanie maila
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -133,6 +134,8 @@ namespace Projekt.Controllers
             return View();
         }
 
+        //zmienic na NewAuction
+        //przeniesc do AUctionCOntroller
         [Authorize]
         [HttpPost]
         public async Task<ActionResult> Image(Auctions auction, IFormFile file = null)
@@ -182,6 +185,7 @@ namespace Projekt.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        //zmienic nazwe na AuctionLists
         [Authorize]
         [HttpGet]
         public async Task<ActionResult> Auctionimage()
@@ -189,6 +193,7 @@ namespace Projekt.Controllers
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
 
             var list_mine = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
+            //w perpektywie: nie wszystkie, tylko trwające
             var list_all = _context.Auctions.ToList();
             List<List<Auctions>> lists = new List<List<Auctions>>();
             lists.Add(list_mine);
