@@ -80,7 +80,7 @@ namespace Projekt.Controllers
                 var encrypt2 = Convert.ToBase64String(Encoding.UTF8.GetBytes(encryptedstring));
 
                 await EmailSender.SendEmailAsync(model.Email, "URL do zalogowania", "http://projektgrupowy.azurewebsites.net/Account/Urllogin/" + encrypt2);
-                ModelState.AddModelError(string.Empty, "Wyslane");
+                ModelState.AddModelError(string.Empty, "Wysłane");
 
                 return View(model);
             }
@@ -127,82 +127,8 @@ namespace Projekt.Controllers
             return View();
         }
 
-        //////////////////TEST /////////////////////////
-        [Authorize]
-        public IActionResult Image()
-        {
-            return View();
-        }
-
-        //zmienic na NewAuction
-        //przeniesc do AUctionCOntroller
-        [Authorize]
-        [HttpPost]
-        public async Task<ActionResult> Image(Auctions auction, IFormFile file = null)
-        {
-            if (file != null)
-            {
-                    if(file.ContentType.Contains("image"))
-                    { 
-                    using (var fileStream = file.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            using (var imageFactory = new ImageFactory())
-                            {
-                                imageFactory.FixGamma = false;
-                                imageFactory.Load(fileStream).Resize(new ResizeLayer(new Size(400, 400),ResizeMode.Stretch))
-                                .Format(new JpegFormat { })
-                                .Quality(100)
-                                .Save(ms);
-                            }
-
-                            var fileBytes = ms.ToArray();
-
-                            var _auction = new Auctions()
-                            {
-                                title = auction.title,
-                                description = auction.description,
-                                duration = auction.duration,
-                                price = auction.price,
-                                ImageData = fileBytes
-                            };
-
-                            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
-
-                            user.Auction.Add(_auction); 
-                        
-                            var result = await _userManager.UpdateAsync(user);
-
-                            if (result.Succeeded)
-                            {
-                                return RedirectToAction("Index", "Home");
-                            }
-                        }
-                    }
-                }
-            }
-            return RedirectToAction("Index", "Home");
-        }
-
-        //zmienic nazwe na AuctionLists
-        [Authorize]
-        [HttpGet]
-        public async Task<ActionResult> Auctionimage()
-        {
-            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
-
-            var list_mine = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
-            //w perpektywie: nie wszystkie, tylko trwające
-            var list_all = _context.Auctions.ToList();
-            List<List<Auctions>> lists = new List<List<Auctions>>();
-            lists.Add(list_mine);
-            lists.Add(list_all);
-
-            //var list = _context.Auctions.ToList();
-            return View(lists);
-        }
-
+        
+        
 
         [HttpPost]
         [Authorize]

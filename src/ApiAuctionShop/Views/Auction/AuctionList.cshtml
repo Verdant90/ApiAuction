@@ -11,9 +11,9 @@
         <tr>
             <td>Lp.</td>
             <td>Tytuł</td>
-            <td>Autor</td>
             <td>Data zakończenia</td>
             <td>Aktualna cena</td>
+            <td></td>
         </tr>
 
         @foreach (var item in Model[0].Select((value, i) => new { i = ++i, value }))
@@ -21,10 +21,13 @@
             <tr>
                 <td>@item.i.</td>
                 <td>
-                @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new {id = item.value.ID}, null) </td>
-                <td>@item.value.Signup</td>
+                @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new {id = item.value.ID}, null)
+                 </td>
                 <td>@item.value.duration</td>
                 <td>@item.value.price</td>
+                <td><input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction") + "'");" />
+                    <input type="button" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction") + "'");" />
+                </td>
             </tr>
         }
     </table>

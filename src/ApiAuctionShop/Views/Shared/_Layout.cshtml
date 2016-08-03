@@ -54,8 +54,8 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li><a asp-controller="Home" asp-action="Index">Główna</a></li>
-                        <li><a asp-controller="Account" asp-action="Auctionimage">Lista aukcji</a></li>
-                        <li><a asp-controller="Account" asp-action="Image">Dodaj aukcję</a></li>
+                        <li><a asp-controller="Auction" asp-action="AuctionList">Lista aukcji</a></li>
+                        <li><a asp-controller="Auction" asp-action="AddAuction">Dodaj aukcję</a></li>
                     </ul>
                     @await Html.PartialAsync("_LoginPartial")
                 </div>
