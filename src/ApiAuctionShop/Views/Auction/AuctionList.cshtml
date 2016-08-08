@@ -23,9 +23,8 @@
                 <td>
                 @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new {id = item.value.ID}, null)
                  </td>
-                <td>@item.value.duration</td>
-                <td>@item.value.price</td>
-                <td><input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction") + "'");" />
+                <td>@item.value.endDate</td>
+                <td><input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
                     <input type="button" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction") + "'");" />
                 </td>
             </tr>
@@ -41,7 +40,6 @@
             <td>Lp.</td>
             <td>Tytuł</td>
             <td>Autor</td>
-            <td>Data zakończenia</td>
             <td>Aktualna cena</td>
         </tr>
 
@@ -53,7 +51,6 @@
                     @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
                 </td>
                 <td>@item.value.Signup</td>
-                <td>@item.value.duration</td>
                 <td>@item.value.price</td>
             </tr>
         }

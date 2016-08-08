@@ -8,7 +8,11 @@ using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Data.Entity.Metadata.Internal;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -34,6 +38,8 @@ namespace Projekt.Controllers
         [AllowAnonymous]
         public ActionResult AuctionPage(int id)
         {
+            //var viewModel = new MyViewModel(GetAuction(id));
+
             return View(GetAuction(id));
         }
 
@@ -84,13 +90,15 @@ namespace Projekt.Controllers
                             }
 
                             var fileBytes = ms.ToArray();
-
+                            DateTime myDateTime = DateTime.Now;
+                            string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
                             var _auction = new Auctions()
                             {
                                 title = auction.title,
                                 description = auction.description,
-                                duration = auction.duration,
-                                price = auction.price,
+                                startDate = sqlFormattedDate,
+                                endDate = DateTime.Parse( auction.endDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                            //currentPrice = (decimal)auction.price,
                                 ImageData = fileBytes
                             };
 
@@ -111,6 +119,103 @@ namespace Projekt.Controllers
             return RedirectToAction("AuctionList", "Auction");
         }
 
+        // GET: /Movies/Edit/5
+        [Authorize]
+        public ActionResult Edit(int? id)
+        {/*
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            */
+            Auctions auctionToEdit = _context.Auctions.First(i => i.ID == id);
+
+            if (auctionToEdit == null)
+            {
+                return HttpNotFound();
+            }
+            return View(auctionToEdit);
+        }
+        
+        // POST: /Movies/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Auctions auction)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
+
+
+                SqlConnection sqlConnection1 = new SqlConnection("server=SZYMON\\SQLEXPRESS;database=master;Integrated Security=SSPI;");
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "UPDATE dbo.Auctions SET title = '"+ auction.title +"', description = '"+auction.description+"', endDate = '"+auction.endDate+"' where id = " + auction.ID;
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection1;
+
+                sqlConnection1.Open();
+
+                reader = cmd.ExecuteReader();
+                // Data is accessible through the DataReader object here.
+
+                sqlConnection1.Close();
+
+                var tmp = _context.Auctions.FirstOrDefault(i => i.ID == auction.ID);
+                if(tmp != null)
+                {
+                    tmp.title = auction.title;
+
+                }
+                //FIX ME
+
+            }
+            return RedirectToAction("AuctionList", "Auction");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult> AddBid(Auctions au)
+        {
+            //auction's Id is not set here :/
+                Bid newBid = new Bid();
+                var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
+                newBid.bid = decimal.Parse(au.bid);
+                newBid.bidAuthor = user.Email;
+                newBid.bidDate = DateTime.Now;
+                List<Bid> auctionBids = au.bids;
+                auctionBids.Add(newBid);
+                _context.Auctions.FirstOrDefault(i => i.ID == 1).bids.Add(newBid);
+
+
+                SqlConnection sqlConnection1 = new SqlConnection("server=SZYMON\\SQLEXPRESS;database=master;Integrated Security=SSPI;");
+                SqlCommand cmd = new SqlCommand();
+                SqlDataReader reader;
+
+                cmd.CommandText = "UPDATE dbo.Auctions SET bids = CAST('" + auctionBids +  "' AS varbinary) where id = 1";
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = sqlConnection1;
+
+                sqlConnection1.Open();
+
+                reader = cmd.ExecuteReader();
+                // Data is accessible through the DataReader object here.
+
+                sqlConnection1.Close();
+
+            
+            var errors = ModelState.Where(x => x.Value.Errors.Any())
+                .Select(x => new { x.Key, x.Value.Errors });
+            return RedirectToAction("AuctionList", "Auction");
+        }
+
+
+       
 
         [Authorize]
         [HttpGet]

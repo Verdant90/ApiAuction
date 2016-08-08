@@ -56,6 +56,9 @@
                         <li><a asp-controller="Home" asp-action="Index">Główna</a></li>
                         <li><a asp-controller="Auction" asp-action="AuctionList">Lista aukcji</a></li>
                         <li><a asp-controller="Auction" asp-action="AddAuction">Dodaj aukcję</a></li>
+                        <!--<li>Html.ActionLink("Główna", "Index", "Home");</li>
+                        <li>Html.ActionLink("Lista aukcji", "AuctionList", "Auction");</li>
+                        <li>Html.ActionLink("Dodaj aukcję", "AddAuction", "Auction");</li>-->
                     </ul>
                     @await Html.PartialAsync("_LoginPartial")
                 </div>

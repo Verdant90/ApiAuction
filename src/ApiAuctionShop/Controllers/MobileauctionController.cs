@@ -60,7 +60,6 @@ namespace Projekt.Controllers
                 MobileAuctionSender dynamic = new MobileAuctionSender
                 {
                     description = el.description,
-                    duration = el.duration,
                     ID = el.ID,
                     ImageData = el.ImageData,
                     ImageMimeType = el.ImageMimeType,
@@ -97,7 +96,6 @@ namespace Projekt.Controllers
                 {
                     title = value.title,
                     description = value.description,
-                    duration = value.duration,
                     price = value.price,
                     ImageData = fileBytes
                 };

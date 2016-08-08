@@ -21,9 +21,7 @@ namespace ApiAuctionShop.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
-
-        //zmiana na date
-        public int duration { get; set; }
+        
 
         //w perspektywie: wiecej zdjec
         public byte[] ImageData { get; set; }
@@ -33,19 +31,19 @@ namespace ApiAuctionShop.Models
 
         //zmienic na decimal(2)
         public int price { get; set; }
-
         public string title { get; set; }
-
-        //public string authorEmail { get; set; }
-        //public string auctionState { get; set; } 
-        /// <summary>
-        /// states: pending, ended, cancelled
-        /// </summary>
-        //public string cathegory { get; set; }
         public Signup Signup { get; set; }
 
         //id aukcji (rzeczywiste) 
         [Column("SignupId")]
         public string SignupId { get; set; }
+        public decimal startPrice { get; set; }
+        public decimal buyPrice { get; set; }
+        public string state { get; set; } = "active";
+        public string startDate { get; set; }
+        public string endDate { get; set; }
+        public string cathegory { get; set; }
+        public string bid { get; set; } = "";
+        public List<Bid> bids = new List<Bid>();
     }
 }
