@@ -11,8 +11,10 @@
         <tr>
             <td>Lp.</td>
             <td>Tytuł</td>
+            <td>Data rozpoczęcia</td>
             <td>Data zakończenia</td>
-            <td>Aktualna cena</td>
+            <td>Cena wywoławcza</td>
+            <td>Stan</td>
             <td></td>
         </tr>
 
@@ -23,8 +25,15 @@
                 <td>
                 @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new {id = item.value.ID}, null)
                  </td>
-                <td>@item.value.endDate</td>
-                <td><input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
+                <td>@item.value.startDate</td>
+                <td>@{@item.value.endDate;}</td>
+                <td>@item.value.startPrice zł</td>
+                <td>@item.value.state</td>
+                <td>
+                    @if (@item.value.state == "active")
+                {
+                    <input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
+                }
                     <input type="button" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction") + "'");" />
                 </td>
             </tr>
@@ -51,7 +60,7 @@
                     @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
                 </td>
                 <td>@item.value.Signup</td>
-                <td>@item.value.price</td>
+                <td>@item.value.startPrice</td>
             </tr>
         }
     </table>

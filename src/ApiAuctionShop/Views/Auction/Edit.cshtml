@@ -12,6 +12,9 @@
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.ID)
+        @if (Model.state == "active")
+        {
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
@@ -41,11 +44,20 @@
                 @Html.ValidationMessageFor(model => model.buyPrice)
             </div>
         </div>
+
+        <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.ImageData))" />
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="file" name="file" accept="image/*" />
+            </div>
+        </div>
         @*Genre and Price removed for brevity.*@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>
+        }
     </div>
 }

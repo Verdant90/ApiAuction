@@ -48,20 +48,22 @@
     
     
 
-    @using (Html.BeginForm("AddBid", "Auction", FormMethod.Post, new { au = Model }))
+    @using (Html.BeginForm("AddBid", "Auction", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         <div class="form-horizontal">
             <h4>Aukcja</h4>
             <hr />
             @Html.ValidationSummary(true)
-            @Html.DisplayFor(model => model.ID)
+            @Html.HiddenFor(model => model.ID)
+            @Html.HiddenFor(model => model.title)
             @Html.HiddenFor(model => model.title)
             @Html.HiddenFor(model => model.description)
             @Html.HiddenFor(model => model.endDate)
             @Html.HiddenFor(model => model.buyPrice)
             @Html.HiddenFor(model => model.ImageData)
             @Html.HiddenFor(model => model.startDate)
+            @Html.HiddenFor(model => model.bids)
             <div class="form-group">
                 @Html.LabelFor(model => model.bid, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -78,8 +80,8 @@
     }
     @foreach (var item in Model.bids)
     {
-        <div>
-            @item.bid
+        <div>LA
+            @item.bid...
             <hr />
         </div>
     }

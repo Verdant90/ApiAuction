@@ -96,8 +96,11 @@ namespace Projekt.Controllers
                             {
                                 title = auction.title,
                                 description = auction.description,
-                                startDate = sqlFormattedDate,
-                                endDate = DateTime.Parse( auction.endDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                                startDate = DateTime.Parse(auction.startDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                                endDate = DateTime.Parse(auction.endDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                                startPrice = auction.startPrice,
+                                buyPrice = auction.buyPrice,
+                     
                             //currentPrice = (decimal)auction.price,
                                 ImageData = fileBytes
                             };
@@ -150,30 +153,17 @@ namespace Projekt.Controllers
             {
                 var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
 
-
-                SqlConnection sqlConnection1 = new SqlConnection("server=SZYMON\\SQLEXPRESS;database=master;Integrated Security=SSPI;");
-                SqlCommand cmd = new SqlCommand();
-                SqlDataReader reader;
-
-                cmd.CommandText = "UPDATE dbo.Auctions SET title = '"+ auction.title +"', description = '"+auction.description+"', endDate = '"+auction.endDate+"' where id = " + auction.ID;
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = sqlConnection1;
-
-                sqlConnection1.Open();
-
-                reader = cmd.ExecuteReader();
-                // Data is accessible through the DataReader object here.
-
-                sqlConnection1.Close();
-
+                
                 var tmp = _context.Auctions.FirstOrDefault(i => i.ID == auction.ID);
                 if(tmp != null)
                 {
                     tmp.title = auction.title;
+                    tmp.description = auction.description;
+                    tmp.buyPrice = auction.buyPrice;
+                    tmp.endDate = auction.endDate;
 
                 }
-                //FIX ME
-
+                _context.SaveChanges();
             }
             return RedirectToAction("AuctionList", "Auction");
         }
@@ -183,31 +173,13 @@ namespace Projekt.Controllers
         public async Task<ActionResult> AddBid(Auctions au)
         {
             //auction's Id is not set here :/
-                Bid newBid = new Bid();
-                var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
-                newBid.bid = decimal.Parse(au.bid);
-                newBid.bidAuthor = user.Email;
-                newBid.bidDate = DateTime.Now;
-                List<Bid> auctionBids = au.bids;
-                auctionBids.Add(newBid);
-                _context.Auctions.FirstOrDefault(i => i.ID == 1).bids.Add(newBid);
-
-
-                SqlConnection sqlConnection1 = new SqlConnection("server=SZYMON\\SQLEXPRESS;database=master;Integrated Security=SSPI;");
-                SqlCommand cmd = new SqlCommand();
-                SqlDataReader reader;
-
-                cmd.CommandText = "UPDATE dbo.Auctions SET bids = CAST('" + auctionBids +  "' AS varbinary) where id = 1";
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = sqlConnection1;
-
-                sqlConnection1.Open();
-
-                reader = cmd.ExecuteReader();
-                // Data is accessible through the DataReader object here.
-
-                sqlConnection1.Close();
-
+            Bid newBid = new Bid();
+            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
+            newBid.bid = decimal.Parse(au.bid);
+            newBid.bidAuthor = user.Email;
+            newBid.bidDate = DateTime.Now;
+            _context.Auctions.FirstOrDefault(i => i.ID == 1).bids.Add(newBid);
+            _context.SaveChanges();
             
             var errors = ModelState.Where(x => x.Value.Errors.Any())
                 .Select(x => new { x.Key, x.Value.Errors });
@@ -222,7 +194,7 @@ namespace Projekt.Controllers
         public Auctions GetAuction(int id)
         {
           
-            //var list = _context.Auctions.ToList();
+            var y = (Auctions)_context.Auctions.Where(d => d.ID == id).ToList()[0];
             return (Auctions) _context.Auctions.Where(d => d.ID == id).ToList()[0];
         }
     }
