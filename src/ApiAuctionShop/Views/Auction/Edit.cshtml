@@ -4,7 +4,7 @@
     ViewBag.Title = "Edit";
 }
 <h2>Edit</h2>
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <div class="form-horizontal">
@@ -12,52 +12,104 @@
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.ID)
-        @if (Model.state == "active")
+        @if (Model.state == "waiting")
         {
 
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.title)
-                @Html.ValidationMessageFor(model => model.title)
+            <div class="form-group">
+                @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.title)
+                    @Html.ValidationMessageFor(model => model.title)
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.description, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.description)
-                @Html.ValidationMessageFor(model => model.description)
+            <div class="form-group">
+                @Html.LabelFor(model => model.description, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.description)
+                    @Html.ValidationMessageFor(model => model.description)
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.endDate)
-                @Html.ValidationMessageFor(model => model.endDate)
+            <div class="form-group">
+                @Html.LabelFor(model => model.startDate, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.startDate)
+                    @Html.ValidationMessageFor(model => model.startDate)
+                    <input type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.buyPrice, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.buyPrice)
-                @Html.ValidationMessageFor(model => model.buyPrice)
+            <div class="form-group">
+                @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.endDate)
+                    @Html.ValidationMessageFor(model => model.endDate)
+                    <input type="button" id="GetNow" value="Teraz" onclick="FillNow('endDate');" />
+                </div>
             </div>
-        </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.startPrice, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.startPrice)
+                    @Html.ValidationMessageFor(model => model.startPrice)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.buyPrice, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.buyPrice)
+                    @Html.ValidationMessageFor(model => model.buyPrice)
+                </div>
+            </div>
+            @if (Model.ImageData != null)
+            {
+                <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.ImageData))" />
+            }
+        }
+        else if(Model.state == "active")
+        {
+            <div class="form-group">
+                <h3>@Html.DisplayFor(model => model.title, new { @class = "control-label col-md-2" })</h3>
+                <h4>Wybrana aukcja jest już w toku. Możliwa jest jedynie zmiana daty zakończenia aukcji.</h4>
+                <br />
+                @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.endDate)
+                    @Html.ValidationMessageFor(model => model.endDate)
+                    <input type="button" id="GetNow" value="Teraz" onclick="FillNow();" />
+                </div>
+            </div>
 
-        <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.ImageData))" />
+        }
+        else if (Model.state == "ended")
+        {
+            <div class="form-group">
+                <h3>@Html.DisplayFor(model => model.title, new { @class = "control-label col-md-2" })</h3>
+                <h4>Wybrana aukcja się skończyła.</h4>
+                <br />
+            </div>
 
+        }
+        @if (Model.state == "waiting")
+        {
         <div class="form-group">
             <div class="col-md-10">
                 <input type="file" name="file" accept="image/*" />
             </div>
         </div>
-        @*Genre and Price removed for brevity.*@
+        }
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>
-        }
+        
     </div>
 }
+
+<script type="text/javascript">
+	function FillNow(element)
+	{
+	    var datetimeNow = new Date();
+	    document.getElementById(element).value = datetimeNow.getFullYear() + "-" + ("0" + (datetimeNow.getMonth() + 1)).slice(-2) + "-" + ("0" + (datetimeNow.getDate())).slice(-2) + " " + ("0" + datetimeNow.getHours()).slice(-2) + ":" + ("0" + datetimeNow.getMinutes()).slice(-2) + ":" + ("0" + datetimeNow.getSeconds()).slice(-2) + ".000";
+	}
+</script>

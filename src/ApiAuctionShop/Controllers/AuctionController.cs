@@ -72,6 +72,20 @@ namespace Projekt.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAuction(Auctions auction, IFormFile file = null)
         {
+
+            DateTime myDateTime = DateTime.Now;
+            string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            var _auction = new Auctions()
+            {
+                title = auction.title,
+                description = auction.description,
+                startDate = DateTime.Parse(auction.startDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                endDate = DateTime.Parse(auction.endDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                startPrice = auction.startPrice,
+                buyPrice = auction.buyPrice,
+                author = auction.author
+                //currentPrice = (decimal)auction.price,
+            };
             if (file != null)
             {
                 if (file.ContentType.Contains("image"))
@@ -90,35 +104,19 @@ namespace Projekt.Controllers
                             }
 
                             var fileBytes = ms.ToArray();
-                            DateTime myDateTime = DateTime.Now;
-                            string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                            var _auction = new Auctions()
-                            {
-                                title = auction.title,
-                                description = auction.description,
-                                startDate = DateTime.Parse(auction.startDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                                endDate = DateTime.Parse(auction.endDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                                startPrice = auction.startPrice,
-                                buyPrice = auction.buyPrice,
-                     
-                            //currentPrice = (decimal)auction.price,
-                                ImageData = fileBytes
-                            };
-
-                            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
-
-                            user.Auction.Add(_auction);
-
-                            var result = await _userManager.UpdateAsync(user);
-
-                            if (result.Succeeded)
-                            {
-                                return RedirectToAction("AuctionList", "Auction");
-                            }
+                            _auction.ImageData = fileBytes;
                         }
                     }
-                }
+                 }
             }
+            if (DateTime.Parse(_auction.startDate) <= DateTime.Now) _auction.state = "active";
+            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
+
+            user.Auction.Add(_auction);
+
+            var result = await _userManager.UpdateAsync(user);
+
+            
             return RedirectToAction("AuctionList", "Auction");
         }
 
@@ -146,7 +144,7 @@ namespace Projekt.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Auctions auction)
+        public async Task<ActionResult> Edit(Auctions auction, IFormFile file = null)
         {
 
             if (ModelState.IsValid)
@@ -157,12 +155,46 @@ namespace Projekt.Controllers
                 var tmp = _context.Auctions.FirstOrDefault(i => i.ID == auction.ID);
                 if(tmp != null)
                 {
-                    tmp.title = auction.title;
-                    tmp.description = auction.description;
-                    tmp.buyPrice = auction.buyPrice;
-                    tmp.endDate = auction.endDate;
+                    if(tmp.state == "waiting")
+                    {
+                        tmp.title = auction.title;
+                        tmp.description = auction.description;
+                        tmp.buyPrice = auction.buyPrice;
+                        tmp.endDate = auction.endDate;
+                        tmp.startPrice = auction.startPrice;
+                        tmp.startDate = auction.startDate;
+                    }else if (tmp.state == "active")
+                    {
+                        tmp.endDate = auction.endDate;
+                    }
 
                 }
+                if (file != null)
+                {
+                    if (file.ContentType.Contains("image"))
+                    {
+                        using (var fileStream = file.OpenReadStream())
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                using (var imageFactory = new ImageFactory())
+                                {
+                                    imageFactory.FixGamma = false;
+                                    imageFactory.Load(fileStream).Resize(new ResizeLayer(new Size(400, 400), ResizeMode.Stretch))
+                                    .Format(new JpegFormat { })
+                                    .Quality(100)
+                                    .Save(ms);
+                                }
+
+                                var fileBytes = ms.ToArray();
+                                tmp.ImageData = fileBytes;
+                            }
+                        }
+                    }
+                }
+
+                if (DateTime.Parse(tmp.startDate) <= DateTime.Now) tmp.state = "active";
+                if (DateTime.Parse(tmp.endDate) <= DateTime.Now) tmp.state = "ended";
                 _context.SaveChanges();
             }
             return RedirectToAction("AuctionList", "Auction");

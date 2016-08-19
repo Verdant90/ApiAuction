@@ -4,37 +4,56 @@
 }
 
 <h2>@ViewData["Title"]</h2>
-
-<form asp-controller="Auction" asp-action="AddAuction" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
-
-    <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
+@using (Html.BeginForm("AddAuction", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(true)
     <div class="form-group">
-        <label asp-for="title" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="title" class="form-control" />
+        <div class="form-group">
+            @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.title)
+                @Html.ValidationMessageFor(model => model.title)
+            </div>
         </div>
 
-        <label asp-for="description" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="description" class="form-control" />
+        <div class="form-group">
+            @Html.LabelFor(model => model.description, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.description)
+                @Html.ValidationMessageFor(model => model.description)
+            </div>
         </div>
 
-        <label asp-for="startPrice" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="startPrice" class="form-control" />
+        <div class="form-group">
+            @Html.LabelFor(model => model.startPrice, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.startPrice)
+                @Html.ValidationMessageFor(model => model.startPrice)
+            </div>
         </div>
 
-        <label asp-for="buyPrice" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="buyPrice" class="form-control" />
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.buyPrice, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.buyPrice)
+                @Html.ValidationMessageFor(model => model.buyPrice)
+            </div>
         </div>
-        <label asp-for="startDate" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="startDate" class="form-control" />
+        <div class="form-group">
+            @Html.LabelFor(model => model.startDate, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.startDate)
+                @Html.ValidationMessageFor(model => model.startDate)
+                <input type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
+            </div>
         </div>
-        <label asp-for="endDate" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="endDate" class="form-control" />
+        <div class="form-group">
+            @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.endDate)
+                @Html.ValidationMessageFor(model => model.endDate)
+            </div>
         </div>
 
     </div>
@@ -50,6 +69,12 @@
             <button type="submit" class="btn btn-default">Send</button>
         </div>
     </div>
-</form>
+}
 
-
+<script type="text/javascript">
+	function FillNow(element)
+	{
+	    var datetimeNow = new Date();
+	    document.getElementById(element).value = datetimeNow.getFullYear() + "-" + ("0" + (datetimeNow.getMonth() + 1)).slice(-2) + "-" + ("0" + (datetimeNow.getDate())).slice(-2) + " " + ("0" + datetimeNow.getHours()).slice(-2) + ":" + ("0" + datetimeNow.getMinutes()).slice(-2) + ":" + ("0" + datetimeNow.getSeconds()).slice(-2) + ".000";
+	}
+</script>

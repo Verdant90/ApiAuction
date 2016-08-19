@@ -13,7 +13,7 @@
             <td>Tytuł</td>
             <td>Data rozpoczęcia</td>
             <td>Data zakończenia</td>
-            <td>Cena wywoławcza</td>
+            <td>Aktualna cena</td>
             <td>Stan</td>
             <td></td>
         </tr>
@@ -23,18 +23,27 @@
             <tr>
                 <td>@item.i.</td>
                 <td>
-                @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new {id = item.value.ID}, null)
+                @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
                  </td>
                 <td>@item.value.startDate</td>
                 <td>@{@item.value.endDate;}</td>
-                <td>@item.value.startPrice zł</td>
+                <td>
+                    @if (@item.value.bids.Count != 0)
+                    {
+                        @item.value.bids[0].bid @:zł
+                    }
+                    else{
+                        @:Brak ofert
+                    } 
+                </td>
                 <td>@item.value.state</td>
                 <td>
-                    @if (@item.value.state == "active")
-                {
+                    @if (@item.value.state == "active" || @item.value.state == "waiting")
+                    {
                     <input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
-                }
+
                     <input type="button" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction") + "'");" />
+                    }
                 </td>
             </tr>
         }
@@ -48,8 +57,11 @@
         <tr>
             <td>Lp.</td>
             <td>Tytuł</td>
-            <td>Autor</td>
+            <td>Data rozpoczęcia</td>
+            <td>Data zakończenia</td>
             <td>Aktualna cena</td>
+            <td>Stan</td>
+            <td>Autor</td>
         </tr>
 
         @foreach (var item in Model[1].Select((value, i) => new { i = ++i, value }))
@@ -59,8 +71,20 @@
                 <td>
                     @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
                 </td>
+                <td>@item.value.startDate</td>
+                <td>@item.value.endDate</td>
+                <td>
+                    @if (@item.value.bids.Count != 0)
+                    {
+                        @item.value.bids[0].bid @:zł
+                    }
+                    else
+                    {
+                        @:Brak ofert
+                    }
+                </td>
+                <td>@item.value.state</td>
                 <td>@item.value.Signup</td>
-                <td>@item.value.startPrice</td>
             </tr>
         }
     </table>

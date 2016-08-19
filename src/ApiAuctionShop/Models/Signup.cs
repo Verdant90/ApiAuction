@@ -39,11 +39,12 @@ namespace ApiAuctionShop.Models
         public string SignupId { get; set; }
         public decimal startPrice { get; set; }
         public decimal buyPrice { get; set; }
-        public string state { get; set; } = "active";
+        public string state { get; set; } = "waiting";
         public string startDate { get; set; }
         public string endDate { get; set; }
         public string cathegory { get; set; }
         public string bid { get; set; } = "";
+        public string author { get; set; }
         public List<Bid> bids = new List<Bid>();
     }
 }
