@@ -1,4 +1,4 @@
-@model Auctions
+@model BiddingViewModel
 @using Projekt.Controllers;
 @{
     ViewData["Title"] = "Aukcja";
@@ -10,17 +10,17 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.title)
+            @Html.DisplayNameFor(model => model.auctionToSend.title)
         </dt>
         <dd>
             <h4>
-                @Html.DisplayFor(model => model.title)
+                @Html.DisplayFor(model => model.auctionToSend.title)
             </h4>
         </dd>
         <dd>
-            @if (Model.ImageData != null)
+            @if (Model.auctionToSend.ImageData != null)
             {
-            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.ImageData))" />
+            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.auctionToSend.ImageData))" />
             }else
             {
                 @: Brak zdjecia.
@@ -29,79 +29,75 @@
         </dd>
         
         <dt>
-            @Html.DisplayNameFor(model => model.description)
+            @Html.DisplayNameFor(model => model.auctionToSend.description)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.description)
+            @Html.DisplayFor(model => model.auctionToSend.description)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.startDate)
+            @Html.DisplayNameFor(model => model.auctionToSend.startDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.startDate)
+            @Html.DisplayFor(model => model.auctionToSend.startDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.endDate)
+            @Html.DisplayNameFor(model => model.auctionToSend.endDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.endDate)
+            @Html.DisplayFor(model => model.auctionToSend.endDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.startPrice)
+            @Html.DisplayNameFor(model => model.auctionToSend.startPrice)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.startPrice)
+            @Html.DisplayFor(model => model.auctionToSend.startPrice)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.buyPrice)
+            @Html.DisplayNameFor(model => model.auctionToSend.buyPrice)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.buyPrice)
+            @Html.DisplayFor(model => model.auctionToSend.buyPrice)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.state)
+            @Html.DisplayNameFor(model => model.auctionToSend.state)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.state)
+            @Html.DisplayFor(model => model.auctionToSend.state)
         </dd>
-       @if (Model.bids.Count > 0)
-       {
-            <dt>
-                Aktualna cena: 
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.bids[0].bid)
-            </dd>
-
-        }
-
+       
     </dl>
 
     <h2>Licytacja</h2>
     
-    
+    @using (Html.BeginForm("CreateBid", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model=>model.auctionToSend.ID)
+        @Html.EditorFor(model => model.bid)
+        <input type="submit" value="Uda sie" />
 
-    @using (Html.BeginForm("AddBid", "Auction", FormMethod.Post))
+    }
+
+    @using (Html.BeginForm("AddBid", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
         <div class="form-horizontal">
             <h4>Aukcja</h4>
             <hr />
             @Html.ValidationSummary(true)
-            @Html.HiddenFor(model => model.ID)
-            @Html.HiddenFor(model => model.title)
-            @Html.HiddenFor(model => model.title)
-            @Html.HiddenFor(model => model.description)
-            @Html.HiddenFor(model => model.endDate)
-            @Html.HiddenFor(model => model.buyPrice)
-            @Html.HiddenFor(model => model.ImageData)
-            @Html.HiddenFor(model => model.startDate)
-            @Html.HiddenFor(model => model.bids)
+            @Html.HiddenFor(model => model.auctionToSend.ID)
+            @Html.HiddenFor(model => model.auctionToSend.title)
+            @Html.HiddenFor(model => model.auctionToSend.description)
+            @Html.HiddenFor(model => model.auctionToSend.endDate)
+            @Html.HiddenFor(model => model.auctionToSend.buyPrice)
+            @Html.HiddenFor(model => model.auctionToSend.ImageData)
+            @Html.HiddenFor(model => model.auctionToSend.startDate)
+            @Html.HiddenFor(model => model.auctionToSend.bids)
             <div class="form-group">
-                @Html.LabelFor(model => model.bid, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.auctionToSend.bid, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.bid)
-                    @Html.ValidationMessageFor(model => model.bid)
+                    @Html.EditorFor(model => model.auctionToSend.bid)
+                    @Html.ValidationMessageFor(model => model.auctionToSend.bid)
                 </div>
             </div>
             <div class="form-group">
@@ -111,12 +107,6 @@
             </div>
         </div>
     }
-    @foreach (var item in Model.bids)
-    {
-        <div>LA
-            @item.bid...
-            <hr />
-        </div>
-    }
+    
 </div>
 

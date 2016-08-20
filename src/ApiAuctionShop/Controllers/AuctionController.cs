@@ -38,9 +38,15 @@ namespace Projekt.Controllers
         [AllowAnonymous]
         public ActionResult AuctionPage(int id)
         {
-            //var viewModel = new MyViewModel(GetAuction(id));
+            var tmp = _context.Auctions.FirstOrDefault(i => i.ID == id);
 
-            return View(GetAuction(id));
+            BiddingViewModel bvm = new BiddingViewModel
+            {
+                auctionToSend = tmp,
+                bid = -1
+            };
+
+            return View(bvm);
         }
 
         //zmienic nazwe na AuctionLists
@@ -200,8 +206,23 @@ namespace Projekt.Controllers
             return RedirectToAction("AuctionList", "Auction");
         }
 
+
+        // GET: /Auction/AddBid/5
+        [Authorize]
+        public ActionResult AddBid(int? id)
+        {
+            Auctions auctionToBid = _context.Auctions.First(i => i.ID == id);
+
+            if (auctionToBid == null)
+            {
+                return HttpNotFound();
+            }
+            return View(auctionToBid);
+        }
+
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddBid(Auctions au)
         {
             //auction's Id is not set here :/
@@ -219,7 +240,30 @@ namespace Projekt.Controllers
         }
 
 
-       
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateBid(BiddingViewModel bvm)
+        {
+
+            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
+            var tmp = _context.Auctions.FirstOrDefault(i => i.ID == bvm.auctionToSend.ID);
+            Bid newBid = new Bid()
+            {
+                bid = decimal.Parse(bvm.bid.ToString()),
+                bidAuthor = user.Email,
+                bidDate = DateTime.Now,
+                auctionId = tmp.ID
+
+            };
+            _context.Bids.Add(newBid);
+            _context.SaveChanges();
+            var errors = ModelState.Where(x => x.Value.Errors.Any())
+                .Select(x => new { x.Key, x.Value.Errors });
+            return RedirectToAction("AuctionList", "Auction");
+        }
+
+
 
         [Authorize]
         [HttpGet]

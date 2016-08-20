@@ -45,6 +45,6 @@ namespace ApiAuctionShop.Models
         public string cathegory { get; set; }
         public string bid { get; set; } = "";
         public string author { get; set; }
-        public List<Bid> bids = new List<Bid>();
+        public virtual ICollection<Bid> bids { get; set; }
     }
 }

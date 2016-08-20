@@ -28,13 +28,7 @@
                 <td>@item.value.startDate</td>
                 <td>@{@item.value.endDate;}</td>
                 <td>
-                    @if (@item.value.bids.Count != 0)
-                    {
-                        @item.value.bids[0].bid @:zł
-                    }
-                    else{
-                        @:Brak ofert
-                    } 
+                    Brak ofert.
                 </td>
                 <td>@item.value.state</td>
                 <td>
@@ -74,14 +68,7 @@
                 <td>@item.value.startDate</td>
                 <td>@item.value.endDate</td>
                 <td>
-                    @if (@item.value.bids.Count != 0)
-                    {
-                        @item.value.bids[0].bid @:zł
-                    }
-                    else
-                    {
-                        @:Brak ofert
-                    }
+                    Brak ofert.
                 </td>
                 <td>@item.value.state</td>
                 <td>@item.value.Signup</td>
