@@ -78,7 +78,11 @@ namespace Projekt.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAuction(Auctions auction, IFormFile file = null)
         {
-
+            TryValidateModel(auction);
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
             DateTime myDateTime = DateTime.Now;
             string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
             var _auction = new Auctions()
@@ -272,6 +276,16 @@ namespace Projekt.Controllers
           
             var y = (Auctions)_context.Auctions.Where(d => d.ID == id).ToList()[0];
             return (Auctions) _context.Auctions.Where(d => d.ID == id).ToList()[0];
+        }
+
+        public async Task<ActionResult> End(int id)
+        {
+            Auctions e = _context.Entry<Auctions>(GetAuction(id)).Entity;
+            e.endDate = DateTime.Now.ToString();
+            e.state = "ended";
+            _context.SaveChanges();
+
+            return RedirectToAction("AuctionList", "Auction");
         }
     }
 

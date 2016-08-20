@@ -74,39 +74,10 @@
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model=>model.auctionToSend.ID)
         @Html.EditorFor(model => model.bid)
-        <input type="submit" value="Uda sie" />
+        <input type="submit" value="Licytuj!" />
 
     }
 
-    @using (Html.BeginForm("AddBid", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.AntiForgeryToken()
-        <div class="form-horizontal">
-            <h4>Aukcja</h4>
-            <hr />
-            @Html.ValidationSummary(true)
-            @Html.HiddenFor(model => model.auctionToSend.ID)
-            @Html.HiddenFor(model => model.auctionToSend.title)
-            @Html.HiddenFor(model => model.auctionToSend.description)
-            @Html.HiddenFor(model => model.auctionToSend.endDate)
-            @Html.HiddenFor(model => model.auctionToSend.buyPrice)
-            @Html.HiddenFor(model => model.auctionToSend.ImageData)
-            @Html.HiddenFor(model => model.auctionToSend.startDate)
-            @Html.HiddenFor(model => model.auctionToSend.bids)
-            <div class="form-group">
-                @Html.LabelFor(model => model.auctionToSend.bid, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.auctionToSend.bid)
-                    @Html.ValidationMessageFor(model => model.auctionToSend.bid)
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
-                </div>
-            </div>
-        </div>
-    }
     
 </div>
 
