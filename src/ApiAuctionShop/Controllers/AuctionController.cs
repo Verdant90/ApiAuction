@@ -67,71 +67,46 @@ namespace Projekt.Controllers
 
             foreach (Auctions auction in list_mine)
             {
-                AuctionViewModel tmp = new AuctionViewModel();
-                tmp.ID = auction.ID;
-                tmp.title = auction.title;
-                tmp.startDate = auction.startDate;
-                tmp.endDate = auction.endDate;
-                tmp.state = auction.state;
-                tmp.startPrice = auction.startPrice;
-                tmp.bidCount = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count();
-                if(_context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count >0)
-                tmp.highestBid = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
-                tmp.Signup = auction.Signup;
-                model[0].Add(tmp);
-                /*
-                model[0].Add(new AuctionViewModel() {
+                AuctionViewModel tmp = new AuctionViewModel() {
                     ID = auction.ID,
                     title = auction.title,
                     startDate = auction.startDate,
                     endDate = auction.endDate,
                     state = auction.state,
+                    startPrice = auction.startPrice,
                     bidCount = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    highestBid = (_context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0) ?-1:_context.Bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid,
                     Signup = auction.Signup
-                    }
+                };
 
-                );
-                    */
+                if (_context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
+                tmp.highestBid = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
+
+                model[0].Add(tmp);
             }
 
             //w perpektywie: nie wszystkie, tylko trwające
             var list_all = _context.Auctions.ToList();
             foreach (Auctions auction in list_all)
             {
-                AuctionViewModel tmp = new AuctionViewModel();
-                tmp.ID = auction.ID;
-                tmp.title = auction.title;
-                tmp.startDate = auction.startDate;
-                tmp.endDate = auction.endDate;
-                tmp.state = auction.state;
-                tmp.startPrice = auction.startPrice;
-                tmp.bidCount = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count();
-                if (_context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
-                    tmp.highestBid = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
-                tmp.Signup = auction.Signup;
-                model[1].Add(tmp);
-                /*
-                model[1].Add(new AuctionViewModel()
+                AuctionViewModel tmp = new AuctionViewModel()
                 {
                     ID = auction.ID,
                     title = auction.title,
                     startDate = auction.startDate,
                     endDate = auction.endDate,
                     state = auction.state,
+                    startPrice = auction.startPrice,
                     bidCount = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    highestBid = (_context.Bids.Where(b => b.auctionId == auction.ID).Count() > 0) ? -1 : _context.Bids.Where(b => b.auctionId == auction.ID).OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid,
                     Signup = auction.Signup
-                }
-                
-                );*/
+                };
+
+                if (_context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
+                    tmp.highestBid = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
+
+                model[1].Add(tmp);
 
             }
-            //List<List<Auctions>> lists = new List<List<Auctions>>();
-            //lists.Add(list_mine);
-            //lists.Add(list_all);
 
-            //var list = _context.Auctions.ToList();
             return View(model);
         }
 
