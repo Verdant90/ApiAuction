@@ -1,4 +1,4 @@
-﻿@model List<List<ApiAuctionShop.Models.Auctions>>
+﻿@model List<List<AuctionViewModel>>
 @{
     ViewData["Title"] = "Moje aukcje";
 }
@@ -14,6 +14,7 @@
             <td>Data rozpoczęcia</td>
             <td>Data zakończenia</td>
             <td>Aktualna cena</td>
+            <td>Ilość ofert</td>
             <td>Stan</td>
             <td></td>
         </tr>
@@ -26,9 +27,27 @@
                 @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
                  </td>
                 <td>@item.value.startDate</td>
-                <td>@{@item.value.endDate;}</td>
+                <td>@item.value.endDate</td>
                 <td>
-                    Brak ofert.
+                    @if(item.value.highestBid != 0)
+                    {
+                        @item.value.highestBid.ToString("C");
+                    }
+                    else
+                    {
+                        @item.value.startPrice.ToString("C");
+                    }
+
+                </td>
+                <td>
+                    @if (item.value.bidCount != 0)
+                    {
+                        @item.value.bidCount
+                    }
+                    else
+                    {
+                        @: -
+                    }
                 </td>
                 <td>@item.value.state</td>
                 <td>
@@ -53,6 +72,7 @@
             <td>Data rozpoczęcia</td>
             <td>Data zakończenia</td>
             <td>Aktualna cena</td>
+            <td>Ilość ofert</td>
             <td>Stan</td>
             <td>Autor</td>
         </tr>
@@ -67,7 +87,25 @@
                 <td>@item.value.startDate</td>
                 <td>@item.value.endDate</td>
                 <td>
-                    Brak ofert.
+                    @if (item.value.highestBid != 0)
+                    {
+                        @item.value.highestBid.ToString("C");
+                    }
+                    else
+                    {
+                        @item.value.startPrice.ToString("C");
+                    }
+
+                </td>
+                <td>
+                    @if (item.value.bidCount != 0)
+                    {
+                        @item.value.bidCount
+                    }
+                    else
+                    {
+                        @: -
+                    }
                 </td>
                 <td>@item.value.state</td>
                 <td>@item.value.Signup</td>
