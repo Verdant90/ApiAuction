@@ -86,16 +86,18 @@
         <br />
         <table style="width:100%">
             <tr>
+                <th>Lp.</th>
                 <th>Uzytkownik</th>
                 <th>Cena</th>
                 <th>Data</th>
             </tr>
-            @foreach (Bid b in Model.bids)
+            @foreach (var b in Model.bids.Select((value, i) => new { i = ++i, value }))
             {
                 <tr>
-                    <td>@b.bidAuthor</td>
-                    <td>@b.bid.ToString("C")</td>
-                    <td>@b.bidDate.ToString()</td>
+                    <td>@b.i.</td>
+                    <td>@b.value.bidAuthor</td>
+                    <td>@b.value.bid.ToString("C")</td>
+                    <td>@b.value.bidDate.ToString()</td>
                 </tr>
 
             }
