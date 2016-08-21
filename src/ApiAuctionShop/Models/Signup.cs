@@ -43,23 +43,22 @@ namespace ApiAuctionShop.Models
         //id aukcji (rzeczywiste) 
         [Column("SignupId")]
         public string SignupId { get; set; }
+        [DataType(DataType.Currency, ErrorMessage = "Wrong price format!")]
         [Range(1, int.MaxValue, ErrorMessage = "The start price must be greater than 0!")]
         public decimal startPrice { get; set; }
-
-        [GreaterThan("startPrice", ErrorMessage = "Buy price must be greater than the start price!")]
+        [DataType(DataType.Currency, ErrorMessage = "Wrong price format!")]
         public decimal buyPrice { get; set; }
-
         public string state { get; set; } = "waiting";
 
         [Required(ErrorMessage = "Start date is required!")]
-        [LaterThanNow(ErrorMessage = "Start date must be later than now!")]
+        [DataType(DataType.DateTime, ErrorMessage = "Wrong data format!")]
+
         public string startDate { get; set; }
 
         [Required(ErrorMessage = "End date is required!")]
-        [LaterThanNow(ErrorMessage = "End date must be later than now!")]
-        [DateGreaterThan("startDate", ErrorMessage = "End date must be later than the start date!")]
+        [DataType(DataType.DateTime, ErrorMessage = "Wrong data format!")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "yyyy-MM-dd HH:mm:ss.fff")]
         public string endDate { get; set; }
-
         public string cathegory { get; set; }
         public string bid { get; set; } = "";
         public virtual ICollection<Bid> bids { get; set; }
