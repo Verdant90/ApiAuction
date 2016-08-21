@@ -45,8 +45,10 @@ namespace ApiAuctionShop.Models
         public string SignupId { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "The start price must be greater than 0!")]
         public decimal startPrice { get; set; }
+
         [GreaterThan("startPrice", ErrorMessage = "Buy price must be greater than the start price!")]
         public decimal buyPrice { get; set; }
+
         public string state { get; set; } = "waiting";
 
         [Required(ErrorMessage = "Start date is required!")]
@@ -57,6 +59,7 @@ namespace ApiAuctionShop.Models
         [LaterThanNow(ErrorMessage = "End date must be later than now!")]
         [DateGreaterThan("startDate", ErrorMessage = "End date must be later than the start date!")]
         public string endDate { get; set; }
+
         public string cathegory { get; set; }
         public string bid { get; set; } = "";
         public virtual ICollection<Bid> bids { get; set; }

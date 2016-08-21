@@ -38,12 +38,14 @@ namespace Projekt.Controllers
         [AllowAnonymous]
         public ActionResult AuctionPage(int id)
         {
+            //var bids = _context.Bids.Count(i => i.auctionId == id);
+            var bids = _context.Bids.Where(i => i.auctionId == id).ToList().OrderByDescending(o => o.bid).ToList();
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == id);
-
             BiddingViewModel bvm = new BiddingViewModel
             {
                 auctionToSend = tmp,
-                bid = -1
+                bid = -1,
+                bids = bids
             };
 
             return View(bvm);
@@ -207,37 +209,6 @@ namespace Projekt.Controllers
                 if (DateTime.Parse(tmp.endDate) <= DateTime.Now) tmp.state = "ended";
                 _context.SaveChanges();
             }
-            return RedirectToAction("AuctionList", "Auction");
-        }
-
-
-        // GET: /Auction/AddBid/5
-        [Authorize]
-        public ActionResult AddBid(int? id)
-        {
-            Auctions auctionToBid = _context.Auctions.First(i => i.ID == id);
-
-            if (auctionToBid == null)
-            {
-                return HttpNotFound();
-            }
-            return View(auctionToBid);
-        }
-
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddBid(Auctions au)
-        {
-            //auction's Id is not set here :/
-            Bid newBid = new Bid();
-            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
-            newBid.bid = decimal.Parse(au.bid);
-            newBid.bidAuthor = user.Email;
-            newBid.bidDate = DateTime.Now;
-            _context.Auctions.FirstOrDefault(i => i.ID == 1).bids.Add(newBid);
-            _context.SaveChanges();
-            
             var errors = ModelState.Where(x => x.Value.Errors.Any())
                 .Select(x => new { x.Key, x.Value.Errors });
             return RedirectToAction("AuctionList", "Auction");
@@ -254,9 +225,9 @@ namespace Projekt.Controllers
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == bvm.auctionToSend.ID);
             Bid newBid = new Bid()
             {
-                bid = decimal.Parse(bvm.bid.ToString()),
+                bid = bvm.bid,
                 bidAuthor = user.Email,
-                bidDate = DateTime.Now,
+                bidDate = DateTime.Now.ToString(),
                 auctionId = tmp.ID
 
             };
@@ -277,6 +248,7 @@ namespace Projekt.Controllers
             var y = (Auctions)_context.Auctions.Where(d => d.ID == id).ToList()[0];
             return (Auctions) _context.Auctions.Where(d => d.ID == id).ToList()[0];
         }
+
 
         public async Task<ActionResult> End(int id)
         {

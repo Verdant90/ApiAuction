@@ -66,18 +66,53 @@
         </dd>
        
     </dl>
-
-    <h2>Licytacja</h2>
-    
-    @using (Html.BeginForm("CreateBid", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @if (Model.auctionToSend.state == "active")
     {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(model=>model.auctionToSend.ID)
-        @Html.EditorFor(model => model.bid)
-        <input type="submit" value="Licytuj!" />
+        <h2>Licytacja</h2>
+
+        @using (Html.BeginForm("CreateBid", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.auctionToSend.ID)
+            @Html.EditorFor(model => model.bid)
+            <input type="submit" value="Licytuj!" />
+
+        }
+    }
+    
+    @if (Model.bids.Count > 0)
+    {
+        <h2>Oferty kupna</h2>
+        <br />
+        <table style="width:100%">
+            <tr>
+                <th>Uzytkownik</th>
+                <th>Cena</th>
+                <th>Data</th>
+            </tr>
+            @foreach (Bid b in Model.bids)
+            {
+                <tr>
+                    <td>@b.bidAuthor</td>
+                    <td>@b.bid.ToString("C")</td>
+                    <td>@b.bidDate.ToString()</td>
+                </tr>
+
+            }
+        </table>
+    }
+    else
+    {
+        @if (Model.auctionToSend.state == "active")
+        {
+            <h4>No bids yet!</h4>
+        }
+        else if (Model.auctionToSend.state == "waiting")
+        {
+
+            <h4>The auction hasn't started yet. </h4>
+        }
 
     }
-
-    
 </div>
 

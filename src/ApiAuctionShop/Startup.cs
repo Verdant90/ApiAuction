@@ -46,6 +46,7 @@ namespace ApiAuctionShop
                         // Method to execute
                         (state, timeout) =>
                         {
+                            
                             Console.WriteLine(DateTime.Now + " START: Updating auction states.");
                             SqlConnection sqlConnection1 = new SqlConnection(Configuration["Data:DefaultConnection:ConnectionString"]);
                             SqlCommand cmd = new SqlCommand();

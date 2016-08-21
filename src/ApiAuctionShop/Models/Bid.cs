@@ -17,6 +17,6 @@ namespace ApiAuctionShop.Models
         public virtual Auctions Auction { get; set; }
         public string bidAuthor { get; set; }
         public decimal bid { get; set; }
-        public DateTime bidDate { get; set; }
+        public string bidDate { get; set; }
     }
 }
