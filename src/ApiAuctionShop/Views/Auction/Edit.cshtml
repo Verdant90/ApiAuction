@@ -14,49 +14,50 @@
         @Html.HiddenFor(model => model.ID)
         @if (Model.state == "waiting")
         {
-
-
             <div class="form-group">
                 @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.title)
+                    @Html.TextBoxFor(model => model.title, new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.title)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.description, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.description)
+                    @Html.TextAreaFor(model => model.description, new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.description)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.startDate, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.startDate)
+                <div class="col-md-10 ">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            @Html.TextBoxFor(model => model.startDate, new { @class = "form-control" })
+                            <input class="btn btn-default" type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
+                        </span>
+                    </div>
                     @Html.ValidationMessageFor(model => model.startDate)
-                    <input type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.endDate)
+                    @Html.TextBoxFor(model => model.endDate, new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.endDate)
-                    <input type="button" id="GetNow" value="Teraz" onclick="FillNow('endDate');" />
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.startPrice, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.startPrice)
+                    @Html.TextBoxFor(model => model.startPrice, new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.startPrice)
                 </div>
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.buyPrice, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.buyPrice)
+                    @Html.TextBoxFor(model => model.buyPrice, new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.buyPrice)
                 </div>
             </div>
@@ -65,17 +66,26 @@
                 <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.ImageData))" />
             }
         }
-        else if(Model.state == "active")
+        else if (Model.state == "active")
         {
+            @Html.HiddenFor(model => model.title)
+            @Html.HiddenFor(model => model.description)
+            @Html.HiddenFor(model => model.startPrice)
+            @Html.HiddenFor(model => model.startDate)
+            @Html.HiddenFor(model => model.state)
+            @Html.HiddenFor(model => model.buyPrice)
             <div class="form-group">
                 <h3>@Html.DisplayFor(model => model.title, new { @class = "control-label col-md-2" })</h3>
                 <h4>Wybrana aukcja jest już w toku. Możliwa jest jedynie zmiana daty zakończenia aukcji.</h4>
                 <br />
                 @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.endDate)
-                    @Html.ValidationMessageFor(model => model.endDate)
-                    <input type="button" id="GetNow" value="Teraz" onclick="FillNow();" />
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            @Html.TextBoxFor(model => model.endDate, new { @class = "form-control" })
+                            <input class="btn btn-default" type="button" id="GetNow" value="Teraz" onclick="FillNow('endDate');" />
+                        </span>
+                    </div>
                 </div>
             </div>
 

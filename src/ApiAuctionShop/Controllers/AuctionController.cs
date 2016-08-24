@@ -312,7 +312,7 @@ namespace Projekt.Controllers
             {
                 ModelState.AddModelError("startDate", "Wrong start date format!");
             }
-            else if (startDate.CompareTo(DateTime.Now) < 1)
+            else if (auction.state != "active" && startDate.CompareTo(DateTime.Now) < 1)
             {
 
                 ModelState.AddModelError("startDate", "Start date must be later than now!");
