@@ -11,7 +11,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.title)
+                @Html.TextBoxFor(model => model.title, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.title)
             </div>
         </div>
@@ -19,7 +19,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.description, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.description)
+                @Html.TextAreaFor(model => model.description, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.description)
             </div>
         </div>
@@ -27,7 +27,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.startPrice, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.startPrice)
+                @Html.TextBoxFor(model => model.startPrice, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.startPrice)
             </div>
         </div>
@@ -36,22 +36,26 @@
         <div class="form-group">
             @Html.LabelFor(model => model.buyPrice, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.buyPrice)
+                @Html.TextBoxFor(model => model.buyPrice, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.buyPrice)
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.startDate, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.startDate)
+            <div class="col-md-10 ">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        @Html.TextBoxFor(model => model.startDate, new { @class = "form-control" })
+                        <input class="btn btn-default" type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
+                    </span>
+                </div>
                 @Html.ValidationMessageFor(model => model.startDate)
-                <input type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.endDate)
+                @Html.TextBoxFor(model => model.endDate, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.endDate)
             </div>
         </div>

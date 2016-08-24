@@ -30,7 +30,6 @@ namespace ApiAuctionShop.Models
         public byte[] ImageData { get; set; }
         public string ImageMimeType { get; set; }
 
-        [DataType(DataType.MultilineText)]
         [Required(ErrorMessage = "The description can't be empty!")]
         public string description { get; set; }
 
