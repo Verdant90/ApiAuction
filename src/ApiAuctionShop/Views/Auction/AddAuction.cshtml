@@ -45,7 +45,7 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.startDate)
                 @Html.ValidationMessageFor(model => model.startDate)
-                <input type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
+                <input type="checkbox" id="GetNow" value="Teraz"> I have a bike<br>
             </div>
         </div>
         <div class="form-group">
@@ -58,6 +58,12 @@
 
     </div>
 
+    <div class="form-group">
+        <div class="col-md-10">
+           @Html.LabelFor(x => x.editable)
+           @Html.CheckBoxFor(x => x.editable)
+        </div>
+    </div>
     <div class="form-group">
         <div class="col-md-10">
             <input type="file" name="file" accept="image/*" />
@@ -75,6 +81,6 @@
 	function FillNow(element)
 	{
 	    var datetimeNow = new Date();
-	    document.getElementById(element).value = datetimeNow.getFullYear() + "-" + ("0" + (datetimeNow.getMonth() + 1)).slice(-2) + "-" + ("0" + (datetimeNow.getDate())).slice(-2) + " " + ("0" + datetimeNow.getHours()).slice(-2) + ":" + ("0" + datetimeNow.getMinutes()).slice(-2) + ":" + ("0" + datetimeNow.getSeconds()).slice(-2) + ".000";
+	    document.getElementById(element).value = datetimeNow.getFullYear() + "-" + ("0" + (datetimeNow.getMonth() + 1)).slice(-2) + "-" + ("0" + (datetimeNow.getDate())).slice(-2) + " " + ("0" + datetimeNow.getHours()).slice(-2) + ":" + ("0" + datetimeNow.getMinutes()).slice(-2) + ":" + ("0" + datetimeNow.getSeconds()).slice(-2);
 	}
 </script>

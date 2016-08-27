@@ -60,6 +60,13 @@
                     @Html.ValidationMessageFor(model => model.buyPrice)
                 </div>
             </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.editable, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.CheckBoxFor(model => model.editable)
+                </div>
+            </div>
             @if (Model.ImageData != null)
             {
                 <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.ImageData))" />
@@ -67,17 +74,24 @@
         }
         else if(Model.state == "active")
         {
-            <div class="form-group">
-                <h3>@Html.DisplayFor(model => model.title, new { @class = "control-label col-md-2" })</h3>
-                <h4>Wybrana aukcja jest już w toku. Możliwa jest jedynie zmiana daty zakończenia aukcji.</h4>
-                <br />
-                @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.endDate)
-                    @Html.ValidationMessageFor(model => model.endDate)
-                    <input type="button" id="GetNow" value="Teraz" onclick="FillNow();" />
+            if (Model.editable == true)
+            {
+                <div class="form-group">
+                    <h3>@Html.DisplayFor(model => model.title, new { @class = "control-label col-md-2" })</h3>
+                    <h4>Wybrana aukcja jest już w toku. Możliwa jest jedynie zmiana daty zakończenia aukcji.</h4>
+                    <br />
+                    @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.endDate)
+                        @Html.ValidationMessageFor(model => model.endDate)
+                        <input type="button" id="GetNow" value="Teraz" onclick="FillNow();" />
+                    </div>
                 </div>
-            </div>
+            }else
+            {
+                @: Aukcja trwa, nie posiadasz mozliwosci zakonczenia jej przed czasem.
+
+            }
 
         }
         else if (Model.state == "ended")
@@ -97,12 +111,15 @@
             </div>
         </div>
         }
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+        @if ((Model.state != "active" || Model.editable != false) && (Model.state != "ended"))
+        {
+            
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
             </div>
-        </div>
-        
+        }
     </div>
 }
 

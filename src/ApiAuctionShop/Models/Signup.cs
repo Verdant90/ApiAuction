@@ -64,7 +64,7 @@ namespace ApiAuctionShop.Models
         [LaterThanNow(ErrorMessage = "End date must be later than now!")]
         [DateGreaterThan("startDate", ErrorMessage = "End date must be later than the start date!")]
         public string endDate { get; set; }
-
+        public bool editable { get; set; } = true;
         public string cathegory { get; set; }
         public string bid { get; set; } = "";
         public virtual ICollection<Bid> bids { get; set; }

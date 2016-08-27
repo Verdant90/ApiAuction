@@ -51,7 +51,7 @@
                 </td>
                 <td>@item.value.state</td>
                 <td>
-                    @if (@item.value.state == "active" || @item.value.state == "waiting")
+                    @if ((@item.value.state == "active" && @item.value.editable == true )|| @item.value.state == "waiting")
                     {
                     <input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
 

@@ -73,6 +73,7 @@ namespace Projekt.Controllers
                     endDate = auction.endDate,
                     state = auction.state,
                     startPrice = auction.startPrice,
+                    editable = auction.editable,
                     bidCount = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
                     Signup = auction.Signup
                 };
@@ -135,9 +136,10 @@ namespace Projekt.Controllers
                 endDate = DateTime.Parse(auction.endDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
                 startPrice = auction.startPrice,
                 buyPrice = auction.buyPrice,
-                author = auction.author
-                //currentPrice = (decimal)auction.price,
-            };
+                author = auction.author,
+                editable = auction.editable
+            //currentPrice = (decimal)auction.price,
+        };
             if (file != null)
             {
                 if (file.ContentType.Contains("image"))
@@ -215,6 +217,7 @@ namespace Projekt.Controllers
                         tmp.endDate = auction.endDate;
                         tmp.startPrice = auction.startPrice;
                         tmp.startDate = auction.startDate;
+                        tmp.editable = auction.editable;
                     }else if (tmp.state == "active")
                     {
                         tmp.endDate = auction.endDate;
