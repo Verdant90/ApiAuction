@@ -21,6 +21,10 @@ namespace ApiAuctionShop.Database
               .HasOne(p => p.Signup)
               .WithMany(b => b.Auction);
 
+            modelBuilder.Entity<Auctions>()
+                .HasOne(p => p.winner)
+                .WithMany(w => w.AuctionsWon);
+
             modelBuilder.Entity<Bid>()
               .HasOne(p => p.Auction)
               .WithMany(b => b.bids);

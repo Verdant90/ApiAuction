@@ -280,6 +280,34 @@ namespace Projekt.Controllers
             return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID } );
         }
 
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> BuyNow(BiddingViewModel bvm)
+        {
+            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
+            var highestBid = (_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().Count <= 0) ? 0 : _context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
+            //if (highestBid >= bvm.auctionToSend.buyPrice) return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
+            var tmp = _context.Auctions.FirstOrDefault(i => i.ID == bvm.auctionToSend.ID);
+            if (tmp.state == "active")
+            {
+                Bid newBid = new Bid()
+                {
+                    bid = tmp.buyPrice,
+                    bidAuthor = user.Email,
+                    bidDate = DateTime.Now.ToString(),
+                    auctionId = tmp.ID
+
+                };
+                _context.Bids.Add(newBid);
+                tmp.winnerID = user.Id;
+                tmp.state = "ended";
+                tmp.endDate = DateTime.Now.ToString();
+                _context.SaveChanges();
+                
+            }
+            return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
+        }
 
 
         [Authorize]
@@ -291,6 +319,11 @@ namespace Projekt.Controllers
             return (Auctions) _context.Auctions.Where(d => d.ID == id).ToList()[0];
         }
 
+
+        private void EndAuction(int idAuction, int idUser)
+        {
+
+        }
 
         public async Task<ActionResult> End(int id)
         {

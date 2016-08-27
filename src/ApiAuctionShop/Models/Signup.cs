@@ -15,7 +15,10 @@ namespace ApiAuctionShop.Models
         public bool IsTokenConfirmed { get; set; }
         public string Token { get; set; }
         //musi być zadeklarowana bo inaczej Auction traktuje jak zwykły object = null
+        //auctions of a user
         public ICollection<Auctions> Auction { get; set; } = new List<Auctions>();
+
+        public virtual ICollection<Auctions> AuctionsWon { get; set; }
     }
 
     public class Auctions
@@ -25,6 +28,8 @@ namespace ApiAuctionShop.Models
         public int ID { get; set; }
 
         public string author { get; set; }
+        public string winnerID { get; set; }
+        public virtual Signup winner { get; set; }
 
         //w perspektywie: wiecej zdjec
         public byte[] ImageData { get; set; }

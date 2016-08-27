@@ -78,6 +78,14 @@
             <input type="submit" value="Licytuj!" />
 
         }
+
+        @using (Html.BeginForm("BuyNow", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.auctionToSend.ID)
+            <input type="submit" value="Kup teraz za @Model.auctionToSend.buyPrice.ToString("C")!" />
+
+        }
     }
     
     @if (Model.bids.Count > 0)
