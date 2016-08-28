@@ -39,6 +39,7 @@ namespace Projekt.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
             _context = context;
+
         }
 
         //sprawdzanie tokena (unikalny link) 

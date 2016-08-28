@@ -52,7 +52,7 @@ namespace ApiAuctionShop
                             SqlCommand cmd = new SqlCommand();
                             SqlDataReader reader; 
 
-                            cmd.CommandText = "UPDATE[master].[dbo].[Auctions] SET state = 'active' WHERE startDate <= GETDATE() and endDate >= GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'waiting' WHERE startDate > GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'ended' WHERE endDate < GETDATE() and(state != 'inactive' or state IS null) and state != 'ended'; ";
+                            cmd.CommandText = "UPDATE[master].[dbo].[Auctions] SET state = 'active' WHERE startDate <= GETDATE() and endDate >= GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'waiting' WHERE startDate > GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'ended', winnerID = c.Id FROM [master].[dbo].[Auctions] a RIGHT JOIN [master].[dbo].[Bid] b on a.ID = b.auctionId LEFT JOIN [master].[dbo].[AspNetUsers] c on b.bidAuthor = c.Email WHERE endDate < GETDATE() and(state != 'inactive' or state IS null) and state != 'ended' and bidAuthor in(SELECT TOP 1 bidAuthor FROM [master].[dbo].[Bid] b where b.auctionId = a.ID order by b.bid DESC); ";
                             cmd.CommandType = CommandType.Text;
                             cmd.Connection = sqlConnection1;
                             sqlConnection1.Open();
