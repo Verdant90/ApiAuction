@@ -55,8 +55,7 @@ namespace ApiAuctionShop.Models
         public decimal buyPrice { get; set; }
 
         public string state { get; set; } = "waiting";
-
-        [Required(ErrorMessage = "Start date is required!")]
+        
         [LaterThanNow(ErrorMessage = "Start date must be later than now!")]
         public string startDate { get; set; }
 

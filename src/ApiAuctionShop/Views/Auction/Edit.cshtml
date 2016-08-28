@@ -35,7 +35,7 @@
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.startDate)
                     @Html.ValidationMessageFor(model => model.startDate)
-                    <input type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
+                    <input type="checkbox" name="now" value="true" onclick=""> Teraz<br>
                 </div>
             </div>
             <div class="form-group">
@@ -43,7 +43,6 @@
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.endDate)
                     @Html.ValidationMessageFor(model => model.endDate)
-                    <input type="button" id="GetNow" value="Teraz" onclick="FillNow('endDate');" />
                 </div>
             </div>
             <div class="form-group">

@@ -119,21 +119,28 @@ namespace Projekt.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> AddAuction(Auctions auction, IFormFile file = null)
+        public async Task<ActionResult> AddAuction(Auctions auction, bool? now, IFormFile file = null)
         {
             TryValidateModel(auction);
             if (!ModelState.IsValid)
             {
                 return View();
             }
-            DateTime myDateTime = DateTime.Now;
-            string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            
+            string sqlFormattedDate;
+            if (now != null)
+            {
+                sqlFormattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            }else
+            {
+                sqlFormattedDate = DateTime.Parse(auction.startDate).ToString("yyyy-MM-dd HH:mm:ss");
+            }
             var _auction = new Auctions()
             {
                 title = auction.title,
                 description = auction.description,
-                startDate = DateTime.Parse(auction.startDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                endDate = DateTime.Parse(auction.endDate).ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                startDate = sqlFormattedDate,
+                endDate = DateTime.Parse(auction.endDate).ToString("yyyy-MM-dd HH:mm:ss"),
                 startPrice = auction.startPrice,
                 buyPrice = auction.buyPrice,
                 author = auction.author,
@@ -198,7 +205,7 @@ namespace Projekt.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Auctions auction, IFormFile file = null)
+        public async Task<ActionResult> Edit(Auctions auction, bool? now, IFormFile file = null)
         {
 
             if (ModelState.IsValid)
@@ -216,7 +223,7 @@ namespace Projekt.Controllers
                         tmp.buyPrice = auction.buyPrice;
                         tmp.endDate = auction.endDate;
                         tmp.startPrice = auction.startPrice;
-                        tmp.startDate = auction.startDate;
+                        tmp.startDate = (now != null)? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") : auction.startDate;
                         tmp.editable = auction.editable;
                     }else if (tmp.state == "active")
                     {

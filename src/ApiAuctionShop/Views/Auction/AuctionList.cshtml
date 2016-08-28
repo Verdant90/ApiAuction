@@ -56,6 +56,11 @@
                     <input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
 
                     <input type="button" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction", new { id = item.value.ID }) + "'");" /> }
+                    else
+                    {
+                        @: -
+
+                    }
                 </td>
             </tr>
         }
