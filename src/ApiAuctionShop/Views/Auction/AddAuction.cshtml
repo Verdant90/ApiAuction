@@ -45,7 +45,7 @@
             <div class="col-md-10 ">
                 <div class="input-group">
                     <span class="input-group-btn">
-                        @Html.TextBoxFor(model => model.startDate, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.startDate, new { @class = "form-control", @placeholder = "yyyy-MM-dd HH:mm:ss.fff" })
                         <input class="btn btn-default" type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
                     </span>
                 </div>
@@ -55,7 +55,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.endDate, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.endDate, new { @class = "form-control", @placeholder = "yyyy-MM-dd HH:mm:ss.fff" })
                 @Html.ValidationMessageFor(model => model.endDate)
             </div>
         </div>
