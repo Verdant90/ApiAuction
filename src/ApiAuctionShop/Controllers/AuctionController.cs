@@ -123,6 +123,8 @@ namespace Projekt.Controllers
         public async Task<ActionResult> AddAuction(Auctions auction, bool? now, IFormFile file = null)
         {
             TryValidateModel(auction);
+            DateValidation(auction);
+            PriceValidation(auction);
             if (!ModelState.IsValid)
             {
                 return View();
@@ -206,9 +208,11 @@ namespace Projekt.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
+
         public async Task<ActionResult> Edit(Auctions auction, bool? now, IFormFile file = null)
         {
-
+            DateValidation(auction);
+            PriceValidation(auction);
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
@@ -353,6 +357,36 @@ namespace Projekt.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("AuctionList", "Auction");
+        }
+
+        private void DateValidation(Auctions auction)
+        {
+            DateTime startDate, endDate; ;
+            if (!DateTime.TryParse(auction.startDate, out startDate))
+            {
+                ModelState.AddModelError("startDate", "Wrong start date format!");
+            }
+            else if (startDate.CompareTo(DateTime.Now) < 1)
+            {
+
+                ModelState.AddModelError("startDate", "Start date must be later than now!");
+            }
+            if (!DateTime.TryParse(auction.endDate, out endDate))
+            {
+                ModelState.AddModelError("endDate", "Wrong end date format!");
+            }
+            else
+            {
+                if (endDate.CompareTo(DateTime.Now) < 1)
+                    ModelState.AddModelError("endDate", "End date must be later than now!");
+                if (endDate.CompareTo(startDate) < 1)
+                    ModelState.AddModelError("endDate", "End date must be later than the start date!");
+            }
+        }
+        private void PriceValidation(Auctions auction)
+        {
+            if (auction.buyPrice <= auction.startPrice)
+                ModelState.AddModelError("buyPrice", "Buy price must be greater than the start price!");
         }
     }
 
