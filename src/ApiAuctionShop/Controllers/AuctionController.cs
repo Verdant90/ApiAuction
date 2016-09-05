@@ -89,6 +89,7 @@ namespace Projekt.Controllers
             var list_all = _context.Auctions.ToList();
             foreach (Auctions auction in list_all)
             {
+                Console.WriteLine("test");
                 AuctionViewModel tmp = new AuctionViewModel()
                 {
                     ID = auction.ID,
