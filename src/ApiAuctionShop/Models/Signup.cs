@@ -45,7 +45,7 @@ namespace ApiAuctionShop.Models
         public string title { get; set; }
         public Signup Signup { get; set; }
 
-        //id aukcji (rzeczywiste) 
+        //id usera..
         [Column("SignupId")]
         public string SignupId { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "The start price must be greater than 0!")]

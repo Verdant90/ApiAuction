@@ -58,7 +58,7 @@ namespace Projekt.Controllers
         public async Task<ActionResult> AuctionList()
         {
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
-            
+            var users = _context.Users;
             var list_mine = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
             List<List<AuctionViewModel>> model = new List<List<AuctionViewModel>>();
             List<AuctionViewModel> lineMine = new List<AuctionViewModel>();
@@ -76,7 +76,7 @@ namespace Projekt.Controllers
                     startPrice = auction.startPrice,
                     editable = auction.editable,
                     bidCount = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = auction.Signup
+                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
                 };
 
                 if (_context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
@@ -98,7 +98,7 @@ namespace Projekt.Controllers
                     state = auction.state,
                     startPrice = auction.startPrice,
                     bidCount = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = auction.Signup
+                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
                 };
 
                 if (_context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
@@ -274,8 +274,9 @@ namespace Projekt.Controllers
 
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var highestBid = (_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().Count <= 0)?0:_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
-            if(highestBid >= bvm.bid || bvm.bid < bvm.auctionToSend.startPrice) return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == bvm.auctionToSend.ID);
+            if (highestBid >= bvm.bid || bvm.bid < bvm.auctionToSend.startPrice || user.Id == tmp.SignupId) return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
+            if (bvm.bid > tmp.buyPrice) bvm.bid = tmp.buyPrice;
             Bid newBid = new Bid()
             {
                 bid = bvm.bid,
@@ -284,6 +285,13 @@ namespace Projekt.Controllers
                 auctionId = tmp.ID
 
             };
+            if(bvm.bid >= tmp.buyPrice)
+            {
+                //end auction
+                tmp.winnerID = user.Id;
+                tmp.endDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                tmp.state = "ended";
+            }
             _context.Bids.Add(newBid);
             _context.SaveChanges();
             var errors = ModelState.Where(x => x.Value.Errors.Any())
@@ -298,8 +306,9 @@ namespace Projekt.Controllers
         {
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var highestBid = (_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().Count <= 0) ? 0 : _context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
-            //if (highestBid >= bvm.auctionToSend.buyPrice) return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == bvm.auctionToSend.ID);
+            if (user.Id == tmp.SignupId) return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
+
             if (tmp.state == "active")
             {
                 Bid newBid = new Bid()
