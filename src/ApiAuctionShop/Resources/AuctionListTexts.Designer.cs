@@ -28,7 +28,7 @@ namespace ApiAuctionShop.Resources {
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
-        public AuctionListTexts() {
+        internal AuctionListTexts() {
         }
         
         /// <summary>
