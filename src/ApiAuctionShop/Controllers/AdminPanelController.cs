@@ -31,7 +31,15 @@ namespace ApiAuctionShop.Controllers
         // GET: /AdminPanel/
         public IActionResult AdminPanel()
         {
-            return View("Index");
+            var users = _context.Users;
+            var userCount = users.Count();
+            var bidsCount = _context.Bids.Count();
+            var auctionsCount = _context.Auctions.Count();
+            var activeAuctionsCount = _context.Auctions.Where(a => a.state == "active").Count();
+            var auctionsWon = _context.Auctions.Where(a => a.state == "ended" && a.winner != null).Count();
+            AdminMenuModel model = new AdminMenuModel(auctionsCount, activeAuctionsCount, bidsCount, userCount, auctionsWon);
+            
+            return View("Index", model);
         }
 
         [Authorize]
@@ -67,7 +75,7 @@ namespace ApiAuctionShop.Controllers
             var auctionsCount = _context.Auctions.Count();
             var activeAuctionsCount = _context.Auctions.Where(a => a.state == "active").Count();
             var auctionsWon = _context.Auctions.Where(a => a.state == "ended" && a.winner != null).Count();
-            model.adminMenuModel.userCount = Convert.ToInt32(userCount);
+            model.adminMenuModel.userCount = userCount;
             model.adminMenuModel.bidsCount = bidsCount;
             model.adminMenuModel.auctionsCount = auctionsCount;
             model.adminMenuModel.activeAuctionCount = activeAuctionsCount;
@@ -76,5 +84,50 @@ namespace ApiAuctionShop.Controllers
             return View(model);
         }
 
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> Statistics()
+        {
+            string[] states = {"active","waiting","ended","inactive" };
+            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
+            var users = _context.Users.ToList();
+            var list_auctions = _context.Auctions.ToList();
+            var bids = _context.Bids.ToList();
+            AdminStatisticsViewModel model = new AdminStatisticsViewModel();
+            model.auctions = list_auctions;
+            model.bids = bids;
+            model.users = users;
+            
+            var userCount = users.Count();
+            var bidsCount = _context.Bids.Count();
+            var auctionsCount = _context.Auctions.Count();
+            var activeAuctionsCount = _context.Auctions.Where(a => a.state == "active").Count();
+            var auctionsWon = _context.Auctions.Where(a => a.state == "ended" && a.winner != null).Count();
+            model.adminMenuModel.userCount = Convert.ToInt32(userCount);
+            model.adminMenuModel.bidsCount = bidsCount;
+            model.adminMenuModel.auctionsCount = auctionsCount;
+            model.adminMenuModel.activeAuctionCount = activeAuctionsCount;
+            model.adminMenuModel.auctionsWon = auctionsWon;
+            //last week auctions
+            for(int i = -7; i < 0; ++i)
+            {
+                model.lastWeekAuctionsCount[7 + i] = model.auctions.Where(a => DateTime.Parse(a.startDate).ToString("yyyy-MM-dd") == DateTime.Today.AddDays(i).ToString("yyyy-MM-dd")).Count(); 
+            }
+            //all auction states
+            for (int i = 0; i < 4; ++i)
+            {
+                //0-active,1-waiting,2-ended,3-inactive
+                model.auctionStates[i] = model.auctions.Where(a => a.state == states[i]).Count();
+            }
+            for (int i = 0; i < 31; ++i)
+            {
+                //0-active,1-waiting,2-ended,3-inactive
+                model.currentMonthBids[i] = model.bids.Where(b => DateTime.Parse(b.bidDate).Month == DateTime.Today.Month && DateTime.Parse(b.bidDate).Year == DateTime.Today.Year && DateTime.Parse(b.bidDate).Day == i+1).Count();
+            }
+
+            model.lastWeekAuctionsPercent = (model.lastWeekAuctionsCount.Sum() *100) / model.auctions.Count();
+            return View(model);
+        }
     }
 }

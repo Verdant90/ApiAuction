@@ -3,3 +3,264 @@
 *@
 @{
 }
+@model AdminStatisticsViewModel
+
+
+@{
+    ViewBag.Title = "Statistics";
+}
+
+
+
+
+@Html.Partial("_AdminLeftMenu", Model.adminMenuModel)
+<div class="col-md-10">
+
+    <div class="text-center">
+        <ul class="stats_box">
+            <li>
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="text-muted bootstrap-admin-box-title">Last week auctions</div>
+                            </div>
+                            <div class="sparkline bar_week"></div>
+                            <div class="stat_text">
+                                <strong>@Model.lastWeekAuctionsCount.Sum()</strong> new auctions this week.
+                                <span class="percent down"> <i class="fa fa-caret-down"></i> +@Model.lastWeekAuctionsPercent%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+           
+            <li>
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="text-muted bootstrap-admin-box-title">Auction states</div>
+                            </div>
+                            <div class="sparkline pie_week"></div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="panel panel-default">
+                            <header>
+                                <h5>New bids this month</h5>
+                            </header>
+                            <div class="body" id="trigo" style="height: 250px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+<hr>
+
+
+</div>
+<!-- end .inner -->
+@section scripts
+    {
+    <link href="~/css/bootstrap-admin-theme.css" rel="stylesheet" asp-file-version="true" />
+    <link href="~/css/jquery.easy-pie-chart.css" rel="stylesheet" asp-file-version="true" />
+    <script type="text/javascript" src="~/js/jquery.easy-pie-chart.js"></script>
+    <script type="text/javascript" src="~/js/bootstrap.js"></script>
+    <script type="text/javascript" src="~/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="~/js/modernizr-2.6.2.js"></script>
+    <script type="text/javascript" src="~/js/site.js"></script>
+    <script type="text/javascript" src="~/js/jquery.sparkline.js"></script>
+    <script type="text/javascript" src="~/js/jquery.sparkline.min.js"></script>
+    <script type="text/javascript" src="~/js/jquery.flot.js"></script>
+    <script type="text/javascript">
+        $(function () { dashboard(); });
+
+        function dashboard() {
+            "use strict";
+            var d = new Date();
+            var weekday = ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday"]
+
+            //----------- BEGIN SPARKLINE CODE -------------------------*/
+            // required jquery.sparkline.min.js*/
+
+            /** This code runs when everything has been loaded on the page */
+            /* Inline sparklines take their values from the contents of the tag */
+            $('.inlinesparkline').sparkline();
+
+            /* Sparklines can also take their values from the first argument
+             passed to the sparkline() function */
+            var myvalues = [10, 8, 5, 7, 4, 4, 1];
+            $('.dynamicsparkline').sparkline(myvalues);
+
+            /* The second argument gives options such as chart type */
+            $('.dynamicbar').sparkline(myvalues, { type: 'bar', barColor: 'green' });
+
+            /* Use 'html' instead of an array of values to pass options
+             to a sparkline with data in the tag */
+            $('.inlinebar').sparkline('html', { type: 'bar', barColor: 'red' });
+
+
+            $(".sparkline.bar_week").sparkline([
+               @Model.lastWeekAuctionsCount[0],
+               @Model.lastWeekAuctionsCount[1],
+               @Model.lastWeekAuctionsCount[2],
+               @Model.lastWeekAuctionsCount[3],
+               @Model.lastWeekAuctionsCount[4],
+               @Model.lastWeekAuctionsCount[5],
+               @Model.lastWeekAuctionsCount[6]], {
+                   type: 'bar',
+                   height: '200',
+                   barWidth: 50,
+                   barColor: '#4d6189',
+                   negBarColor: '#a20051',
+                   tooltipFormat: '<span style="color: {{color}}">&#9679;</span> {{offset:names}}',
+                   tooltipValueLookups: {
+                       names: {
+                           0: weekday[d.getDay()%7],
+                           1: weekday[(d.getDay() + 1) % 7],
+                           2: weekday[(d.getDay() + 2) % 7],
+                           3: weekday[(d.getDay() + 3) % 7],
+                           4: weekday[(d.getDay() + 4) % 7],
+                           5: weekday[(d.getDay() + 5) % 7],
+                           6: weekday[(d.getDay() + 6) % 7]
+                       }
+                   }
+               });
+
+            $(".sparkline.line_day").sparkline([5, 6, 7, 9, 9, 5, 4, 6, 6, 4, 6, 7], {
+                type: 'line',
+                height: '40',
+                drawNormalOnTop: false
+            });
+
+            $(".sparkline.pie_week").sparkline([
+                @Model.auctionStates[0],
+                @Model.auctionStates[1],
+                @Model.auctionStates[2],
+                @Model.auctionStates[3],],
+                {
+                type: 'pie',
+                width: '200',
+                height: '200',
+                tooltipFormat: '<span style="color: {{color}}">&#9679;</span> {{offset:names}} ({{percent.1}}%)',
+                tooltipValueLookups: {
+                    names: {
+                        0: 'Active',
+                        1: 'Waiting',
+                        2: 'Ended',
+                        3: 'Inactive'
+                    }
+                }
+            });
+
+            $('.sparkline.stacked_month').sparkline(['0:2', '2:4', '4:2', '4:1'], {
+                type: 'bar',
+                height: '40',
+                barWidth: 10,
+                barColor: '#4d6189',
+                negBarColor: '#a20051'
+            });
+            //----------- END SPARKLINE CODE -------------------------*/
+
+
+
+
+
+            /*----------- BEGIN CHART CODE -------------------------*/
+            var currentMonthBidsJson = @Html.Raw(Json.Serialize(Model.currentMonthBids));
+            var sin = [];
+            for (var i = 0; i < 22; i += 1) {
+                if(i <=  new Date().getUTCDate() )
+                    sin.push([i+1, currentMonthBidsJson[i]]);
+            }
+
+            var plot = $.plot($("#trigo"),
+                    [
+                        {
+                            data: sin,
+                            label: "Number of bids",
+                            points: {
+                                fillColor: "#4572A7",
+                                size: 5
+                            },
+                            color: '#4572A7'
+                        }
+                    ], {
+                        series: {
+                            lines: {
+                                show: true
+                            },
+                            points: {
+                                show: true
+                            }
+                        },
+                        grid: {
+                            hoverable: true,
+                            clickable: true
+                        },
+                        yaxis: {
+                            tickDecimals: 0,
+                            min: 0
+                        },
+                        xaxis:{
+                            tickDecimals: 0,
+                            max: 31
+                        
+                        }
+
+                    });
+
+            function showTooltip(x, y, contents) {
+                $('<div id="tooltip">' + contents + '</div>').css({
+                    position: 'absolute',
+                    display: 'none',
+                    top: y + 5,
+                    left: x + 5,
+                    border: '1px solid #fdd',
+                    padding: '2px',
+                    'background-color': '#000',
+                    color: '#fff'
+                }).appendTo("body").fadeIn(200);
+            }
+
+            var previousPoint = null;
+            $("#trigo").bind("plothover", function (event, pos, item) {
+                $("#x").text(pos.x.toFixed(2));
+                $("#y").text(pos.y.toFixed(2));
+
+                if (item) {
+                    if (previousPoint !== item.dataIndex) {
+                        previousPoint = item.dataIndex;
+
+                        $("#tooltip").remove();
+                        var x = ('0' +item.datapoint[0].toFixed(0)).slice(-2) +'.' + ('0' + (new Date().getUTCMonth()+1)).slice(-2) + '.' + new Date().getUTCFullYear(),
+                                y = item.datapoint[1].toFixed(0);
+
+                        showTooltip(item.pageX, item.pageY,
+                                item.series.label + " of " + x + " = " + y);
+                    }
+                }
+                else {
+                    $("#tooltip").remove();
+                    previousPoint = null;
+                }
+            });
+            /*----------- END CHART CODE -------------------------*/
+
+            /*----------- BEGIN TABLESORTER CODE -------------------------*/
+            /* required jquery.tablesorter.min.js*/
+            $(".sortableTable").tablesorter();
+            /*----------- END TABLESORTER CODE -------------------------*/
+
+        }
+
+
+    </script>
+
+}
