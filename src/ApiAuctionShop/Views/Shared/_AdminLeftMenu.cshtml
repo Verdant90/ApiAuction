@@ -1,40 +1,44 @@
 ﻿<!-- left, vertical navbar -->
 @using ApiAuctionShop.Helpers
+
+@section scripts{
+<script type="text/javascript" src="~/js/twitter-bootstrap-hover-dropdown.js"></script>
+<script type="text/javascript" src="~/js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="~/js/modernizr-2.6.2.js"></script>
+<script type="text/javascript" src="~/js/bootstrap.js"></script>
+
+}
+
+@model AdminAuctionsViewModel
+
 <div class="col-md-2 bootstrap-admin-col-left">
     <ul class="nav navbar-collapse collapse bootstrap-admin-navbar-side">
-        @Html.MenuItem("About", "AdminPanel", "AdminPanel")
-        @Html.MenuItem("Dashboard", "AdminPanel", "AdminPanel")
-        @Html.MenuItem("DatePickers", "AdminPanel", "AdminPanel")
-        @Html.MenuItem("Statistics (Charts)", "AdminPanel", "AdminPanel")
-        @Html.MenuItem("Forms", "AdminPanel", "AdminPanel")
-        @Html.MenuItem("Tables", "AdminPanel", "AdminPanel")
-        @Html.MenuItem("Buttons &amp; Icons", "AdminPanel", "AdminPanel")
-        @Html.MenuItem(" WYSIWYG Editors", "erew", "as")
-        @Html.MenuItem(" UI &amp; Interface", "AdminPanel", "AdminPanel")
-
+        @Html.MenuItem("O projekcie", "AdminPanel", "AdminPanel")
+        @Html.MenuItem("Aukcje", "Auctions", "AdminPanel")
+        @Html.MenuItem("Uzytkownicy", "AdminPanel", "AdminPanel")
+        @Html.MenuItem("Statystyki", "AdminPanel", "AdminPanel")
+        @Html.MenuItem("Ustawienia", "AdminPanel", "AdminPanel")
+        @Html.MenuItem("Wiadomosci", "AdminPanel", "AdminPanel")
         <li>
-            <a href="#"><span class="badge pull-right">731</span> Orders</a>
+            <a>Liczby:<span class="badge pull-right"></span></a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">812</span> Invoices</a>
+            <a href="#"><span class="badge pull-right">@Model.adminMenuModel.auctionsCount</span> Aukcje</a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">27</span> Clients</a>
+            <a href="#"><span class="badge pull-right">@Model.adminMenuModel.activeAuctionCount</span> Aktywne aukcje</a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">1,234</span> Users</a>
+            <a href="#"><span class="badge pull-right">@Model.adminMenuModel.userCount</span> Uzytkownicy</a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">2,221</span> Messages</a>
+            <a href="#"><span class="badge pull-right">@Model.adminMenuModel.bidsCount</span> Oferty kupna</a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">11</span> Reports</a>
+            <a href="#"><span class="badge pull-right">@Model.adminMenuModel.auctionsWon</span> Sprzedaze</a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">83</span> Errors</a>
-        </li>
-        <li>
-            <a href="#"><span class="badge pull-right">4,231</span> Logs</a>
+            <a href="#"><span class="badge pull-right">0</span> Wiadomosci</a>
         </li>
     </ul>
 </div>

@@ -47,18 +47,14 @@ namespace ApiAuctionShop.Helpers
             var routeData = htmlHelper.ViewContext.RouteData;
             var currentAction = routeData.GetRequiredString("action");
             var currentController = routeData.GetRequiredString("controller");
-            if (string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase) &&
+            /*if (string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase))
             {
-                li.InnerHtml.AppendHtml(String.Format("<li class=\"active\"><a href=\"/AdminPanel/{0}\"><i class=\"glyphicon glyphicon-chevron-right\"></i>{1}</a></li>",
-                controller, text));
+               
                 li.AddCssClass("active");
-            }
-            else
-            {
-                li.InnerHtml.AppendHtml(String.Format("<li><a href=\"/AdminPanel/{0}\"><i class=\"glyphicon glyphicon-chevron-right\"></i>{1}</a></li>",
-                controller, text));
-            }
+            }*/
+            li.InnerHtml.AppendHtml(String.Format("<li ><a href=\"/{0}/{1}\"><i class=\"glyphicon glyphicon-chevron-right\"></i>{2}</a></li>"
+               ,controller, action, text));
             //li.InnerHtml.AppendHtml(String.Format("<a href=\"@Url.Action({0}, {1})\"><i class=\"glyphicon glyphicon-chevron-right\"></i>{2}</a>",
             //   action, controller, text));
             //li.InnerHtml.AppendHtml(String.Format("<a href=\"/AdminPanel/{0}\"><i class=\"glyphicon glyphicon-chevron-right\"></i>{1}</a>",
