@@ -129,5 +129,39 @@ namespace ApiAuctionShop.Controllers
             model.lastWeekAuctionsPercent = (model.lastWeekAuctionsCount.Sum() *100) / model.auctions.Count();
             return View(model);
         }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> Users()
+        {
+            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
+            var users = _context.Users.ToList();
+            AdminUsersModel model = new AdminUsersModel();
+            foreach (Signup signup in users)
+            {
+                SignupViewModel tmp = new SignupViewModel()
+                {
+                    email = signup.Email,
+                    registeredDate = "-",
+                    auctionsCount = _context.Auctions.Where(d => d.SignupId == signup.Id).Count(),
+                    bidsCount = _context.Bids.Where(d => d.bidAuthor == signup.Email).Count(),
+                    auctionsWonCount = _context.Auctions.Where(d => d.winnerID == signup.Id).Count(),
+                    soldItemsCount = _context.Auctions.Where(d => d.SignupId == signup.Id && d.state == "ended" && d.winnerID != null).Count()
+                };
+                model.users.Add(tmp);
+            }
+            var userCount = users.Count();
+            var bidsCount = _context.Bids.Count();
+            var auctionsCount = _context.Auctions.Count();
+            var activeAuctionsCount = _context.Auctions.Where(a => a.state == "active").Count();
+            var auctionsWon = _context.Auctions.Where(a => a.state == "ended" && a.winner != null).Count();
+            model.adminMenuModel.userCount = userCount;
+            model.adminMenuModel.bidsCount = bidsCount;
+            model.adminMenuModel.auctionsCount = auctionsCount;
+            model.adminMenuModel.activeAuctionCount = activeAuctionsCount;
+            model.adminMenuModel.auctionsWon = auctionsWon;
+
+            return View(model);
+        }
     }
 }
