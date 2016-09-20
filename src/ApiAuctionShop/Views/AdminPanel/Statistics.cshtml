@@ -27,7 +27,7 @@
                             </div>
                             <div class="sparkline bar_week"></div>
                             <div class="stat_text">
-                                <strong>@Model.lastWeekAuctionsCount.Sum()</strong> new auctions this week.
+                                <strong>@Model.lastWeekAuctionsCount.Sum()</strong> new auctions last week.
                                 <span class="percent down"> <i class="fa fa-caret-down"></i> +@Model.lastWeekAuctionsPercent%</span>
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                     <div class="row">
                         <div class="panel panel-default">
                             <header>
-                                <h5>New bids this month</h5>
+                                <h5>New bids in  @DateTime.Now.ToString("MMMM")</h5>
                             </header>
                             <div class="body" id="trigo" style="height: 250px;"></div>
                         </div>
@@ -85,6 +85,15 @@
             "use strict";
             var d = new Date();
             var weekday = ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday"]
+            
+
+            var datesOfPreviousWeek = [];
+            var oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            for(var i = 0; i < 7; i+=1){
+                datesOfPreviousWeek[i] = ('0'+oneWeekAgo.getDate()).slice(-2) +'.'+('0'+oneWeekAgo.getMonth()).slice(-2)+'.'+oneWeekAgo.getFullYear();
+                oneWeekAgo.setDate(oneWeekAgo.getDate() + 1);
+            }
 
             //----------- BEGIN SPARKLINE CODE -------------------------*/
             // required jquery.sparkline.min.js*/
@@ -122,13 +131,13 @@
                    tooltipFormat: '<span style="color: {{color}}">&#9679;</span> {{offset:names}}',
                    tooltipValueLookups: {
                        names: {
-                           0: weekday[d.getDay()%7],
-                           1: weekday[(d.getDay() + 1) % 7],
-                           2: weekday[(d.getDay() + 2) % 7],
-                           3: weekday[(d.getDay() + 3) % 7],
-                           4: weekday[(d.getDay() + 4) % 7],
-                           5: weekday[(d.getDay() + 5) % 7],
-                           6: weekday[(d.getDay() + 6) % 7]
+                           0: weekday[ d.getDay() % 7]+', '+ datesOfPreviousWeek[0],
+                           1: weekday[(d.getDay() + 1) % 7]+', '+ datesOfPreviousWeek[1],
+                           2: weekday[(d.getDay() + 2) % 7]+', '+ datesOfPreviousWeek[2],
+                           3: weekday[(d.getDay() + 3) % 7]+', '+ datesOfPreviousWeek[3],
+                           4: weekday[(d.getDay() + 4) % 7]+', '+ datesOfPreviousWeek[4],
+                           5: weekday[(d.getDay() + 5) % 7]+', '+ datesOfPreviousWeek[5],
+                           6: weekday[(d.getDay() + 6) % 7]+', '+ datesOfPreviousWeek[6]
                        }
                    }
                });
@@ -175,8 +184,8 @@
             /*----------- BEGIN CHART CODE -------------------------*/
             var currentMonthBidsJson = @Html.Raw(Json.Serialize(Model.currentMonthBids));
             var sin = [];
-            for (var i = 0; i < 22; i += 1) {
-                if(i <=  new Date().getUTCDate() )
+            for (var i = 0; i < 31; i += 1) {
+                if(i <  new Date().getUTCDate() )
                     sin.push([i+1, currentMonthBidsJson[i]]);
             }
 
