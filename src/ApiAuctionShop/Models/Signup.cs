@@ -1,10 +1,13 @@
 ﻿
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ApiAuctionShop.Models
 {
@@ -14,11 +17,14 @@ namespace ApiAuctionShop.Models
         public string ExpireTokenTime { get; set; }
         public bool IsTokenConfirmed { get; set; }
         public string Token { get; set; }
+        public override string UserName { get; set; }
         //musi być zadeklarowana bo inaczej Auction traktuje jak zwykły object = null
         //auctions of a user
         public ICollection<Auctions> Auction { get; set; } = new List<Auctions>();
 
         public virtual ICollection<Auctions> AuctionsWon { get; set; }
+
+       
     }
 
     public class Auctions
