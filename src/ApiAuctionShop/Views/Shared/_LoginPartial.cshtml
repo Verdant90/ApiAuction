@@ -12,10 +12,10 @@
             </li>
             <li>
                 <div>
-                    <a href="@Url.Action("Index", "Home")">
+                    <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new  { language = "pl-PL" },null)">
                         <img src="~/images/pl.ico" height="30" />
                     </a>
-                    <a href="@Url.Action("Index", "Home")">
+                    <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(),  new  { language = "en-GB" },null)">
                         <img src="~/images/en.ico" height="30" />
                     </a>
                 </div>
