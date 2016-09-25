@@ -12,12 +12,24 @@
             </li>
             <li>
                 <div>
-                    <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new  { language = "pl-PL" },null)">
-                        <img src="~/images/pl.ico" height="30" />
-                    </a>
-                    <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(),  new  { language = "en-GB" },null)">
-                        <img src="~/images/en.ico" height="30" />
-                    </a>
+                    @if (@ViewContext.RouteData.Values["language"].ToString() == "pl-PL") {
+                        <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "pl-PL" }, null)">
+                            <img src="~/images/pl.ico" height="30" />
+                        </a>
+                        <a class="lang-inactive" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "en-GB" }, null)">
+                            <img src="~/images/en.ico" height="30" />
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="lang-inactive" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "pl-PL" }, null)">
+                            <img src="~/images/pl.ico" height="30" />
+                        </a>
+                        <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "en-GB" }, null)">
+                            <img src="~/images/en.ico" height="30" />
+                        </a>
+
+                    }
                 </div>
             </li>
         </ul>
