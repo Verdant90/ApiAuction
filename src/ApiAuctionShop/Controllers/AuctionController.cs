@@ -300,7 +300,7 @@ namespace Projekt.Controllers
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var highestBid = (_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().Count <= 0)?0:_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == bvm.auctionToSend.ID);
-            if (highestBid >= bvm.bid || bvm.bid < bvm.auctionToSend.startPrice || user.Id == tmp.SignupId) return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
+            if (highestBid >= bvm.bid || bvm.bid < tmp.startPrice || user.Id == tmp.SignupId) return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
             if (tmp.buyPrice != null && bvm.bid > tmp.buyPrice) bvm.bid = (decimal) tmp.buyPrice;
             Bid newBid = new Bid()
             {
