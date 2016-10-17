@@ -8,6 +8,7 @@ using ApiAuctionShop.Models;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
 using ApiAuctionShop.Database;
+using Microsoft.AspNet.Mvc.Rendering;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -40,6 +41,18 @@ namespace ApiAuctionShop.Controllers
             AdminMenuModel model = new AdminMenuModel(auctionsCount, activeAuctionsCount, bidsCount, userCount, auctionsWon);
             
             return View("Index", model);
+        }
+
+        public AdminMenuModel GetAdminMenuModel()
+        {
+            var users = _context.Users.ToList();
+            var userCount = users.Count();
+            var bidsCount = _context.Bids.Count();
+            var auctionsCount = _context.Auctions.Count();
+            var activeAuctionsCount = _context.Auctions.Where(a => a.state == "active").Count();
+            var auctionsWon = _context.Auctions.Where(a => a.state == "ended" && a.winner != null).Count();
+            return new AdminMenuModel(auctionsCount, activeAuctionsCount, bidsCount, userCount, auctionsWon);
+
         }
 
         [Authorize]
@@ -98,17 +111,8 @@ namespace ApiAuctionShop.Controllers
             model.auctions = list_auctions;
             model.bids = bids;
             model.users = users;
-            
-            var userCount = users.Count();
-            var bidsCount = _context.Bids.Count();
-            var auctionsCount = _context.Auctions.Count();
-            var activeAuctionsCount = _context.Auctions.Where(a => a.state == "active").Count();
-            var auctionsWon = _context.Auctions.Where(a => a.state == "ended" && a.winner != null).Count();
-            model.adminMenuModel.userCount = Convert.ToInt32(userCount);
-            model.adminMenuModel.bidsCount = bidsCount;
-            model.adminMenuModel.auctionsCount = auctionsCount;
-            model.adminMenuModel.activeAuctionCount = activeAuctionsCount;
-            model.adminMenuModel.auctionsWon = auctionsWon;
+           
+            model.adminMenuModel = GetAdminMenuModel();
             //last week auctions
             for(int i = -7; i < 0; ++i)
             {
@@ -150,18 +154,48 @@ namespace ApiAuctionShop.Controllers
                 };
                 model.users.Add(tmp);
             }
-            var userCount = users.Count();
-            var bidsCount = _context.Bids.Count();
-            var auctionsCount = _context.Auctions.Count();
-            var activeAuctionsCount = _context.Auctions.Where(a => a.state == "active").Count();
-            var auctionsWon = _context.Auctions.Where(a => a.state == "ended" && a.winner != null).Count();
-            model.adminMenuModel.userCount = userCount;
-            model.adminMenuModel.bidsCount = bidsCount;
-            model.adminMenuModel.auctionsCount = auctionsCount;
-            model.adminMenuModel.activeAuctionCount = activeAuctionsCount;
-            model.adminMenuModel.auctionsWon = auctionsWon;
+           
+            model.adminMenuModel = GetAdminMenuModel();
 
             return View(model);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> Settings()
+        {
+            var users = _context.Users.ToList();
+            var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+            AdminSettingsViewModel model = new AdminSettingsViewModel();
+            model.timePeriods = settings.timePeriods;
+            model.hasBuyNow = settings.hasBuyNow;
+            model.photoSize = settings.photoSize;
+            model.startMessage = settings.startMessage;
+            model.adminMenuModel = GetAdminMenuModel();
+            return View(model);
+
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<ActionResult> Settings(AdminSettingsViewModel asvm)
+        {
+            if (ModelState.IsValid)
+            {
+                var users = _context.Users.ToList();
+                var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+                settings.hasBuyNow = asvm.hasBuyNow;
+                settings.timePeriods = asvm.timePeriods;
+                settings.startMessage = asvm.startMessage;
+                _context.SaveChanges();
+                
+            }
+            asvm.adminMenuModel = GetAdminMenuModel();
+            var errors = ModelState.Where(x => x.Value.Errors.Any())
+                .Select(x => new { x.Key, x.Value.Errors });
+            return View(asvm);
         }
     }
 }

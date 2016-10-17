@@ -12,7 +12,7 @@ namespace ApiAuctionShop.Database
     public class ApplicationDbContext : IdentityDbContext<Signup>
     {
         public DbSet<Signup> Logins { get; set; }
-
+        public DbSet<SiteSetting> Settings { get; set; }
         public DbSet<Auctions> Auctions { get; set; }
         public DbSet<Bid> Bids { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

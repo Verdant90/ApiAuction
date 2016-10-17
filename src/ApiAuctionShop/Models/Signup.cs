@@ -40,18 +40,23 @@ namespace ApiAuctionShop.Models
 
         //zmienic na decimal(2)
         public int price { get; set; }
+
         [Required(ErrorMessage = "Please enter the title for this auction.")]
         public string title { get; set; }
+
         public Signup Signup { get; set; }
 
         //id usera..
         [Column("SignupId")]
         public string SignupId { get; set; }
+
         [DataType(DataType.Currency, ErrorMessage = "Wrong price format!")]
         [Range(1, int.MaxValue, ErrorMessage = "The start price must be greater than 0!")]
         public decimal startPrice { get; set; }
+
         [DataType(DataType.Currency, ErrorMessage = "Wrong price format!")]
-        public decimal buyPrice { get; set; }
+        public decimal? buyPrice { get; set; }
+
         public string state { get; set; } = "waiting";
 
         [Required(ErrorMessage = "Start date is required!")]
@@ -60,13 +65,14 @@ namespace ApiAuctionShop.Models
 
         [Required(ErrorMessage = "End date is required!")]
         [DataType(DataType.DateTime, ErrorMessage = "Wrong data format!")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "yyyy-MM-dd HH:mm:ss.fff")]
         public string endDate { get; set; }
 
         public bool editable { get; set; } = true;
 
         public string cathegory { get; set; }
+
         public string bid { get; set; } = "";
+
         public virtual ICollection<Bid> bids { get; set; }
     }
 }

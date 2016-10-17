@@ -27,7 +27,6 @@ namespace Projekt.Controllers
     {
         public ApplicationDbContext _context;
         private readonly UserManager<Signup> _userManager;
-
         public AuctionController(
             UserManager<Signup> userManager, ApplicationDbContext context)
         {
@@ -43,9 +42,11 @@ namespace Projekt.Controllers
             //var bids = _context.Bids.Count(i => i.auctionId == id);
             var bids = _context.Bids.Where(i => i.auctionId == id).ToList().OrderByDescending(o => o.bid).ToList();
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == id);
+            var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             BiddingViewModel bvm = new BiddingViewModel
             {
                 auctionToSend = tmp,
+                hasBuyNowGlobal = settings.hasBuyNow,
                 bids = bids
             };
 
@@ -64,7 +65,6 @@ namespace Projekt.Controllers
             List<AuctionViewModel> lineMine = new List<AuctionViewModel>();
             model.Add(new List<AuctionViewModel>()); //my auctions
             model.Add(new List<AuctionViewModel>()); //all auctions 
-
             foreach (Auctions auction in list_mine)
             {
                 AuctionViewModel tmp = new AuctionViewModel() {
@@ -116,19 +116,27 @@ namespace Projekt.Controllers
         [Authorize]
         public IActionResult AddAuction()
         {
-            return View();
+            AuctionCreateViewModel model = new AuctionCreateViewModel();
+            var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+            model.hasBuyNowGlobal = settings.hasBuyNow;
+            return View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> AddAuction(Auctions auction, bool? now, IFormFile file = null)
+        public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, bool? now, IFormFile file = null)
         {
-            TryValidateModel(auction);
-            DateValidation(auction);
-            PriceValidation(auction);
+            TryValidateModel(acvm.auction);
+            DateValidation(acvm.auction);
+            PriceValidation(acvm.auction);
             if (!ModelState.IsValid)
             {
-                return View();
+                var errors = ModelState.Where(x => x.Value.Errors.Any())
+                            .Select(x => new { x.Key, x.Value.Errors });
+                AuctionCreateViewModel model = new AuctionCreateViewModel();
+                var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+                model.hasBuyNowGlobal = settings.hasBuyNow;
+                return View(model);
             }
             
             string sqlFormattedDate;
@@ -137,18 +145,18 @@ namespace Projekt.Controllers
                 sqlFormattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             }else
             {
-                sqlFormattedDate = DateTime.Parse(auction.startDate).ToString("yyyy-MM-dd HH:mm:ss");
+                sqlFormattedDate = DateTime.Parse(acvm.auction.startDate).ToString("yyyy-MM-dd HH:mm:ss");
             }
             var _auction = new Auctions()
             {
-                title = auction.title,
-                description = auction.description,
+                title = acvm.auction.title,
+                description = acvm.auction.description,
                 startDate = sqlFormattedDate,
-                endDate = DateTime.Parse(auction.endDate).ToString("yyyy-MM-dd HH:mm:ss"),
-                startPrice = auction.startPrice,
-                buyPrice = auction.buyPrice,
-                author = auction.author,
-                editable = auction.editable
+                endDate = DateTime.Parse(acvm.auction.endDate).ToString("yyyy-MM-dd HH:mm:ss"),
+                startPrice = acvm.auction.startPrice,
+                buyPrice = acvm.auction.buyPrice,
+                author = acvm.auction.author,
+                editable = acvm.auction.editable
             //currentPrice = (decimal)auction.price,
         };
             if (file != null)
@@ -194,13 +202,16 @@ namespace Projekt.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             */
+            AuctionCreateViewModel acvm = new AuctionCreateViewModel();
+            acvm.auction = _context.Auctions.First(i => i.ID == id);
             Auctions auctionToEdit = _context.Auctions.First(i => i.ID == id);
-
+            var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+            acvm.hasBuyNowGlobal = settings.hasBuyNow;
             if (auctionToEdit == null)
             {
                 return HttpNotFound();
             }
-            return View(auctionToEdit);
+            return View(acvm);
         }
         
         // POST: /Movies/Edit/5
@@ -210,30 +221,41 @@ namespace Projekt.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
 
-        public async Task<ActionResult> Edit(Auctions auction, bool? now, IFormFile file = null)
+        public async Task<ActionResult> Edit(AuctionCreateViewModel acvm, bool? now, IFormFile file = null)
         {
-            DateValidation(auction);
-            PriceValidation(auction);
-            if (ModelState.IsValid)
+            DateValidation(acvm.auction);
+            PriceValidation(acvm.auction);
+            if (!ModelState.IsValid)
             {
+                var errorLog = ModelState.Where(x => x.Value.Errors.Any())
+                .Select(x => new { x.Key, x.Value.Errors });
+                AuctionCreateViewModel acvm2 = new AuctionCreateViewModel();
+                acvm.auction = _context.Auctions.First(i => i.ID == acvm.auction.ID);
+                Auctions auctionToEdit = _context.Auctions.First(i => i.ID == acvm.auction.ID);
+                var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+                acvm.hasBuyNowGlobal = settings.hasBuyNow;
+                return View(acvm);
+            }
+            else
+            { 
                 var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
 
                 
-                var tmp = _context.Auctions.FirstOrDefault(i => i.ID == auction.ID); 
+                var tmp = _context.Auctions.FirstOrDefault(i => i.ID == acvm.auction.ID); 
                 if (tmp != null)
                 {
                     if(tmp.state == "waiting")
                     {
-                        tmp.title = auction.title;
-                        tmp.description = auction.description;
-                        tmp.buyPrice = auction.buyPrice;
-                        tmp.endDate = auction.endDate;
-                        tmp.startPrice = auction.startPrice;
-                        tmp.startDate = (now != null)? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") : auction.startDate;
-                        tmp.editable = auction.editable;
+                        tmp.title = acvm.auction.title;
+                        tmp.description = acvm.auction.description;
+                        tmp.buyPrice = acvm.auction.buyPrice;
+                        tmp.endDate = acvm.auction.endDate;
+                        tmp.startPrice = acvm.auction.startPrice;
+                        tmp.startDate = (now != null)? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") : acvm.auction.startDate;
+                        tmp.editable = acvm.auction.editable;
                     }else if (tmp.state == "active")
                     {
-                        tmp.endDate = auction.endDate;
+                        tmp.endDate = acvm.auction.endDate;
                     }
 
                 }
@@ -265,8 +287,6 @@ namespace Projekt.Controllers
                 if (DateTime.Parse(tmp.endDate) <= DateTime.Now) tmp.state = "ended";
                 _context.SaveChanges();
             }
-            var errors = ModelState.Where(x => x.Value.Errors.Any())
-                .Select(x => new { x.Key, x.Value.Errors });
             return RedirectToAction("AuctionList", "Auction");
         }
 
@@ -281,7 +301,7 @@ namespace Projekt.Controllers
             var highestBid = (_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().Count <= 0)?0:_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == bvm.auctionToSend.ID);
             if (highestBid >= bvm.bid || bvm.bid < bvm.auctionToSend.startPrice || user.Id == tmp.SignupId) return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
-            if (bvm.bid > tmp.buyPrice) bvm.bid = tmp.buyPrice;
+            if (tmp.buyPrice != null && bvm.bid > tmp.buyPrice) bvm.bid = (decimal) tmp.buyPrice;
             Bid newBid = new Bid()
             {
                 bid = bvm.bid,
@@ -318,7 +338,7 @@ namespace Projekt.Controllers
             {
                 Bid newBid = new Bid()
                 {
-                    bid = tmp.buyPrice,
+                    bid = (decimal) tmp.buyPrice,
                     bidAuthor = user.Email,
                     bidDate = DateTime.Now.ToString(),
                     auctionId = tmp.ID
@@ -362,7 +382,7 @@ namespace Projekt.Controllers
 
         private void DateValidation(Auctions auction)
         {
-            DateTime startDate, endDate; ;
+            DateTime startDate, endDate;
             if (!DateTime.TryParse(auction.startDate, out startDate))
             {
                 ModelState.AddModelError("startDate", "Wrong start date format!");
