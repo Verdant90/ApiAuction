@@ -51,7 +51,7 @@ namespace ApiAuctionShop.Models
         [Range(1, int.MaxValue, ErrorMessage = "The start price must be greater than 0!")]
         public decimal startPrice { get; set; }
         [DataType(DataType.Currency, ErrorMessage = "Wrong price format!")]
-        public decimal buyPrice { get; set; }
+        public decimal? buyPrice { get; set; }
         public string state { get; set; } = "waiting";
 
         [Required(ErrorMessage = "Start date is required!")]

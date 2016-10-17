@@ -8,12 +8,8 @@ using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Metadata.Internal;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -27,13 +23,25 @@ namespace Projekt.Controllers
     {
         public ApplicationDbContext _context;
         private readonly UserManager<Signup> _userManager;
-
+        public Dictionary<string, Dictionary<string,string>> dict;
         public AuctionController(
             UserManager<Signup> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
-
+            string xmlString = System.IO.File.ReadAllText(@"Resources/translations.xml");
+            var document = System.Xml.Linq.XDocument.Parse(xmlString);
+            var settingsList = (from element in document.Root.Elements("word")
+                                select new Setting
+                                {
+                                    Code = element.Attribute("code").Value,
+                                    Lang = element.Attribute("lang").Value,
+                                    Value = element.Value
+                                }).ToList();
+            dict = settingsList.GroupBy(i => i.Code)
+                            .ToDictionary(j => j.Key,
+                                          k => k.ToDictionary(i => i.Lang, thing => thing.Value));
+            
         }
 
 
@@ -46,7 +54,8 @@ namespace Projekt.Controllers
             BiddingViewModel bvm = new BiddingViewModel
             {
                 auctionToSend = tmp,
-                bids = bids
+                bids = bids,
+                d = dict
             };
 
             return View(bvm);
@@ -281,7 +290,7 @@ namespace Projekt.Controllers
             var highestBid = (_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().Count <= 0)?0:_context.Bids.Where(b => b.auctionId == bvm.auctionToSend.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == bvm.auctionToSend.ID);
             if (highestBid >= bvm.bid || bvm.bid < bvm.auctionToSend.startPrice || user.Id == tmp.SignupId) return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
-            if (bvm.bid > tmp.buyPrice) bvm.bid = tmp.buyPrice;
+            if (tmp.buyPrice != null && bvm.bid > tmp.buyPrice) bvm.bid = (decimal) tmp.buyPrice;
             Bid newBid = new Bid()
             {
                 bid = bvm.bid,
@@ -318,7 +327,7 @@ namespace Projekt.Controllers
             {
                 Bid newBid = new Bid()
                 {
-                    bid = tmp.buyPrice,
+                    bid = (decimal)tmp.buyPrice,
                     bidAuthor = user.Email,
                     bidDate = DateTime.Now.ToString(),
                     auctionId = tmp.ID
@@ -390,5 +399,10 @@ namespace Projekt.Controllers
                 ModelState.AddModelError("buyPrice", "Buy price must be greater than the start price!");
         }
     }
-
+    public class Setting
+    {
+        public string Code { get; set; }
+        public string Lang { get; set; }
+        public string Value { get; set; }
+    }
 }
