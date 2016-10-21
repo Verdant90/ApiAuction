@@ -18,13 +18,33 @@
             </h4>
         </dd>
         <dd>
-            @if (Model.auctionToSend.ImageData != null)
+            @if (Model.auctionToSend.imageFiles.Count > 0)
             {
-            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.auctionToSend.ImageData))" />
-            } else
+                // sparsowanie œcie¿ki
+                String path = Model.auctionToSend.imageFiles.ElementAt(0).ImagePath;
+                int index = path.IndexOf(@"\images");
+                path = path.Substring(index);
+                <img id="mainimage" src="@String.Format(path)" width="400" height="400" alt="" />
+            }
+            else
             {
                 @: Brak zdjecia.
 
+            }
+        </dd>
+        <dd>
+            @if (Model.auctionToSend.imageFiles.Count > 1)
+            {
+                @foreach (var image in Model.auctionToSend.imageFiles)
+                {
+
+                    // sparsowanie œcie¿ki
+                    String path = image.ImagePath;
+                    int index = path.IndexOf(@"\images");
+                    path = path.Substring(index);
+                    <img onclick="changeImage(this)" src="@String.Format(path)" width="100" height="100" alt="" />
+
+                }
             }
         </dd>
         
@@ -147,3 +167,10 @@
     }
 </div>
 
+<script>
+    function changeImage(img)
+    {
+        var mainimage = document.getElementById("mainimage")
+        mainimage.src = img.src;
+    }
+</script>

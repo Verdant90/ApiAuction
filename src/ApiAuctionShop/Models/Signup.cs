@@ -60,7 +60,6 @@ namespace ApiAuctionShop.Models
 
         [Required(ErrorMessage = "End date is required!")]
         [DataType(DataType.DateTime, ErrorMessage = "Wrong data format!")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "yyyy-MM-dd HH:mm:ss.fff")]
         public string endDate { get; set; }
 
         public bool editable { get; set; } = true;
@@ -68,5 +67,7 @@ namespace ApiAuctionShop.Models
         public string cathegory { get; set; }
         public string bid { get; set; } = "";
         public virtual ICollection<Bid> bids { get; set; }
+
+        public virtual ICollection<ImageFile> imageFiles { get; set; }
     }
 }
