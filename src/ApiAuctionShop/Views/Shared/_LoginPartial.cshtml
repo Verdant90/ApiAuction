@@ -8,7 +8,21 @@
                 <a asp-controller="Manage" asp-action="Index" title="Manage">Hello @User.GetUserName()!</a>
             </li>
             <li>
+                <a href="@Url.Action("AdminPanel", "AdminPanel")">Admin Panel</a>
+            </li>
+            <li>
                 <button type="submit" class="btn btn-link navbar-btn navbar-link">Log off</button>
+            </li>
+           
+            <li>
+                <div>
+                    <a href="@Url.Action("Index", "Home")">
+                        <img src="~/images/pl.ico" height="30" />
+                    </a>
+                    <a href="@Url.Action("Index", "Home")">
+                        <img src="~/images/en.ico" height="30" />
+                    </a>
+                </div>
             </li>
         </ul>
     </form>

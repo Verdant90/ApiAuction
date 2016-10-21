@@ -1,5 +1,5 @@
 ﻿@using System.Security.Claims
-
+@model AdminSettingsViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -7,7 +7,6 @@
 
 
 <meta charset="utf-8" />
-<title>WebSocket Test</title>
 <script language="javascript" type="text/javascript">
 
     var host = window.location.host;
@@ -16,8 +15,8 @@
 
   function init()
   {
-    output = document.getElementById("output");
-    testWebSocket();
+    //output = document.getElementById("output");
+    //testWebSocket();
   }
 
   function testWebSocket()
@@ -69,12 +68,21 @@
 
 </script>
 
-<h2>WebSocket Test</h2>
+<h1> Kainos Auction System </h1> 
 
 <div id="output">
-    <input type="button" value="Login" onclick="@("window.location.href='" + @Url.Action("Login", "Account") + "'");" />
-    <input type="button" value="Dodaj aukcję" onclick="@("window.location.href='" + @Url.Action("Image", "Account") + "'");" />
-
+    
+    <div class="row bootstrap-admin-no-edges-padding">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="text-muted bootstrap-admin-box-title">Welcome!</div>
+                </div>
+                <div class="bootstrap-admin-panel-content">
+                    <p>@Html.Raw(Model.startMessage)</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
 }

@@ -1,0 +1,89 @@
+﻿@model AdminAuctionsViewModel
+@{
+    ViewBag.Title = "Auctions";
+}
+@section scripts{
+    <link href="~/css/bootstrap-admin-theme.css" rel="stylesheet" asp-file-version="true" />
+
+
+}
+@Html.Partial("_AdminLeftMenu", Model.adminMenuModel)
+<!-- content -->
+
+
+
+
+@if (Model.auctions.Count > 0)
+{
+    <div class="col-md-10">
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="text-muted bootstrap-admin-box-title">Auctions</div>
+                </div>
+                <table class="table table-striped grid-table">
+                    <tr>
+                        <td>Lp.</td>
+                        <td>Tytuł</td>
+                        <td>Data rozpoczęcia</td>
+                        <td>Data zakończenia</td>
+                        <td>Aktualna cena</td>
+                        <td>Ilość ofert</td>
+                        <td>Stan</td>
+                        <td></td>
+                    </tr>
+
+                    @foreach (var item in Model.auctions.Select((value, i) => new { i = ++i, value }))
+                    {
+                        <tr>
+                            <td>@item.i.</td>
+                            <td>
+                                @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
+                            </td>
+                            <td>@item.value.startDate</td>
+                            <td>@item.value.endDate</td>
+                            <td>
+                                @if (item.value.highestBid != 0)
+                    {
+                                    @item.value.highestBid.ToString("C");
+                    }
+                    else
+                    {
+                                    @item.value.startPrice.ToString("C");
+                    }
+
+                            </td>
+                            <td>
+                                @if (item.value.bidCount != 0)
+                    {
+                                    @item.value.bidCount
+                                }
+                                else
+                                {
+                                    @: -
+                    }
+                            </td>
+                            <td>@item.value.state</td>
+                            <td>
+                     @if ((@item.value.state == "active" && @item.value.editable == true) || @item.value.state == "waiting")
+                     {
+                        <button class="btn btn-xs btn-default" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");">Edytuj</button>
+                        <button class="btn btn-xs btn-default"  onclick="@("window.location.href='" + @Url.Action("End", "Auction", new { id = item.value.ID }) + "'");">Zakończ</button>
+                     }
+                     else
+                     {
+                                    @: -
+
+                         }
+                            </td>
+                        </tr>
+                    }
+                </table>
+                </div>
+            </div>
+        </div>
+}
+
+               
+
+
