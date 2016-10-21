@@ -1,10 +1,8 @@
 @model BiddingViewModel
 @using Projekt.Controllers;
-@{
-    ViewData["Title"] = "Aukcja";
-}
 
-<h2>@ViewData["Title"]</h2>
+
+<h2>@Model.d["Auction"][ViewContext.RouteData.Values["language"].ToString().Substring(0, 2)]</h2>
 
 <div>
     <hr />
@@ -114,14 +112,14 @@
     <br />
     @if (Model.bids.Count > 0)
     {
-        <h2>Oferty kupna</h2>
+        <h2>@Model.d["BuyOffers"][ViewContext.RouteData.Values["language"].ToString().Substring(0, 2)]</h2>
         <br />
         <table style="width:100%">
             <tr>
-                <th>Lp.</th>
-                <th>Uzytkownik</th>
-                <th>Cena</th>
-                <th>Data</th>
+                <th>@Model.d["No"][ViewContext.RouteData.Values["language"].ToString().Substring(0, 2)]</th>
+                <th>@Model.d["User"][ViewContext.RouteData.Values["language"].ToString().Substring(0, 2)]</th>
+                <th>@Model.d["Price"][ViewContext.RouteData.Values["language"].ToString().Substring(0, 2)]</th>
+                <th>@Model.d["BidDate"][ViewContext.RouteData.Values["language"].ToString().Substring(0, 2)]</th>
             </tr>
             @foreach (var b in Model.bids.Select((value, i) => new { i = ++i, value }))
             {

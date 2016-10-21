@@ -1,0 +1,26 @@
+﻿<translations>
+  <word code="AuctionList"  lang="pl">Lista aukcji</word>
+  <word code="AuctionList"  lang="en">Auction List</word>
+  <word code="AddAuction"   lang="pl">Dodaj aukcję</word>
+  <word code="AddAuction"   lang="en">Create an auction</word>
+  <word code="Main"         lang="pl">Główna </word>
+  <word code="Main"         lang="en">Main page</word>
+  <word code="Hello"        lang="pl">Witaj</word>
+  <word code="Hello"        lang="en">Hello</word>
+  <word code="Logoff"       lang="pl">Wyloguj</word>
+  <word code="Logoff"       lang="en">Log Off</word>
+  <word code="Register"     lang="pl">Rejestracja</word>
+  <word code="Register"     lang="en">Register</word>
+  <word code="Auction"     lang="pl">Aukcja</word>
+  <word code="Auction"     lang="en">Auction</word>
+  <word code="BuyOffers"     lang="pl">Oferty kupna</word>
+  <word code="BuyOffers"     lang="en">Buy Offers</word>
+  <word code="No"     lang="pl">Lp</word>
+  <word code="No"     lang="en">No</word>
+  <word code="User"     lang="pl">Uzytkownik</word>
+  <word code="User"     lang="en">User</word>
+  <word code="Price"     lang="pl">Cena</word>
+  <word code="Price"     lang="en">Price</word>
+  <word code="BidDate"     lang="pl">Data zgłoszenia</word>
+  <word code="BidDate"     lang="en">Bid Date</word>
+</translations>

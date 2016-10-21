@@ -8,12 +8,8 @@ using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Data.Entity;
-using Microsoft.Data.Entity.Metadata.Internal;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -27,12 +23,26 @@ namespace Projekt.Controllers
     {
         public ApplicationDbContext _context;
         private readonly UserManager<Signup> _userManager;
+
+        public Dictionary<string, Dictionary<string,string>> dict;
         public AuctionController(
             UserManager<Signup> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
-
+            string xmlString = System.IO.File.ReadAllText(@"Resources/translations.xml");
+            var document = System.Xml.Linq.XDocument.Parse(xmlString);
+            var settingsList = (from element in document.Root.Elements("word")
+                                select new Setting
+                                {
+                                    Code = element.Attribute("code").Value,
+                                    Lang = element.Attribute("lang").Value,
+                                    Value = element.Value
+                                }).ToList();
+            dict = settingsList.GroupBy(i => i.Code)
+                            .ToDictionary(j => j.Key,
+                                          k => k.ToDictionary(i => i.Lang, thing => thing.Value));
+            
         }
 
 
@@ -47,7 +57,8 @@ namespace Projekt.Controllers
             {
                 auctionToSend = tmp,
                 hasBuyNowGlobal = settings.hasBuyNow,
-                bids = bids
+                bids = bids,
+                d = dict
             };
 
             return View(bvm);
@@ -410,5 +421,10 @@ namespace Projekt.Controllers
                 ModelState.AddModelError("buyPrice", "Buy price must be greater than the start price!");
         }
     }
-
+    public class Setting
+    {
+        public string Code { get; set; }
+        public string Lang { get; set; }
+        public string Value { get; set; }
+    }
 }

@@ -5,7 +5,7 @@
     <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a asp-controller="Manage" asp-action="Index" title="Manage">Hello @User.GetUserName()!</a>
+                <a asp-controller="Manage" asp-action="Index" title="Manage">Hello, @User.GetUserName()!</a>
             </li>
             <li>
                 <a href="@Url.Action("AdminPanel", "AdminPanel")">Admin Panel</a>
@@ -16,12 +16,24 @@
            
             <li>
                 <div>
-                    <a href="@Url.Action("Index", "Home")">
-                        <img src="~/images/pl.ico" height="30" />
-                    </a>
-                    <a href="@Url.Action("Index", "Home")">
-                        <img src="~/images/en.ico" height="30" />
-                    </a>
+                    @if (ViewContext.RouteData.Values["language"].ToString() == "pl-PL") {
+                        <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "pl-PL", id = ViewContext.RouteData.Values["id"] }, null)">
+                            <img src="~/images/pl.ico" height="30" />
+                        </a>
+                        <a class="lang-inactive" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "en-GB", id = ViewContext.RouteData.Values["id"] }, null)">
+                            <img src="~/images/en.ico" height="30" />
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="lang-inactive" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "pl-PL" , id = ViewContext.RouteData.Values["id"]}, null)">
+                            <img src="~/images/pl.ico" height="30" />
+                        </a>
+                        <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "en-GB", id = ViewContext.RouteData.Values["id"] }, null)">
+                            <img src="~/images/en.ico" height="30" />
+                        </a>
+
+                    }
                 </div>
             </li>
         </ul>

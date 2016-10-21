@@ -62,7 +62,6 @@ namespace ApiAuctionShop.Models
 
         [DataType(DataType.Currency, ErrorMessage = "Wrong price format!")]
         public decimal? buyPrice { get; set; }
-
         public string state { get; set; } = "waiting";
 
         [Required(ErrorMessage = "Start date is required!")]

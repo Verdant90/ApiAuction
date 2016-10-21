@@ -139,7 +139,7 @@ namespace ApiAuctionShop
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{*id}");
+                    template: "{language=pl-PL}/{controller=Home}/{action=Index}/{*id}");
             });
 
         }
