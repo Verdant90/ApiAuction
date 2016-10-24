@@ -13,12 +13,11 @@
 
 <div class="col-md-2 bootstrap-admin-col-left">
     <ul class="nav navbar-collapse collapse bootstrap-admin-navbar-side">
-        @Html.MenuItem("O projekcie", "AdminPanel", "AdminPanel")
-        @Html.MenuItem("Aukcje", "Auctions", "AdminPanel")
-        @Html.MenuItem("Uzytkownicy", "Users", "AdminPanel")
-        @Html.MenuItem("Statystyki", "Statistics", "AdminPanel")
-        @Html.MenuItem("Ustawienia", "Settings", "AdminPanel")
-        @Html.MenuItem("Wiadomosci", "AdminPanel", "AdminPanel")
+        <li><a asp-controller="AdminPanel" asp-action="Index"><i class="glyphicon glyphicon-chevron-right"></i>O projekcie</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Auctions"><i class="glyphicon glyphicon-chevron-right"></i>Aukcje</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Users"><i class="glyphicon glyphicon-chevron-right"></i>Uzytkownicy</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Statistics"><i class="glyphicon glyphicon-chevron-right"></i>Statystyki</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Settings"><i class="glyphicon glyphicon-chevron-right"></i>Ustawienia</a></li>
         <li>
             <a>Liczby:<span class="badge pull-right"></span></a>
         </li>
@@ -36,9 +35,6 @@
         </li>
         <li>
             <a href="#"><span class="badge pull-right">@Model.auctionsWon</span> Sprzedaze</a>
-        </li>
-        <li>
-            <a href="#"><span class="badge pull-right">0</span> Wiadomosci</a>
         </li>
     </ul>
 </div>

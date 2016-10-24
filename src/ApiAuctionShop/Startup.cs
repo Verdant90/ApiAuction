@@ -98,12 +98,11 @@ namespace ApiAuctionShop
             loggerFactory.AddDebug();
 
             app.UseApplicationInsightsRequestTelemetry();
-
+            app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
