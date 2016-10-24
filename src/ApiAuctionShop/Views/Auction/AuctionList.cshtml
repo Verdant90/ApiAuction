@@ -3,118 +3,173 @@
     ViewData["Title"] = "Moje aukcje";
 }
 
-
+<br />
 @if (Model[0].Count > 0)
 {
     <h2>Moje aukcje</h2>
-    <table class="table table-striped grid-table">
-        <tr>
-            <td>Lp.</td>
-            <td>Tytuł</td>
-            <td>Data rozpoczęcia</td>
-            <td>Data zakończenia</td>
-            <td>Aktualna cena</td>
-            <td>Ilość ofert</td>
-            <td>Stan</td>
-            <td></td>
-        </tr>
-
-        @foreach (var item in Model[0].Select((value, i) => new { i = ++i, value }))
-        {
+    <br />
+    <table id="myAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
+        <thead>
             <tr>
-                <td>@item.i.</td>
-                <td>
-                @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
-                 </td>
-                <td>@item.value.startDate</td>
-                <td>@item.value.endDate</td>
-                <td>
-                    @if(item.value.highestBid != 0)
-                    {
-                        @item.value.highestBid.ToString("C");
-                    }
-                    else
-                    {
-                        @item.value.startPrice.ToString("C");
-                    }
-
-                </td>
-                <td>
-                    @if (item.value.bidCount != 0)
-                    {
-                        @item.value.bidCount
-                    }
-                    else
-                    {
-                        @: -
-                    }
-                </td>
-                <td>@item.value.state</td>
-                <td>
-                    @if ((@item.value.state == "active" && @item.value.editable == true )|| @item.value.state == "waiting")
-                    {
-                    <input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
-
-                    <input type="button" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction", new { id = item.value.ID }) + "'");" /> }
-                    else
-                    {
-                        @: -
-
-                    }
-                </td>
+                <td>Lp.</td>
+                <td>Tytuł</td>
+                <td>Data rozpoczęcia</td>
+                <td>Data zakończenia</td>
+                <td>Aktualna cena</td>
+                <td>Ilość ofert</td>
+                <td>Stan</td>
+                <td></td>
             </tr>
-        }
+        </thead>
+        <tfoot>
+            <tr>
+                <td>Lp.</td>
+                <td>Tytuł</td>
+                <td>Data rozpoczęcia</td>
+                <td>Data zakończenia</td>
+                <td>Aktualna cena</td>
+                <td>Ilość ofert</td>
+                <td>Stan</td>
+                <td></td>
+            </tr>
+        </tfoot>
+        <tbody>
+            @foreach (var item in Model[0].Select((value, i) => new { i = ++i, value }))
+            {
+                <tr>
+                    <td>@item.i.</td>
+                    <td>
+                        @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
+                    </td>
+                    <td>@item.value.startDate</td>
+                    <td>@item.value.endDate</td>
+                    <td>
+                        @if (item.value.highestBid != 0)
+                        {
+                            @item.value.highestBid.ToString("C");
+                    }
+                    else
+                    {
+                            @item.value.startPrice.ToString("C");
+                    }
+
+                    </td>
+                    <td>
+                        @if (item.value.bidCount != 0)
+                    {
+                            @item.value.bidCount
+                        }
+                        else
+                        {
+                            @: -
+                    }
+                    </td>
+                    <td><div title="State:  @item.value.state "><img src="@Url.Content("~/images/auction_"+ @item.value.state + ".png")" /></div></td>
+                    <td>
+                        @if ((@item.value.state == "active" && @item.value.editable == true) || @item.value.state == "waiting")
+                        {
+                            <input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
+
+                            <input type="button" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction", new { id = item.value.ID }) + "'");" /> }
+                    else
+                    {
+                            @: -
+
+                        }
+                    </td>
+                </tr>
+            }
+
+        </tbody>
     </table>
 }
-
+<br /><br />
 @if (Model[1].Count > 0)
 {
     <h2>Wszystkie aukcje</h2>
-    <table class="table table-striped grid-table">
-        <tr>
-            <td>Lp.</td>
-            <td>Tytuł</td>
-            <td>Data rozpoczęcia</td>
-            <td>Data zakończenia</td>
-            <td>Aktualna cena</td>
-            <td>Ilość ofert</td>
-            <td>Stan</td>
-            <td>Autor</td>
-        </tr>
-
-        @foreach (var item in Model[1].Select((value, i) => new { i = ++i, value }))
-        {
+    <br />
+    <table id="allAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
+        <thead>
             <tr>
-                <td>@item.i.</td>
-                <td>
-                    @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
-                </td>
-                <td>@item.value.startDate</td>
-                <td>@item.value.endDate</td>
-                <td>
-                    @if (item.value.highestBid != 0)
+                <td>Lp.</td>
+                <td>Tytuł</td>
+                <td>Data rozpoczęcia</td>
+                <td>Data zakończenia</td>
+                <td>Aktualna cena</td>
+                <td>Ilość ofert</td>
+                <td>Stan</td>
+                <td>Autor</td>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td>Lp.</td>
+                <td>Tytuł</td>
+                <td>Data rozpoczęcia</td>
+                <td>Data zakończenia</td>
+                <td>Aktualna cena</td>
+                <td>Ilość ofert</td>
+                <td>Stan</td>
+                <td>Autor</td>
+            </tr>
+        </tfoot>
+        <tbody>
+            @foreach (var item in Model[1].Select((value, i) => new { i = ++i, value }))
+            {
+                <tr>
+                    <td>@item.i.</td>
+                    <td>
+                        @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
+                    </td>
+                    <td>@item.value.startDate</td>
+                    <td>@item.value.endDate</td>
+                    <td>
+                        @if (item.value.highestBid != 0)
                     {
-                        @item.value.highestBid.ToString("C");
+                            @item.value.highestBid.ToString("C");
                     }
                     else
                     {
-                        @item.value.startPrice.ToString("C");
+                            @item.value.startPrice.ToString("C");
                     }
 
-                </td>
-                <td>
-                    @if (item.value.bidCount != 0)
+                    </td>
+                    <td>
+                        @if (item.value.bidCount != 0)
                     {
-                        @item.value.bidCount
+                            @item.value.bidCount
+                        }
+                        else
+                        {
+                            @: -
                     }
-                    else
-                    {
-                        @: -
-                    }
-                </td>
-                <td>@item.value.state</td>
-                <td>@item.value.Signup.Email</td>
-            </tr>
-        }
+                    </td>
+                    <td>@item.value.state</td>
+                    <td>@item.value.Signup.Email</td>
+                </tr>
+            }
+
+        </tbody>
     </table>
 }
+
+
+
+
+
+
+    <link rel="stylesheet" type="text/css" href="~/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="~/css/custom.css">
+    <script type="text/javascript" language="javascript" src="~/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myAuctions').DataTable({
+                "order": [[0, "asc"]]
+            });
+        });
+        $(document).ready(function () {
+            $('#allAuctions').DataTable({
+                "order": [[0, "asc"]]
+            });
+        });
+    </script>
