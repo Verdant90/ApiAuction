@@ -24,7 +24,7 @@
                 String path = Model.auctionToSend.imageFiles.ElementAt(0).ImagePath;
                 int index = path.IndexOf(@"\images");
                 path = path.Substring(index);
-                <img id="mainimage" src="@String.Format(path)" width="400" height="400" alt="" />
+                <img id="mainimage" src="@String.Format(path)" width="400" height="400" alt="" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="setCarouselActiveItem()" />
             }
             else
             {
@@ -101,6 +101,43 @@
 
        
     </dl>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+
+                    <div class="carousel-inner">
+                        @if (Model.auctionToSend.imageFiles.Count > 0)
+                        {
+                            var i = 0;
+                            @foreach (var image in Model.auctionToSend.imageFiles)
+                            {
+
+                                // sparsowanie œcie¿ki
+                                String path = image.ImagePath;
+                                int index = path.IndexOf(@"\images");
+                                path = path.Substring(index);
+
+                                var itemClass = i++ == 0 ? "item active" : "item";
+                                <div class="@itemClass">
+                                    <img class="img-responsive" src=@path alt="" />
+                                </div>
+                            }
+                        }
+                        
+                    </div>
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     @if (Model.auctionToSend.state == "active")
     {
         <h2>Licytacja</h2>
@@ -168,6 +205,27 @@
 </div>
 
 <script>
+
+    // ustawienie slajdu Carousel na obrazek, który obecnie jest obrazkiemm g³ównym
+    function setCarouselActiveItem()
+    {
+        var currentActive = jQuery('.carousel-inner').find('.active');
+        currentActive.removeClass('active');
+
+        var path = mainimage.src
+        var index = path.indexOf("\images");
+        path = path.substring(index - 1);
+        path = path.replace(/\//g, '\\');
+
+        // szukanie w Carousel slajdu, który ma taki sam url co obrazek g³ówny
+        $('.carousel-inner .item').each(function (index)
+        {
+            if ($(this).find('img').attr('src') == path)
+                $(this).addClass('active');
+        });
+
+    }
+
     function changeImage(img)
     {
         var mainimage = document.getElementById("mainimage")
