@@ -14,6 +14,7 @@ using Microsoft.AspNet.Mvc.Rendering;
 
 namespace ApiAuctionShop.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminPanelController : Controller
     {
 
