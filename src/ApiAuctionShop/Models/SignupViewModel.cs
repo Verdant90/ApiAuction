@@ -9,6 +9,7 @@ namespace ApiAuctionShop.Models
     {
         public string email { get; set; }
         public string registeredDate { get; set; }
+        public string role { get; set; }
         public int auctionsCount { get; set; }
         public int bidsCount { get; set; }
         public int auctionsWonCount { get; set; }

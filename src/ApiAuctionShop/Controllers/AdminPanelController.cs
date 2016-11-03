@@ -141,6 +141,7 @@ namespace ApiAuctionShop.Controllers
         {
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var users = _context.Users.ToList();
+            var roles = _context.Roles;
             AdminUsersModel model = new AdminUsersModel();
             foreach (Signup signup in users)
             {
@@ -148,6 +149,7 @@ namespace ApiAuctionShop.Controllers
                 {
                     email = signup.Email,
                     registeredDate = "-",
+                    role = roles.Where(role => role.Id == _context.UserRoles.Where(ur => ur.UserId == signup.Id).FirstOrDefault().RoleId).FirstOrDefault().Name,
                     auctionsCount = _context.Auctions.Where(d => d.SignupId == signup.Id).Count(),
                     bidsCount = _context.Bids.Where(d => d.bidAuthor == signup.Email).Count(),
                     auctionsWonCount = _context.Auctions.Where(d => d.winnerID == signup.Id).Count(),
