@@ -128,7 +128,10 @@ namespace Projekt.Controllers
         public async Task<ActionResult> AddAuction(Auctions auction, bool? now, ICollection<IFormFile> files = null)
         {
             TryValidateModel(auction);
-            DateValidation(auction);
+            if(now == null)
+                DateValidation(auction);
+            else
+                DateValidation(auction, true);
             PriceValidation(auction);
             if (!ModelState.IsValid)
             {
@@ -386,14 +389,15 @@ namespace Projekt.Controllers
             return RedirectToAction("AuctionList", "Auction");
         }
 
-        private void DateValidation(Auctions auction)
+        private void DateValidation(Auctions auction, bool ignoreStartDate = false)
         {
-            DateTime startDate, endDate; ;
+            DateTime startDate, endDate;
             if (!DateTime.TryParse(auction.startDate, out startDate))
             {
-                ModelState.AddModelError("startDate", "Wrong start date format!");
+                if(!ignoreStartDate)
+                    ModelState.AddModelError("startDate", "Wrong start date format!");
             }
-            else if (startDate.CompareTo(DateTime.Now) < 1)
+            else if (!ignoreStartDate && startDate.CompareTo(DateTime.Now) < 1)
             {
 
                 ModelState.AddModelError("startDate", "Start date must be later than now!");
@@ -406,7 +410,7 @@ namespace Projekt.Controllers
             {
                 if (endDate.CompareTo(DateTime.Now) < 1)
                     ModelState.AddModelError("endDate", "End date must be later than now!");
-                if (endDate.CompareTo(startDate) < 1)
+                if (!ignoreStartDate && endDate.CompareTo(startDate) < 1)
                     ModelState.AddModelError("endDate", "End date must be later than the start date!");
             }
         }

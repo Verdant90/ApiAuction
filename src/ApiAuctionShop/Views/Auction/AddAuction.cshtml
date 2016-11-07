@@ -46,7 +46,7 @@
                 @Html.LabelFor(model => model.startDate, new { @class = "control-label col-md-2" })
                 <div class="col-md-10 ">
                     <div class="input-group input-group-btn">
-                        @Html.TextBoxFor(model => model.startDate, new { @class = "form-control", @placeholder = "yyyy-MM-dd HH:mm:ss", @format = "yyyy -MM-dd HH:mm:ss.fff" })
+                        @Html.TextBoxFor(model => model.startDate, new { @class = "form-control", @placeholder = "yyyy-MM-dd HH:mm:ss", @format = "yyyy -MM-dd HH:mm:ss.fff"})
                         <span class="input-group-btn">
                             @*<input class="btn btn-default" type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />*@
                             <input type="checkbox" name="now" value="true" onclick=""> Teraz<br>
@@ -84,6 +84,18 @@
     </div>
 
 }
+<script>
+    $('input[name="now"]').click(function () {
+
+        var state = $('input[name="now"]').is(':checked');
+        $sd = $('input[name="startDate"]');
+        if (state)
+            document.getElementById('startDate').value = "NOW"; // trzeba ustawić cokolwiek żeby walidacja 'isRequired' przeszła
+        else
+            document.getElementById('startDate').value = "";
+        $sd.prop("readonly", state);
+    });
+</script>
 <script type="text/javascript">
 
 	function FillNow(element)
