@@ -2,151 +2,328 @@
 @{
     ViewData["Title"] = "Moje aukcje";
 }
-
 <br />
-@if (Model[0].Count > 0)
-{
-    <h2>Moje aukcje</h2>
-    <br />
-    <table id="myAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <td>Tytuł</td>
-                <td>Aktualna cena</td>
-                <td>Data zakończenia</td>
-                <td>Ilość ofert</td>
-                <td>Stan</td>
-                <td></td>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <td>Tytuł</td>
-                <td>Aktualna cena</td>
-                <td>Data zakończenia</td>
-                <td>Ilość ofert</td>
-                <td>Stan</td>
-                <td></td>
-            </tr>
-        </tfoot>
-        <tbody>
-            @foreach (var item in Model[0].Select((value, i) => new { i = ++i, value }))
-            {
-                <tr>
-                    <td class="auctionTitle" >
-                        <b>
-                            @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
-                        </b>
-                    </td>
-                    <td class="auctionPrice">
-                        @if (item.value.highestBid != 0)
-                        {
-                            @item.value.highestBid.ToString("C");
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#myAuctionsList">Moje aukcje</a></li>
+    <li><a data-toggle="tab" href="#activeAuctions">Aukcje w toku</a></li>
+    <li><a data-toggle="tab" href="#archiveAuctions">Archiwum</a></li>
+</ul>
+<div class="tab-content">
+    <div id="myAuctionsList" class="tab-pane fade in active">
+        <h3>Moje aukcje</h3>
+        <br />
+        @if (Model[0].Count > 0)
+        {
+            <table id="myAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <td>Tytuł</td>
+                        <td>Aktualna cena</td>
+                        <td>Data zakończenia</td>
+                        <td>Ilość ofert</td>
+                        <td>Stan</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td>Tytuł</td>
+                        <td>Aktualna cena</td>
+                        <td>Data zakończenia</td>
+                        <td>Ilość ofert</td>
+                        <td>Stan</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var item in Model[0].Select((value, i) => new { i = ++i, value }))
+                    {
+                        <tr>
+                            <td class="auctionTitle">
+                            
+                                <div class="row auctionTitleRow">
+                                    <div class="col-md-3">
+                                        @if (item.value.ImageData != null)
+                                        {
+                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.value.ImageData))" />
+                                        }
+                                        else
+                                        {
+                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@Url.Content("~/images/noimage.png")" />
+
+                                        }
+                                    </div>
+                                    <div class="col-md-9 auctionTitleAuthor">
+                                        <b class="auctionTitle">
+                                            @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
+
+                                        </b>
+                                        <div class="auctionAuthor"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="auctionPrice">
+                                @if (item.value.highestBid != 0)
+                                {
+                                    @item.value.highestBid.ToString("C");
                     }
                     else
                     {
-                            @item.value.startPrice.ToString("C");
+                                    @item.value.startPrice.ToString("C");
                     }
 
-                    </td>
-                    <td>@item.value.endDate <div class="timeLeft">(@item.value.timeLeft.howManyLeft @item.value.timeLeft.timeMeasure do końca)</div></td>
-                    <td>
-                        @if (item.value.bidCount != 0)
+                            </td>
+                            <td>
+                                @item.value.endDate
+                            <div class="timeLeft">
+
+                                @if (item.value.timeLeft.howManyLeft < 0)
+                                {
+                                    @:(Aukcja zakończona)
+
+                                }
+                                else
+                                {
+                                    @:(@item.value.timeLeft.howManyLeft @item.value.timeLeft.timeMeasure do końca)
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            @if (item.value.bidCount != 0)
                     {
-                            @item.value.bidCount
-                        }
-                        else
-                        {
-                            @: -
+                                @item.value.bidCount
+                            }
+                            else
+                            {
+                                @: -
                     }
-                    </td>
-                    <td><div title="State:  @item.value.state "><img src="@Url.Content("~/images/auction_"+ @item.value.state + ".png")" /></div>
-                        
-                    </td>
-                    <td>
-                        @if ((@item.value.state == "active" && @item.value.editable == true) || @item.value.state == "waiting")
-                        {
+                        </td>
+                        <td>
+                            <div title="State:  @item.value.state "><img src="@Url.Content("~/images/auction_"+ @item.value.state + ".png")" /></div>
 
-                            <input type="button" class="btn btn-xs btn-default" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
+                        </td>
+                        <td>
+                            @if ((@item.value.state == "active" && @item.value.editable == true) || @item.value.state == "waiting")
+                            {
+
+                                <input type="button" class="btn btn-xs btn-default" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
 
                                 <input type="button" class="btn btn-xs btn-default" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction", new { id = item.value.ID }) + "'");" />
-                        }
-                    </td>
-                </tr>
-            }
+                            }
+                        </td>
+                    </tr>
+                    }
 
-        </tbody>
-    </table>
-}
-<br /><br />
-@if (Model[1].Count > 0)
-{
-    <h2>Wszystkie aukcje</h2>
-    <br />
-    <table id="allAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <td>Tytuł</td>
-                <td>Data rozpoczęcia</td>
-                <td>Data zakończenia</td>
-                <td>Aktualna cena</td>
-                <td>Do końca pozostało</td>
-                <td>Ilość ofert</td>
-                <td>Stan</td>
-                <td>Autor</td>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <td>Tytuł</td>
-                <td>Data rozpoczęcia</td>
-                <td>Data zakończenia</td>
-                <td>Aktualna cena</td>
-                <td>Do końca pozostało</td>
-                <td>Ilość ofert</td>
-                <td>Stan</td>
-                <td>Autor</td>
-            </tr>
-        </tfoot>
-        <tbody>
-            @foreach (var item in Model[1].Select((value, i) => new { i = ++i, value }))
-            {
-                <tr>
-                    <td>
-                        @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
-                    </td>
-                    <td>@item.value.startDate</td>
-                    <td>@item.value.endDate</td>
-                    <td>
-                        @if (item.value.highestBid != 0)
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @: Nie masz jeszcze żadnych aukcji.
+
+        }
+    </div>
+    <div id="activeAuctions" class="tab-pane fade">
+        <h3>Wszystkie aukcje</h3>
+        <br />
+        @if (Model[1].Count > 0)
+        {
+            <table id="allAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <td>Tytuł</td>
+                        <td>Aktualna cena</td>
+                        <td>Data zakończenia</td>
+                        <td>Ilość ofert</td>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td>Tytuł</td>
+                        <td>Aktualna cena</td>
+                        <td>Data zakończenia</td>
+                        <td>Ilość ofert</td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var item in Model[1].Select((value, i) => new { i = ++i, value }))
                     {
-                            @item.value.highestBid.ToString("C");
+                        <tr>
+                            <td >
+                                <div class="row auctionTitleRow">
+                                    <div class="col-md-3">
+                                        @if (item.value.ImageData != null)
+                                        {
+                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.value.ImageData))" />
+                                        }
+                                        else
+                                        {
+                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@Url.Content("~/images/noimage.png")" />
+
+                                        }
+                                    </div>
+                                    <div class="col-md-9 auctionTitleAuthor">
+                                        <b class="auctionTitle">
+                                            @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
+
+                                        </b>
+                                        <div class="auctionAuthor">(Autor: @item.value.Signup.Email)</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="auctionPrice">
+                                @if (item.value.highestBid != 0)
+                                {
+                                    @item.value.highestBid.ToString("C");
                     }
                     else
                     {
-                            @item.value.startPrice.ToString("C");
+                                    @item.value.startPrice.ToString("C");
                     }
 
-                    </td>
-                    <td>@item.value.timeLeft.howManyLeft @item.value.timeLeft.timeMeasure</td>
-                    <td>
-                        @if (item.value.bidCount != 0)
+                            </td>
+                            <td>
+                                @item.value.endDate
+                                <div class="timeLeft">
+
+                                    @if (item.value.timeLeft.howManyLeft < 0)
+                                    {
+                                        @:(Aukcja zakończona)
+
+                                    }
+                                    else
+                                    {
+                                        @:(@item.value.timeLeft.howManyLeft @item.value.timeLeft.timeMeasure do końca)
+                                }
+                                </div>
+                            </td>
+                            <td>
+                                @if (item.value.bidCount != 0)
                     {
-                            @item.value.bidCount
-                        }
-                        else
-                        {
-                            @: -
+                                    @item.value.bidCount
+                                }
+                                else
+                                {
+                                    @: -
                     }
-                    </td>
-                    <td>@item.value.state</td>
-                    <td>@item.value.Signup.Email</td>
-                </tr>
-            }
+                            </td>
 
-        </tbody>
-    </table>
-}
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @: Brak aktywnych aukcji.
+
+        }
+    </div>
+    <div id="archiveAuctions" class="tab-pane fade">
+        <h3>Archiwum aukcji</h3>
+        <br />
+        @if (Model[2].Count > 0)
+        {
+            <table id="archievedAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <td>Tytuł</td>
+                        <td>Cena końcowa</td>
+                        <td>Data zakończenia</td>
+                        <td>Ilość ofert</td>
+                        <td>Zwycięzca</td>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td>Tytuł</td>
+                        <td>Cena końcowa</td>
+                        <td>Data zakończenia</td>
+                        <td>Ilość ofert</td>
+                        <td>Zwycięzca</td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var item in Model[2].Select((value, i) => new { i = ++i, value }))
+                    {
+                        <tr>
+                            <td>
+                                <div class="row auctionTitleRow">
+                                    <div class="col-md-3">
+                                        @if (item.value.ImageData != null)
+                                        {
+                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.value.ImageData))" />
+                                        }
+                                        else
+                                        {
+                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@Url.Content("~/images/noimage.png")" />
+
+                                        }
+                                    </div>
+                                    <div class="col-md-9 auctionTitleAuthor">
+                                        <b class="auctionTitle">
+                                            @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
+
+                                        </b>
+                                        <div class="auctionAuthor">(Autor: @item.value.Signup.Email)</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="auctionPrice">
+                                @if (item.value.highestBid != 0)
+                                {
+                                    @item.value.highestBid.ToString("C");
+                                }
+                                else
+                                {
+                                    @item.value.startPrice.ToString("C");
+                                }       
+                            </td>
+                            <td>
+                                @item.value.endDate
+
+                            </td>
+                            <td>
+                                @if (item.value.bidCount != 0)
+                    {
+                                    @item.value.bidCount
+                                }
+                                else
+                                {
+                                    @: -
+                    }
+                            </td>
+                            <td>
+                                @if (@item.value.winner != null)
+                                {
+
+                                    @item.value.winner.Email
+
+                                }
+                                else
+                                {
+                                    @: Brak ofert.
+
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @: Archiwum jest puste.
+
+        }
+    </div>
+</div>
+
+<br /><br />
+
+
 
 <link rel="stylesheet" type="text/css" href="~/css/jquery.dataTables.min.css">
 <link rel="stylesheet" type="text/css" href="~/css/custom.css">
@@ -159,6 +336,11 @@
     });
     $(document).ready(function () {
         $('#allAuctions').DataTable({
+            "order": [[0, "asc"]]
+        });
+    });
+    $(document).ready(function () {
+        $('#archievedAuctions').DataTable({
             "order": [[0, "asc"]]
         });
     });

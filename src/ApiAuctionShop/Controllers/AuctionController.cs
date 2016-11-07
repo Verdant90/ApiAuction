@@ -76,7 +76,8 @@ namespace Projekt.Controllers
             List<List<AuctionViewModel>> model = new List<List<AuctionViewModel>>();
             List<AuctionViewModel> lineMine = new List<AuctionViewModel>();
             model.Add(new List<AuctionViewModel>()); //my auctions
-            model.Add(new List<AuctionViewModel>()); //all auctions 
+            model.Add(new List<AuctionViewModel>()); //active auctions 
+            model.Add(new List<AuctionViewModel>()); //archived auctions 
             foreach (Auctions auction in list_mine)
             {
                 AuctionViewModel tmp = new AuctionViewModel() {
@@ -88,7 +89,8 @@ namespace Projekt.Controllers
                     startPrice = auction.startPrice,
                     editable = auction.editable,
                     bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
+                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
+                    ImageData = auction.ImageData
                 };
 
                 if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
@@ -96,12 +98,10 @@ namespace Projekt.Controllers
                 tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
                 model[0].Add(tmp);
             }
-
-            //w perpektywie: nie wszystkie, tylko trwające
-            var list_all = _context.Auctions.ToList();
-            foreach (Auctions auction in list_all)
+            
+            var list_active = _context.Auctions.Where(a => a.state == "active").ToList();
+            foreach (Auctions auction in list_active)
             {
-                Console.WriteLine("test");
                 AuctionViewModel tmp = new AuctionViewModel()
                 {
                     ID = auction.ID,
@@ -111,13 +111,38 @@ namespace Projekt.Controllers
                     state = auction.state,
                     startPrice = auction.startPrice,
                     bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
+                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
+                    ImageData = auction.ImageData
                 };
 
                 if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
                     tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
                 tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
                 model[1].Add(tmp);
+
+            }
+
+            var list_ended = _context.Auctions.Where(a => a.state == "ended").ToList();
+            foreach (Auctions auction in list_ended)
+            {
+                AuctionViewModel tmp = new AuctionViewModel()
+                {
+                    ID = auction.ID,
+                    title = auction.title,
+                    startDate = auction.startDate,
+                    endDate = auction.endDate,
+                    state = auction.state,
+                    startPrice = auction.startPrice,
+                    bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
+                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
+                    ImageData = auction.ImageData,
+                    winner = auction.winner
+                };
+
+                if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
+                    tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
+                
+                model[2].Add(tmp);
 
             }
 
