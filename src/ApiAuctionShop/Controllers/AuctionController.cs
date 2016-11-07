@@ -71,6 +71,7 @@ namespace Projekt.Controllers
         {
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var users = _context.Users;
+            var bids = _context.Bids;
             var list_mine = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
             List<List<AuctionViewModel>> model = new List<List<AuctionViewModel>>();
             List<AuctionViewModel> lineMine = new List<AuctionViewModel>();
@@ -86,13 +87,13 @@ namespace Projekt.Controllers
                     state = auction.state,
                     startPrice = auction.startPrice,
                     editable = auction.editable,
-                    bidCount = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
+                    bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
                     Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
                 };
 
-                if (_context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
-                tmp.highestBid = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
-
+                if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
+                tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
+                tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
                 model[0].Add(tmp);
             }
 
@@ -109,13 +110,13 @@ namespace Projekt.Controllers
                     endDate = auction.endDate,
                     state = auction.state,
                     startPrice = auction.startPrice,
-                    bidCount = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
+                    bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
                     Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
                 };
 
-                if (_context.Bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
-                    tmp.highestBid = _context.Bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
-
+                if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
+                    tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
+                tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
                 model[1].Add(tmp);
 
             }
@@ -390,7 +391,22 @@ namespace Projekt.Controllers
 
             return RedirectToAction("AuctionList", "Auction");
         }
-
+        private TimeLeft calculateTimeLeft(DateTime d)
+        {
+            if (d < DateTime.Now) return new TimeLeft(-1, "minut");
+            if((d - DateTime.Now).Days > 0)
+            {
+                if ((d - DateTime.Now).Days == 1) return new TimeLeft((d - DateTime.Now).Days, "dzień");
+                else return new TimeLeft((d - DateTime.Now).Days, "dni");
+            }
+            else if((d - DateTime.Now).Hours > 0)
+            {
+                if ((d - DateTime.Now).Hours == 1) return new TimeLeft(1, "godzina");
+                else if ((d - DateTime.Now).Hours > 1 && (d - DateTime.Now).Hours < 5) return new TimeLeft((d - DateTime.Now).Hours, "godziny");
+                else return new TimeLeft((d - DateTime.Now).Hours, "godzin");
+            }else return new TimeLeft((d - DateTime.Now).Minutes, "minut");
+            
+        }
         private void DateValidation(Auctions auction)
         {
             DateTime startDate, endDate;

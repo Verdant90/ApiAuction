@@ -11,11 +11,9 @@
     <table id="myAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <td>Lp.</td>
                 <td>Tytuł</td>
-                <td>Data rozpoczęcia</td>
-                <td>Data zakończenia</td>
                 <td>Aktualna cena</td>
+                <td>Data zakończenia</td>
                 <td>Ilość ofert</td>
                 <td>Stan</td>
                 <td></td>
@@ -23,11 +21,9 @@
         </thead>
         <tfoot>
             <tr>
-                <td>Lp.</td>
                 <td>Tytuł</td>
-                <td>Data rozpoczęcia</td>
-                <td>Data zakończenia</td>
                 <td>Aktualna cena</td>
+                <td>Data zakończenia</td>
                 <td>Ilość ofert</td>
                 <td>Stan</td>
                 <td></td>
@@ -37,13 +33,12 @@
             @foreach (var item in Model[0].Select((value, i) => new { i = ++i, value }))
             {
                 <tr>
-                    <td>@item.i.</td>
-                    <td>
-                        @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
+                    <td class="auctionTitle" >
+                        <b>
+                            @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
+                        </b>
                     </td>
-                    <td>@item.value.startDate</td>
-                    <td>@item.value.endDate</td>
-                    <td>
+                    <td class="auctionPrice">
                         @if (item.value.highestBid != 0)
                         {
                             @item.value.highestBid.ToString("C");
@@ -54,6 +49,7 @@
                     }
 
                     </td>
+                    <td>@item.value.endDate <div class="timeLeft">(@item.value.timeLeft.howManyLeft @item.value.timeLeft.timeMeasure do końca)</div></td>
                     <td>
                         @if (item.value.bidCount != 0)
                     {
@@ -64,17 +60,16 @@
                             @: -
                     }
                     </td>
-                    <td><div title="State:  @item.value.state "><img src="@Url.Content("~/images/auction_"+ @item.value.state + ".png")" /></div></td>
+                    <td><div title="State:  @item.value.state "><img src="@Url.Content("~/images/auction_"+ @item.value.state + ".png")" /></div>
+                        
+                    </td>
                     <td>
                         @if ((@item.value.state == "active" && @item.value.editable == true) || @item.value.state == "waiting")
                         {
-                            <input type="button" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
 
-                            <input type="button" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction", new { id = item.value.ID }) + "'");" /> }
-                    else
-                    {
-                            @: -
+                            <input type="button" class="btn btn-xs btn-default" value="Edytuj" onclick="@("window.location.href='" + @Url.Action("Edit", "Auction", new { id = item.value.ID }) + "'");" />
 
+                                <input type="button" class="btn btn-xs btn-default" value="Zakończ" onclick="@("window.location.href='" + @Url.Action("End", "Auction", new { id = item.value.ID }) + "'");" />
                         }
                     </td>
                 </tr>
@@ -91,11 +86,11 @@
     <table id="allAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
         <thead>
             <tr>
-                <td>Lp.</td>
                 <td>Tytuł</td>
                 <td>Data rozpoczęcia</td>
                 <td>Data zakończenia</td>
                 <td>Aktualna cena</td>
+                <td>Do końca pozostało</td>
                 <td>Ilość ofert</td>
                 <td>Stan</td>
                 <td>Autor</td>
@@ -103,11 +98,11 @@
         </thead>
         <tfoot>
             <tr>
-                <td>Lp.</td>
                 <td>Tytuł</td>
                 <td>Data rozpoczęcia</td>
                 <td>Data zakończenia</td>
                 <td>Aktualna cena</td>
+                <td>Do końca pozostało</td>
                 <td>Ilość ofert</td>
                 <td>Stan</td>
                 <td>Autor</td>
@@ -117,7 +112,6 @@
             @foreach (var item in Model[1].Select((value, i) => new { i = ++i, value }))
             {
                 <tr>
-                    <td>@item.i.</td>
                     <td>
                         @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
                     </td>
@@ -134,6 +128,7 @@
                     }
 
                     </td>
+                    <td>@item.value.timeLeft.howManyLeft @item.value.timeLeft.timeMeasure</td>
                     <td>
                         @if (item.value.bidCount != 0)
                     {
@@ -153,23 +148,18 @@
     </table>
 }
 
-
-
-
-
-
-    <link rel="stylesheet" type="text/css" href="~/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" type="text/css" href="~/css/custom.css">
-    <script type="text/javascript" language="javascript" src="~/js/jquery.dataTables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#myAuctions').DataTable({
-                "order": [[0, "asc"]]
-            });
+<link rel="stylesheet" type="text/css" href="~/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="~/css/custom.css">
+<script type="text/javascript" language="javascript" src="~/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#myAuctions').DataTable({
+            "order": [[0, "asc"]]
         });
-        $(document).ready(function () {
-            $('#allAuctions').DataTable({
-                "order": [[0, "asc"]]
-            });
+    });
+    $(document).ready(function () {
+        $('#allAuctions').DataTable({
+            "order": [[0, "asc"]]
         });
-    </script>
+    });
+</script>
