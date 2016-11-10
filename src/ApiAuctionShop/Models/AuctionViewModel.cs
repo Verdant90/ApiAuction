@@ -17,6 +17,18 @@ namespace ApiAuctionShop.Models
         public decimal highestBid { get; set; }
         public Signup Signup { get; set; }
         public decimal startPrice { get; set; }
-
+        public TimeLeft timeLeft { get; set; }
+        public byte[] ImageData { get; set; }
+        public Signup winner { get; set; }
+    }
+    public class TimeLeft
+    {
+        public TimeLeft(int number, string measure)
+        {
+            timeMeasure = measure;
+            howManyLeft = number;
+        }
+        public int howManyLeft { get; set; }
+        public string timeMeasure { get; set; }
     }
 }

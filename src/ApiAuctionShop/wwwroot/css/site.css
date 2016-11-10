@@ -17,6 +17,9 @@ textarea {
     max-width: 280px;
 }
 
+a.lang-inactive {
+    opacity: 0.5;
+}
 /* Carousel */
 .carousel-caption {
     z-index: 10 !important;

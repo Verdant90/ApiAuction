@@ -1,0 +1,64 @@
+﻿@model AdminUsersModel
+@{
+    ViewBag.Title = "Users";
+}
+@section scripts{
+    <link href="~/css/bootstrap-admin-theme.css" rel="stylesheet" asp-file-version="true" />
+
+
+}
+@Html.Partial("_AdminLeftMenu", Model.adminMenuModel)
+<!-- content -->
+
+
+
+
+@if (Model.users.Count > 0)
+{
+    <div class="col-md-10">
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="text-muted bootstrap-admin-box-title">Users</div>
+                </div>
+                <table class="table table-striped grid-table">
+                    <tr>
+                        <td>No.</td>
+                        <td>E-mail</td>
+                        <td>Registration date</td>
+                        <td>Role</td>
+                        <td>Auctions Count</td>
+                        <td>Bids Count</td>
+                        <td>Auctions Won Count</td>
+                        <td>Sold Items Count</td>
+                        <td></td>
+                    </tr>
+
+                    @foreach (var item in Model.users.Select((value, i) => new { i = ++i, value }))
+                    {
+                        <tr>
+                            <td>@item.i.</td>
+                            <td>
+                                @item.value.email
+                            </td>
+                            <td>@item.value.registeredDate</td>
+                            <td>@item.value.role</td>
+                            <td>@item.value.auctionsCount</td>
+                            <td>@item.value.bidsCount</td>
+                            <td>@item.value.auctionsWonCount</td>
+                            <td>@item.value.soldItemsCount</td>
+                            <td>
+                                <button class="btn btn-xs btn-default" >PM</button>
+                                <button class="btn btn-xs btn-default" >Ban</button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+

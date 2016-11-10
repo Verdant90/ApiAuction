@@ -28,15 +28,53 @@ namespace ApiAuctionShop.Migrations
                     b.Property<string>("SignupId")
                         .HasAnnotation("Relational:ColumnName", "SignupId");
 
-                    b.Property<string>("description");
+                    b.Property<string>("author");
 
-                    b.Property<int>("duration");
+                    b.Property<string>("bid");
+
+                    b.Property<decimal>("buyPrice");
+
+                    b.Property<string>("cathegory");
+
+                    b.Property<string>("description")
+                        .IsRequired();
+
+                    b.Property<bool>("editable");
+
+                    b.Property<string>("endDate")
+                        .IsRequired();
 
                     b.Property<int>("price");
 
-                    b.Property<string>("title");
+                    b.Property<string>("startDate")
+                        .IsRequired();
+
+                    b.Property<decimal>("startPrice");
+
+                    b.Property<string>("state");
+
+                    b.Property<string>("title")
+                        .IsRequired();
+
+                    b.Property<string>("winnerID");
 
                     b.HasKey("ID");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.Bid", b =>
+                {
+                    b.Property<int>("bidId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("auctionId");
+
+                    b.Property<decimal>("bid");
+
+                    b.Property<string>("bidAuthor");
+
+                    b.Property<string>("bidDate");
+
+                    b.HasKey("bidId");
                 });
 
             modelBuilder.Entity("ApiAuctionShop.Models.Signup", b =>
@@ -91,6 +129,22 @@ namespace ApiAuctionShop.Migrations
                         .HasAnnotation("Relational:Name", "UserNameIndex");
 
                     b.HasAnnotation("Relational:TableName", "AspNetUsers");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.SiteSetting", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ColorTheme");
+
+                    b.Property<bool>("hasBuyNow");
+
+                    b.Property<int>("photoSize");
+
+                    b.Property<string>("timePeriods");
+
+                    b.HasKey("id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRole", b =>
@@ -180,6 +234,17 @@ namespace ApiAuctionShop.Migrations
                     b.HasOne("ApiAuctionShop.Models.Signup")
                         .WithMany()
                         .HasForeignKey("SignupId");
+
+                    b.HasOne("ApiAuctionShop.Models.Signup")
+                        .WithMany()
+                        .HasForeignKey("winnerID");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.Bid", b =>
+                {
+                    b.HasOne("ApiAuctionShop.Models.Auctions")
+                        .WithMany()
+                        .HasForeignKey("auctionId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRoleClaim<string>", b =>

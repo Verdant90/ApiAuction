@@ -1,0 +1,41 @@
+﻿<!-- left, vertical navbar -->
+@using ApiAuctionShop.Helpers
+
+@section scripts{
+<script type="text/javascript" src="~/js/twitter-bootstrap-hover-dropdown.js"></script>
+<script type="text/javascript" src="~/js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="~/js/modernizr-2.6.2.js"></script>
+<script type="text/javascript" src="~/js/bootstrap.js"></script>
+
+}
+
+@model AdminMenuModel
+
+<div class="col-md-2 bootstrap-admin-col-left">
+    <ul class="nav navbar-collapse collapse bootstrap-admin-navbar-side">
+        <li><a asp-controller="AdminPanel" asp-action="Index"><i class="glyphicon glyphicon-chevron-right"></i>O projekcie</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Auctions"><i class="glyphicon glyphicon-chevron-right"></i>Aukcje</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Users"><i class="glyphicon glyphicon-chevron-right"></i>Uzytkownicy</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Statistics"><i class="glyphicon glyphicon-chevron-right"></i>Statystyki</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Settings"><i class="glyphicon glyphicon-chevron-right"></i>Ustawienia</a></li>
+        <li>
+            <a>Liczby:<span class="badge pull-right"></span></a>
+        </li>
+        <li>
+            <a href="#"><span class="badge pull-right">@Model.auctionsCount</span> Aukcje</a>
+        </li>
+        <li>
+            <a href="#"><span class="badge pull-right">@Model.activeAuctionCount</span> Aktywne aukcje</a>
+        </li>
+        <li>
+            <a href="#"><span class="badge pull-right">@Model.userCount</span> Uzytkownicy</a>
+        </li>
+        <li>
+            <a href="#"><span class="badge pull-right">@Model.bidsCount</span> Oferty kupna</a>
+        </li>
+        <li>
+            <a href="#"><span class="badge pull-right">@Model.auctionsWon</span> Sprzedaze</a>
+        </li>
+    </ul>
+</div>
+
