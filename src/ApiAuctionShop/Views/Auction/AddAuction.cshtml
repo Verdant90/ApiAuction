@@ -101,11 +101,11 @@
     function NowCheckBoxClicked () {
 
         var state = $('input[name="now"]').is(':checked');
-        $sd = $('input[name="startDate"]');
+        $sd = $('input[name="auction.startDate"]');
         if (state)
-            document.getElementById('startDate').value = "NOW"; // trzeba ustawić cokolwiek żeby walidacja 'isRequired' przeszła
+            document.getElementById('auction_startDate').value = "NOW"; // trzeba ustawić cokolwiek żeby walidacja 'isRequired' przeszła
         else
-            document.getElementById('startDate').value = "";
+            document.getElementById('auction_startDate').value = "";
         $sd.prop("readonly", state);
     };
 </script>
@@ -126,11 +126,11 @@
 <link href="~/bootstrap-datetimepicker-master/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 <script>
     $(document).ready(function(){
-      $('input[name="startDate"]').datetimepicker({
+      $('input[name="auction.startDate"]').datetimepicker({
           showClose: true,
           format: 'YYYY-MM-DD HH:mm:ss'
       });
-      $('input[name="endDate"]').datetimepicker({
+      $('input[name="auction.endDate"]').datetimepicker({
           showClose: true,
           format: 'YYYY-MM-DD HH:mm:ss'
       });
