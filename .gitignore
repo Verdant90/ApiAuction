@@ -250,3 +250,5 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+/src/ApiAuctionShop/wwwroot/images/koz.JPG
+/src/ApiAuctionShop/wwwroot/images/ogr.jpg

@@ -18,7 +18,7 @@
         <dd>
             @if (Model.auctionToSend.imageFiles != null && Model.auctionToSend.imageFiles.Count > 0)
             {
-                // sparsowanie œcie¿ki
+                // sparsowanie ï¿½cieï¿½ki
                 String path = Model.auctionToSend.imageFiles.ElementAt(0).ImagePath;
                 int index = path.IndexOf(@"\images");
                 path = path.Substring(index);
@@ -36,7 +36,7 @@
                 @foreach (var image in Model.auctionToSend.imageFiles)
                 {
 
-                    // sparsowanie œcie¿ki
+                    // sparsowanie ï¿½cieï¿½ki
                     String path = image.ImagePath;
                     int index = path.IndexOf(@"\images");
                     path = path.Substring(index);
@@ -111,7 +111,7 @@
                             @foreach (var image in Model.auctionToSend.imageFiles)
                             {
 
-                                // sparsowanie œcie¿ki
+                                // sparsowanie ï¿½cieï¿½ki
                                 String path = image.ImagePath;
                                 int index = path.IndexOf(@"\images");
                                 path = path.Substring(index);
@@ -207,7 +207,7 @@
 
 <script>
 
-    // ustawienie slajdu Carousel na obrazek, który obecnie jest obrazkiemm g³ównym
+    // ustawienie slajdu Carousel na obrazek, ktï¿½ry obecnie jest obrazkiemm gï¿½ï¿½wnym
     function setCarouselActiveItem()
     {
         var currentActive = jQuery('.carousel-inner').find('.active');
@@ -218,7 +218,7 @@
         path = path.substring(index - 1);
         path = path.replace(/\//g, '\\');
 
-        // szukanie w Carousel slajdu, który ma taki sam url co obrazek g³ówny
+        // szukanie w Carousel slajdu, ktï¿½ry ma taki sam url co obrazek gï¿½ï¿½wny
         $('.carousel-inner .item').each(function (index)
         {
             if ($(this).find('img').attr('src') == path)
