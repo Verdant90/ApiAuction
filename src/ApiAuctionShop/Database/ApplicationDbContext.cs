@@ -15,6 +15,7 @@ namespace ApiAuctionShop.Database
         public DbSet<SiteSetting> Settings { get; set; }
         public DbSet<Auctions> Auctions { get; set; }
         public DbSet<Bid> Bids { get; set; }
+        public DbSet<ImageFile> ImageFiles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Auctions>()
@@ -28,6 +29,12 @@ namespace ApiAuctionShop.Database
             modelBuilder.Entity<Bid>()
               .HasOne(p => p.Auction)
               .WithMany(b => b.bids);
+
+
+            modelBuilder.Entity<ImageFile>()
+                .HasOne(p => p.Auction)
+                .WithMany(i => i.imageFiles);
+
 
             base.OnModelCreating(modelBuilder);
         }

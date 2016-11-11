@@ -5,6 +5,7 @@ using ImageProcessor;
 using ImageProcessor.Imaging;
 using ImageProcessor.Imaging.Formats;
 using Microsoft.AspNet.Authorization;
+using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -23,13 +25,14 @@ namespace Projekt.Controllers
     {
         public ApplicationDbContext _context;
         private readonly UserManager<Signup> _userManager;
-
+        private readonly IHostingEnvironment _environment;
         public Dictionary<string, Dictionary<string,string>> dict;
-        public AuctionController(
+        public AuctionController(IHostingEnvironment environment,
             UserManager<Signup> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
+            _environment = environment;
             string xmlString = System.IO.File.ReadAllText(@"Resources/translations.xml");
             var document = System.Xml.Linq.XDocument.Parse(xmlString);
             var settingsList = (from element in document.Root.Elements("word")
@@ -52,6 +55,7 @@ namespace Projekt.Controllers
             //var bids = _context.Bids.Count(i => i.auctionId == id);
             var bids = _context.Bids.Where(i => i.auctionId == id).ToList().OrderByDescending(o => o.bid).ToList();
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == id);
+            var images = _context.ImageFiles.Where(i => i.AuctionId == id).ToList(); // lazy loading: wystarczy się odwołać do ImagesFiles żeby zostały załadowane do aukcji
             var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             BiddingViewModel bvm = new BiddingViewModel
             {
@@ -161,11 +165,15 @@ namespace Projekt.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, bool? now, IFormFile file = null)
+        public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, bool? now, ICollection<IFormFile> files = null)
         {
             TryValidateModel(acvm.auction);
-            DateValidation(acvm.auction);
+            if(now == null)
+                DateValidation(acvm.auction);
+            else
+                DateValidation(acvm.auction, true);
             PriceValidation(acvm.auction);
+
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Where(x => x.Value.Errors.Any())
@@ -189,36 +197,59 @@ namespace Projekt.Controllers
                 title = acvm.auction.title,
                 description = acvm.auction.description,
                 startDate = sqlFormattedDate,
+
                 endDate = DateTime.Parse(acvm.auction.endDate).ToString("yyyy-MM-dd HH:mm:ss"),
                 startPrice = acvm.auction.startPrice,
                 buyPrice = acvm.auction.buyPrice,
                 author = acvm.auction.author,
                 editable = acvm.auction.editable
-            //currentPrice = (decimal)auction.price,
-        };
-            if (file != null)
-            {
-                if (file.ContentType.Contains("image"))
-                {
-                    using (var fileStream = file.OpenReadStream())
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            using (var imageFactory = new ImageFactory())
-                            {
-                                imageFactory.FixGamma = false;
-                                imageFactory.Load(fileStream).Resize(new ResizeLayer(new Size(400, 400), ResizeMode.Stretch))
-                                .Format(new JpegFormat { })
-                                .Quality(100)
-                                .Save(ms);
-                            }
 
-                            var fileBytes = ms.ToArray();
-                            _auction.ImageData = fileBytes;
+            //currentPrice = (decimal)auction.price,
+            };
+            foreach(var file in files)
+            { 
+                if (file != null)
+                {
+                    if (file.ContentType.Contains("image"))
+                    {
+                        using (var fileStream = file.OpenReadStream())
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                using (var imageFactory = new ImageFactory())
+                                {
+                                    imageFactory.FixGamma = false;
+                                    imageFactory.Load(fileStream).Resize(new ResizeLayer(new Size(400, 400), ResizeMode.Stretch))
+                                    .Format(new JpegFormat { })
+                                    .Quality(100)
+                                    .Save(ms);
+                                }
+
+                                var fileBytes = ms.ToArray();
+                                _auction.ImageData = fileBytes;
+
+                                var uploads = Path.Combine(_environment.WebRootPath, "images");
+                                Directory.CreateDirectory(uploads);
+                                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                                var fullpath = Path.Combine(uploads, fileName);
+                                using (var fs = new FileStream(fullpath, FileMode.Create))
+                                {
+
+                                    await fileStream.CopyToAsync(fs);
+                                }
+
+                                var img = new ImageFile()
+                                {
+                                    ImagePath = fullpath,
+                                    Auction = _auction
+                                };
+                                _context.ImageFiles.Add(img);
+                            }
                         }
                     }
-                 }
+                }
             }
+            
             if (DateTime.Parse(_auction.startDate) <= DateTime.Now) _auction.state = "active";
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
 
@@ -416,6 +447,7 @@ namespace Projekt.Controllers
 
             return RedirectToAction("AuctionList", "Auction");
         }
+
         private TimeLeft calculateTimeLeft(DateTime d)
         {
             if (d < DateTime.Now) return new TimeLeft(-1, "minut");
@@ -432,14 +464,15 @@ namespace Projekt.Controllers
             }else return new TimeLeft((d - DateTime.Now).Minutes, "minut");
             
         }
-        private void DateValidation(Auctions auction)
+        private void DateValidation(Auctions auction, bool ignoreStartDate = false)
         {
             DateTime startDate, endDate;
             if (!DateTime.TryParse(auction.startDate, out startDate))
             {
-                ModelState.AddModelError("startDate", "Wrong start date format!");
+                if(!ignoreStartDate)
+                    ModelState.AddModelError("startDate", "Wrong start date format!");
             }
-            else if (startDate.CompareTo(DateTime.Now) < 1)
+            else if (!ignoreStartDate && startDate.CompareTo(DateTime.Now) < 1)
             {
 
                 ModelState.AddModelError("startDate", "Start date must be later than now!");
@@ -452,7 +485,7 @@ namespace Projekt.Controllers
             {
                 if (endDate.CompareTo(DateTime.Now) < 1)
                     ModelState.AddModelError("endDate", "End date must be later than now!");
-                if (endDate.CompareTo(startDate) < 1)
+                if (!ignoreStartDate && endDate.CompareTo(startDate) < 1)
                     ModelState.AddModelError("endDate", "End date must be later than the start date!");
             }
         }

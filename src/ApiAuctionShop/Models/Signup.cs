@@ -79,5 +79,7 @@ namespace ApiAuctionShop.Models
         public string bid { get; set; } = "";
 
         public virtual ICollection<Bid> bids { get; set; }
+
+        public virtual ICollection<ImageFile> imageFiles { get; set; }
     }
 }
