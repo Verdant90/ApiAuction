@@ -148,7 +148,6 @@ namespace ApiAuctionShop.Controllers
                 SignupViewModel tmp = new SignupViewModel()
                 {
                     email = signup.Email,
-                    registeredDate = "-",
                     role = roles.Where(role => role.Id == _context.UserRoles.Where(ur => ur.UserId == signup.Id).FirstOrDefault().RoleId).FirstOrDefault().Name,
                     auctionsCount = _context.Auctions.Where(d => d.SignupId == signup.Id).Count(),
                     bidsCount = _context.Bids.Where(d => d.bidAuthor == signup.Email).Count(),
