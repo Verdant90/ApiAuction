@@ -18,7 +18,7 @@ namespace ApiAuctionShop.Models
         public Signup Signup { get; set; }
         public decimal startPrice { get; set; }
         public TimeLeft timeLeft { get; set; }
-        public byte[] ImageData { get; set; }
+        public String ImageData { get; set; }
         public Signup winner { get; set; }
     }
     public class TimeLeft
