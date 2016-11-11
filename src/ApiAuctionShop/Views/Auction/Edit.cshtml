@@ -73,10 +73,10 @@
                     @Html.CheckBoxFor(model => model.auction.editable)
                 </div>
             </div>
-            @if (Model.auction.ImageData != null)
+            @*@if (Model.auction.ImageData != null)
             {
                 <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.auction.ImageData))" />
-            }
+            }*@
         }
         else if(Model.auction.state == "active")
         {
@@ -113,14 +113,14 @@
             </div>
 
         }
-        @if (Model.auction.state == "waiting")
+        @*@if (Model.auction.state == "waiting")
         {
         <div class="form-group">
             <div class="col-md-10">
                 <input type="file" name="file" accept="image/*" />
             </div>
         </div>
-        }
+        }*@
         @if ((Model.auction.state != "active" || Model.auction.editable != false) && (Model.auction.state != "ended"))
         {
             

@@ -37,10 +37,6 @@ namespace ApiAuctionShop.Models
         public string winnerID { get; set; }
         public virtual Signup winner { get; set; }
 
-        //w perspektywie: wiecej zdjec
-        public byte[] ImageData { get; set; }
-        public string ImageMimeType { get; set; }
-
         [Required(ErrorMessage = "The description can't be empty!")]
         public string description { get; set; }
 

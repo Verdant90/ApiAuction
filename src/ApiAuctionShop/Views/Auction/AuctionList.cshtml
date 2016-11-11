@@ -45,7 +45,11 @@
                                     <div class="col-md-3">
                                         @if (item.value.ImageData != null)
                                         {
-                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.value.ImageData))" />
+                                            // sparsowanie ścieżki
+                                            string path = item.value.ImageData;
+                                            int index = path.IndexOf(@"\images");
+                                            path = path.Substring(index);
+                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format(path)" />
                                         }
                                         else
                                         {
@@ -154,7 +158,12 @@
                                     <div class="col-md-3">
                                         @if (item.value.ImageData != null)
                                         {
-                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.value.ImageData))" />
+                                            // sparsowanie ścieżki
+                                            string path = item.value.ImageData;
+                                            int index = path.IndexOf(@"\images");
+                                            path = path.Substring(index);
+                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format(path)" />
+                                            @*<img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.value.ImageData))" />*@
                                         }
                                         else
                                         {
@@ -253,7 +262,12 @@
                                     <div class="col-md-3">
                                         @if (item.value.ImageData != null)
                                         {
-                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.value.ImageData))" />
+                                            // sparsowanie ścieżki
+                                            string path = item.value.ImageData;
+                                            int index = path.IndexOf(@"\images");
+                                            path = path.Substring(index);
+                                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format(path)" />
+                                            @*<img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.value.ImageData))" />*@
                                         }
                                         else
                                         {

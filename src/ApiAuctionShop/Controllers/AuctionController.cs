@@ -94,8 +94,11 @@ namespace Projekt.Controllers
                     editable = auction.editable,
                     bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
                     Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
-                    ImageData = auction.ImageData
+                    
                 };
+                _context.ImageFiles.Where(i => i.AuctionId == auction.ID).ToList(); // lazy loading: wystarczy się odwołać do ImagesFiles żeby zostały załadowane do aukcji
+                if (auction.imageFiles != null)
+                    tmp.ImageData = auction.imageFiles.ElementAt(0).ImagePath;
 
                 if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
                 tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
@@ -115,9 +118,11 @@ namespace Projekt.Controllers
                     state = auction.state,
                     startPrice = auction.startPrice,
                     bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
-                    ImageData = auction.ImageData
+                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
                 };
+
+                if (auction.imageFiles != null)
+                    tmp.ImageData = auction.imageFiles.ElementAt(0).ImagePath;
 
                 if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
                     tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
@@ -139,9 +144,11 @@ namespace Projekt.Controllers
                     startPrice = auction.startPrice,
                     bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
                     Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
-                    ImageData = auction.ImageData,
                     winner = auction.winner
                 };
+
+                if (auction.imageFiles != null)
+                    tmp.ImageData = auction.imageFiles.ElementAt(0).ImagePath;
 
                 if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
                     tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
@@ -214,37 +221,24 @@ namespace Projekt.Controllers
                     {
                         using (var fileStream = file.OpenReadStream())
                         {
-                            using (var ms = new MemoryStream())
+
+                            var uploads = Path.Combine(_environment.WebRootPath, "images");
+                            Directory.CreateDirectory(uploads);
+                            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                            var fullpath = Path.Combine(uploads, fileName);
+                            using (var fs = new FileStream(fullpath, FileMode.Create))
                             {
-                                using (var imageFactory = new ImageFactory())
-                                {
-                                    imageFactory.FixGamma = false;
-                                    imageFactory.Load(fileStream).Resize(new ResizeLayer(new Size(400, 400), ResizeMode.Stretch))
-                                    .Format(new JpegFormat { })
-                                    .Quality(100)
-                                    .Save(ms);
-                                }
 
-                                var fileBytes = ms.ToArray();
-                                _auction.ImageData = fileBytes;
-
-                                var uploads = Path.Combine(_environment.WebRootPath, "images");
-                                Directory.CreateDirectory(uploads);
-                                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                                var fullpath = Path.Combine(uploads, fileName);
-                                using (var fs = new FileStream(fullpath, FileMode.Create))
-                                {
-
-                                    await fileStream.CopyToAsync(fs);
-                                }
-
-                                var img = new ImageFile()
-                                {
-                                    ImagePath = fullpath,
-                                    Auction = _auction
-                                };
-                                _context.ImageFiles.Add(img);
+                                await fileStream.CopyToAsync(fs);
                             }
+
+                            var img = new ImageFile()
+                            {
+                                ImagePath = fullpath,
+                                Auction = _auction
+                            };
+                            _context.ImageFiles.Add(img);
+                            
                         }
                     }
                 }
@@ -345,7 +339,8 @@ namespace Projekt.Controllers
                                 }
 
                                 var fileBytes = ms.ToArray();
-                                tmp.ImageData = fileBytes;
+                                // błąd po dodaniu wielu zdjęć i usunięciu 
+                                //tmp.ImageData = fileBytes;
                             }
                         }
                     }

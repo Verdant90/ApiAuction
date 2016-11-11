@@ -61,8 +61,8 @@ namespace Projekt.Controllers
                 {
                     description = el.description,
                     ID = el.ID,
-                    ImageData = el.ImageData,
-                    ImageMimeType = el.ImageMimeType,
+                    //ImageData = el.imageFiles.ElementAt(0).ImagePath,
+                    //ImageMimeType = el.ImageMimeType,
                     price = el.price,
                     title = el.title
                 };
@@ -97,7 +97,7 @@ namespace Projekt.Controllers
                     title = value.title,
                     description = value.description,
                     price = value.price,
-                    ImageData = fileBytes
+                    //ImageData = fileBytes
                 };
 
                 var user = _userManager.Users.First(d => d.Email == email);
