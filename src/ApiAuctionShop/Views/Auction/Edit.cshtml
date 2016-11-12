@@ -73,6 +73,34 @@
                     @Html.CheckBoxFor(model => model.auction.editable)
                 </div>
             </div>
+
+            @if (Model.auction.imageFiles != null && Model.auction.imageFiles.Count > 0)
+            {
+                <div class="row auctionTitleRow">
+                    <div class="col-md-3">
+                        @foreach (ImageFile image in Model.auction.imageFiles)
+                        {
+                            // sparsowanie ścieżki
+                            string path = image.ImagePath;
+                            int index = path.IndexOf(@"\images");
+                            path = path.Substring(index);
+                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format(path)" />
+                            
+                            <input type="file" name="file" class="file-loading" accept="image/*"/>
+                            <input type="submit" class="btn btn-xs btn-default" value="Zapisz zmiany" formaction=@Url.Action("EditImage", "Auction", new { id = image.ID })/>
+                            <input type="button" class="btn btn-xs btn-default" value="Usuń" onclick="@("window.location.href='" + @Url.Action("DeleteImage", "Auction", new { id = image.ID }) + "'");" />
+
+                        }
+                    </div>
+                    @if (Model.auction.imageFiles.Count < 4)
+                    {
+                        <div class="col-md-3">
+                            <input type="file" name="file" class="file-loading" accept="image/*" />
+                            <input type="submit" class="btn btn-xs btn-default" value="Dodaj zdjęcie" formaction=@Url.Action("AddImage", "Auction") />
+                        </div>
+                    }
+                </div>
+            }
             @*@if (Model.auction.ImageData != null)
             {
                 <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.auction.ImageData))" />
