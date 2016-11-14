@@ -1,5 +1,6 @@
 @model BiddingViewModel
 @using Projekt.Controllers;
+@using System.Security.Claims; 
 
 <div class="auctionPage">
     <header class="page-header">
@@ -92,31 +93,46 @@
                                         }
                                     </li>
                                 </ul>
-                                @if (Model.auctionToSend.state == "active")
+                                @if (User.GetUserName() == Model.auctionToSend.author)
                                 {
-                                    @using (Html.BeginForm("CreateBid", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    <b>Jako autor tej aukcji nie możesz licytować.</b>
+
+                                }
+                                else
+                                {
+                                    if (!User.IsInRole("Admin"))
                                     {
-                                        <div class="col-md-9">
-                                            @Html.AntiForgeryToken()
-                                            @Html.HiddenFor(model => model.auctionToSend.ID)
-                                            <div class="col-md-6 col-md-offset-3">
-                                                <input type="text" class="form-control" data-val="true" data-val-number="The field bid must be a number." data-val-required="Pole bid jest wymagane." id="bid" name="bid" value="0,00">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <button type="submit" class="btn btn-success">Licytuj! </button>
-                                            </div>
-                                        </div>
-                                    }
-                                    if (Model.hasBuyNowGlobal && Model.auctionToSend.buyPrice != null)
-                                    {
-                                        @using (Html.BeginForm("BuyNow", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                        @if (Model.auctionToSend.state == "active")
                                         {
-                                            @Html.AntiForgeryToken()
-                                            @Html.HiddenFor(model => model.auctionToSend.ID)
-                                            <div class="col-md-3 no-padding">
-                                                <button type="submit" class="btn btn-warning">Kup teraz za @Model.auctionToSend.buyPrice.ToString() zł! </button>
-                                            </div>
+                                            @using (Html.BeginForm("CreateBid", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                            {
+                                                <div class="col-md-9">
+                                                    @Html.AntiForgeryToken()
+                                                    @Html.HiddenFor(model => model.auctionToSend.ID)
+                                                    <div class="col-md-6 col-md-offset-3">
+                                                        <input type="text" class="form-control" data-val="true" data-val-number="The field bid must be a number." data-val-required="Pole bid jest wymagane." id="bid" name="bid" value="0,00">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <button type="submit" class="btn btn-success">Licytuj! </button>
+                                                    </div>
+                                                </div>
+                                            }
+                                            if (Model.hasBuyNowGlobal && Model.auctionToSend.buyPrice != null)
+                                            {
+                                                @using (Html.BeginForm("BuyNow", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                                {
+                                                    @Html.AntiForgeryToken()
+                                                    @Html.HiddenFor(model => model.auctionToSend.ID)
+                                                    <div class="col-md-3 no-padding">
+                                                        <button type="submit" class="btn btn-warning">Kup teraz za @Model.auctionToSend.buyPrice.ToString() zł! </button>
+                                                    </div>
+                                                }
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        <b>Jako administrator nie możesz licytować w aukcjach.</b>
                                     }
                                 }
                             </div>
