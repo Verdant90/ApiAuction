@@ -271,6 +271,7 @@ namespace Projekt.Controllers
             Auctions auctionToEdit = _context.Auctions.First(i => i.ID == id);
             var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             acvm.hasBuyNowGlobal = settings.hasBuyNow;
+            _context.ImageFiles.Where(i => i.AuctionId == acvm.auction.ID).ToList(); 
             if (auctionToEdit == null)
             {
                 return HttpNotFound();
@@ -298,6 +299,7 @@ namespace Projekt.Controllers
                 Auctions auctionToEdit = _context.Auctions.First(i => i.ID == acvm.auction.ID);
                 var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
                 acvm.hasBuyNowGlobal = settings.hasBuyNow;
+                _context.ImageFiles.Where(i => i.AuctionId == acvm.auction.ID).ToList();
                 return View(acvm);
             }
             else
@@ -354,7 +356,75 @@ namespace Projekt.Controllers
             }
             return RedirectToAction("AuctionList", "Auction");
         }
+        public async Task<ActionResult> AddImage(AuctionCreateViewModel acvm, IFormFile file = null)
+        {
 
+            var tmp = _context.Auctions.FirstOrDefault(i => i.ID == acvm.auction.ID);
+            if (file != null)
+            {
+                if (file.ContentType.Contains("image"))
+                {
+                    using (var fileStream = file.OpenReadStream())
+                    {
+
+                        var uploads = Path.Combine(_environment.WebRootPath, "images");
+                        Directory.CreateDirectory(uploads);
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        var fullpath = Path.Combine(uploads, fileName);
+                        using (var fs = new FileStream(fullpath, FileMode.Create))
+                        {
+
+                            await fileStream.CopyToAsync(fs);
+                        }
+
+                        var img = new ImageFile()
+                        {
+                            ImagePath = fullpath,
+                            Auction = tmp
+                        };
+                        _context.ImageFiles.Add(img);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+            return RedirectToAction("AuctionList", "Auction");
+        }
+        public async Task<ActionResult> EditImage(int id, IFormFile file = null)
+        {
+            var imageToChange = _context.ImageFiles.SingleOrDefault(i => i.ID == id);
+            if (file != null)
+            {
+                if (file.ContentType.Contains("image"))
+                {
+                    using (var fileStream = file.OpenReadStream())
+                    {
+
+                        var uploads = Path.Combine(_environment.WebRootPath, "images");
+                        Directory.CreateDirectory(uploads);
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        var fullpath = Path.Combine(uploads, fileName);
+                        using (var fs = new FileStream(fullpath, FileMode.Create))
+                        {
+
+                            await fileStream.CopyToAsync(fs);
+                        }
+
+                        imageToChange.ImagePath = fullpath;
+                        _context.SaveChanges();
+
+
+                    }
+                }
+            }
+            return RedirectToAction("AuctionList", "Auction");
+        }
+        public async Task<ActionResult> DeleteImage(int id)
+        {
+            var imageToRemove = _context.ImageFiles.SingleOrDefault(i => i.ID == id);
+            _context.ImageFiles.Remove(imageToRemove);
+            _context.SaveChanges();
+            return RedirectToAction("AuctionList", "Auction");
+        }
 
         [Authorize]
         [HttpPost]
