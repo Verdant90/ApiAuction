@@ -94,10 +94,9 @@
                     </div>
                     @if (Model.auction.imageFiles.Count < 4)
                     {
-                        <div class="col-md-3">
-                            <input type="file" name="file" class="file-loading" accept="image/*" />
-                            <input type="submit" class="btn btn-xs btn-default" value="Dodaj zdjęcie" formaction=@Url.Action("AddImage", "Auction") />
-                        </div>
+                        <input type="file" name="file" class="file-loading" accept="image/*" />
+                        <input type="submit" class="btn btn-xs btn-default" value="Dodaj zdjęcie" formaction=@Url.Action("AddImage", "Auction") />
+
                     }
                 </div>
             }
