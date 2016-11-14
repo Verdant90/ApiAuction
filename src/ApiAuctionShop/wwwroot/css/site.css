@@ -35,3 +35,15 @@ a.lang-inactive {
         z-index: 10 !important;
     }
 }
+
+.no-padding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+
+.titleOfAuction{
+    font-size: 130%;
+}
+.smaller{
+    font-size: 70%; 
+}

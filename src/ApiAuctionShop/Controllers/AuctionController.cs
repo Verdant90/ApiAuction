@@ -55,6 +55,8 @@ namespace Projekt.Controllers
             //var bids = _context.Bids.Count(i => i.auctionId == id);
             var bids = _context.Bids.Where(i => i.auctionId == id).ToList().OrderByDescending(o => o.bid).ToList();
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == id);
+            var author = _context.Users.FirstOrDefault(user => user.Id == tmp.SignupId).Email;
+            tmp.author = author;
             var images = _context.ImageFiles.Where(i => i.AuctionId == id).ToList(); // lazy loading: wystarczy się odwołać do ImagesFiles żeby zostały załadowane do aukcji
             var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             BiddingViewModel bvm = new BiddingViewModel
