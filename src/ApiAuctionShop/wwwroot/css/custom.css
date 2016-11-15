@@ -73,3 +73,7 @@
     min-height: 100%;
     min-width: 100%;
 }
+
+.star-inactive{
+    opacity: 0.3;
+}

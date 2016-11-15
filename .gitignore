@@ -250,4 +250,10 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
-/src/ApiAuctionShop/wwwroot/images/
+/src/ApiAuctionShop/wwwroot/images/usb-freezer.jpg
+/src/ApiAuctionShop/wwwroot/images/sushi-pendrive2.jpg
+/src/ApiAuctionShop/wwwroot/images/sushi-pendrive.jpg
+/src/ApiAuctionShop/wwwroot/images/ogr.jpg
+/src/ApiAuctionShop/wwwroot/images/koz.JPG
+/src/ApiAuctionShop/wwwroot/images/keyboardtoprogram.jpg
+/src/ApiAuctionShop/wwwroot/images/key2.jpg
