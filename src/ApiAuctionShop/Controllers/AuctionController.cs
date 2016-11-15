@@ -78,9 +78,9 @@ namespace Projekt.Controllers
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var users = _context.Users;
             var bids = _context.Bids;
+            var imageFiles = _context.ImageFiles.ToList();
             var list_mine = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
             List<List<AuctionViewModel>> model = new List<List<AuctionViewModel>>();
-            List<AuctionViewModel> lineMine = new List<AuctionViewModel>();
             model.Add(new List<AuctionViewModel>()); //my auctions
             model.Add(new List<AuctionViewModel>()); //active auctions 
             model.Add(new List<AuctionViewModel>()); //archived auctions 
@@ -122,7 +122,7 @@ namespace Projekt.Controllers
                     bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
                     Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
                 };
-
+                _context.ImageFiles.Where(i => i.AuctionId == auction.ID).ToList();
                 if (auction.imageFiles != null)
                     tmp.ImageData = auction.imageFiles.ElementAt(0).ImagePath;
 
@@ -148,7 +148,7 @@ namespace Projekt.Controllers
                     Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
                     winner = auction.winner
                 };
-
+                _context.ImageFiles.Where(i => i.AuctionId == auction.ID).ToList();
                 if (auction.imageFiles != null)
                     tmp.ImageData = auction.imageFiles.ElementAt(0).ImagePath;
 
