@@ -78,7 +78,6 @@ namespace Projekt.Controllers
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var users = _context.Users;
             var bids = _context.Bids;
-            var imageFiles = _context.ImageFiles.ToList();
             var list_mine = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
             List<List<AuctionViewModel>> model = new List<List<AuctionViewModel>>();
             model.Add(new List<AuctionViewModel>()); //my auctions
