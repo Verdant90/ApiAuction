@@ -31,7 +31,9 @@
     "Sendgrid": "6.3.4",
     "Microsoft.AspNet.WebSockets.Server": "1.0.0-rc1-final",
     "ImageProcessor": "2.4.1",
-    "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4"
+    "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4",
+    "Microsoft.AspNet.Identity": "3.0.0-rc1-final",
+    "Newtonsoft.Json": "9.0.1"
   },
 
     "commands": {

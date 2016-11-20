@@ -220,7 +220,7 @@
                                 }
                             </td>
                             <td>
-                                <a style="cursor: pointer;"><img onclick="changeImage(this.id)" id="star-@item.i" class ="star-inactive" src="~/images/star-inactive.png" title="Obserwuj" /></a>
+                                <a  style="cursor: pointer;" onclick="sendData('@item.value.ID')"><img onclick="changeImage(this.id)" id="star-@item.i" class ="star-inactive" src="~/images/star-inactive.png" title="Obserwuj" /></a>
                             </td>
 
                         </tr>
@@ -370,7 +370,7 @@
     //        "order": [[2, "asc"]]
     //    });
     //});
-    
+
     function changeImage(id) {
         var target = document.getElementById(id);
         if (target.src == location.origin + "/images/star-inactive.png") {
@@ -384,16 +384,39 @@
             $('#' + target.id).addClass('star-inactive');
             $('#' + target.id).removeClass('star-active');
         }
-        //if (document.getElementById("star").src == location.origin + "/images/star-inactive.png") {
-        //    $("#star").attr("src", "../../images/star-active.png");
-        //    $("#star").addClass('star-active');
-        //    $("#star").removeClass('star-inactive');
 
-        //}
-        //else {
-        //    $("#star").attr("src", "../../images/star-inactive.png");
-        //    $("#star").addClass('star-inactive');
-        //    $("#star").removeClass('star-active');
-        //}
+    }
+    var handle201 = function (data, textStatus, jqXHR) {
+        //alert('201'); // success codes have the success signature
+        // test it if you are in doubt:
+        console.log(data);
+        console.log(textStatus);
+    };
+    var handle409 = function (data, textStatus, jqXHR) {
+        //alert('201'); // success codes have the success signature
+        // test it if you are in doubt:
+        console.log(data);
+        console.log(textStatus);
+    };
+   function sendData(idAuction) {
+        //alert(idAuction);
+        var AuctionsUsersWatching = {
+            AuctionId: idAuction,
+            UserId: ''
+        };
+
+
+        $.ajax({
+            url: '/api/APIAuctionsUsersWatchings',
+            type: 'POST',
+            data: JSON.stringify(AuctionsUsersWatching),
+            dataType: "json",
+            contentType: 'application/json',
+            statusCode: {
+                201: handle201,
+                409: handle409
+            }
+        });
+
     }
 </script>

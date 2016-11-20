@@ -24,7 +24,9 @@ namespace ApiAuctionShop.Models
 
         public virtual ICollection<Auctions> AuctionsWon { get; set; }
 
-       
+        public List<AuctionsUsersWatching> AuctionsUsersWatching { get; set; }
+
+
     }
 
     public class Auctions
@@ -77,5 +79,16 @@ namespace ApiAuctionShop.Models
         public virtual ICollection<Bid> bids { get; set; }
 
         public virtual ICollection<ImageFile> imageFiles { get; set; }
+
+        public List<AuctionsUsersWatching> AuctionsUsersWatching { get; set; }
+    }
+
+    public class AuctionsUsersWatching
+    {
+        public int AuctionId { get; set; }
+        public Auctions Auction { get; set; }
+
+        public string UserId { get; set; }
+        public Signup User { get; set; }
     }
 }

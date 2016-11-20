@@ -9,6 +9,7 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -512,7 +513,8 @@ namespace Projekt.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("AuctionList", "Auction");
-        }
+        }   
+        
 
         private TimeLeft calculateTimeLeft(DateTime d)
         {

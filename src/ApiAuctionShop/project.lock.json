@@ -2015,7 +2015,7 @@
           "lib/dnx451/Microsoft.VisualStudio.Web.BrowserLink.Loader.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1-beta1": {
+      "Newtonsoft.Json/9.0.1": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -4286,7 +4286,7 @@
           "lib/dnx451/Microsoft.VisualStudio.Web.BrowserLink.Loader.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1-beta1": {
+      "Newtonsoft.Json/9.0.1": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -6557,7 +6557,7 @@
           "lib/dnx451/Microsoft.VisualStudio.Web.BrowserLink.Loader.dll": {}
         }
       },
-      "Newtonsoft.Json/7.0.1-beta1": {
+      "Newtonsoft.Json/9.0.1": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -8403,9 +8403,9 @@
         "Microsoft.VisualStudio.Web.BrowserLink.Loader.nuspec"
       ]
     },
-    "Newtonsoft.Json/7.0.1-beta1": {
+    "Newtonsoft.Json/9.0.1": {
       "type": "package",
-      "sha512": "eh9Z/FYVfAjFevLhAYcVenlVFyXD89f0tZbYBbIkMn7kyCeyKibOdnbVg7XoNiJP1vskSHzW5R2hxlD7TsS2nw==",
+      "sha512": "U82mHQSKaIk+lpSVCbWYKNavmNH1i5xrExDEquU1i6I5pV6UMOqRnJRSlKO3cMPfcpp0RgDY+8jUXHdQ4IfXvw==",
       "files": [
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
@@ -8415,12 +8415,14 @@
         "lib/net40/Newtonsoft.Json.xml",
         "lib/net45/Newtonsoft.Json.dll",
         "lib/net45/Newtonsoft.Json.xml",
+        "lib/netstandard1.0/Newtonsoft.Json.dll",
+        "lib/netstandard1.0/Newtonsoft.Json.xml",
         "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.dll",
         "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
-        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.dll",
-        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.xml",
-        "Newtonsoft.Json.7.0.1-beta1.nupkg",
-        "Newtonsoft.Json.7.0.1-beta1.nupkg.sha512",
+        "lib/portable-net45+wp80+win8+wpa81/Newtonsoft.Json.dll",
+        "lib/portable-net45+wp80+win8+wpa81/Newtonsoft.Json.xml",
+        "Newtonsoft.Json.9.0.1.nupkg",
+        "Newtonsoft.Json.9.0.1.nupkg.sha512",
         "Newtonsoft.Json.nuspec",
         "tools/install.ps1"
       ]
@@ -9266,7 +9268,9 @@
       "Sendgrid >= 6.3.4",
       "Microsoft.AspNet.WebSockets.Server >= 1.0.0-rc1-final",
       "ImageProcessor >= 2.4.1",
-      "Microsoft.Framework.ConfigurationModel >= 1.0.0-beta4"
+      "Microsoft.Framework.ConfigurationModel >= 1.0.0-beta4",
+      "Microsoft.AspNet.Identity >= 3.0.0-rc1-final",
+      "Newtonsoft.Json >= 9.0.1"
     ],
     "DNX,Version=v4.5.1": [
       "fx/System.Drawing >= 4.0.0",
