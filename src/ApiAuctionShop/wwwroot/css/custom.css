@@ -77,3 +77,11 @@
 .star-inactive{
     opacity: 0.3;
 }
+
+.sticky-alert {
+    position: fixed;
+    display: block;
+    top: 70px;
+    width: 85%;
+    z-index: 1;
+}

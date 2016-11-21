@@ -20,6 +20,7 @@ namespace ApiAuctionShop.Models
         public TimeLeft timeLeft { get; set; }
         public String ImageData { get; set; }
         public Signup winner { get; set; }
+        public bool isWatched { get; set; }
     }
     public class TimeLeft
     {

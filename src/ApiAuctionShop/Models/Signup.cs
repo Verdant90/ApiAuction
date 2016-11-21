@@ -24,7 +24,7 @@ namespace ApiAuctionShop.Models
 
         public virtual ICollection<Auctions> AuctionsWon { get; set; }
 
-        public List<AuctionsUsersWatching> AuctionsUsersWatching { get; set; }
+        public List<AuctionsUsersWatching> AuctionsUsersWatching { get; set; } = new List<AuctionsUsersWatching>();
 
 
     }

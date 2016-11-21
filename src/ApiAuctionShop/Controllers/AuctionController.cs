@@ -1,5 +1,6 @@
 ﻿
 using ApiAuctionShop.Database;
+using ApiAuctionShop.Helpers;
 using ApiAuctionShop.Models;
 using ImageProcessor;
 using ImageProcessor.Imaging;
@@ -17,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Projekt.Controllers
@@ -95,7 +97,7 @@ namespace Projekt.Controllers
                     startPrice = auction.startPrice,
                     editable = auction.editable,
                     bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
+                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
                     
                 };
                 _context.ImageFiles.Where(i => i.AuctionId == auction.ID).ToList(); // lazy loading: wystarczy się odwołać do ImagesFiles żeby zostały załadowane do aukcji
@@ -120,7 +122,9 @@ namespace Projekt.Controllers
                     state = auction.state,
                     startPrice = auction.startPrice,
                     bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
+                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
+                    isWatched = (_context.AuctionsUsersWatching.Where(item => item.UserId == user.Id && item.AuctionId == auction.ID).Count() == 1)
+
                 };
                 _context.ImageFiles.Where(i => i.AuctionId == auction.ID).ToList();
                 if (auction.imageFiles != null)
@@ -454,6 +458,7 @@ namespace Projekt.Controllers
             }
             _context.Bids.Add(newBid);
             _context.SaveChanges();
+            notifyWatchers(bvm.auctionToSend.ID);
             var errors = ModelState.Where(x => x.Value.Errors.Any())
                 .Select(x => new { x.Key, x.Value.Errors });
             return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID } );
@@ -484,11 +489,35 @@ namespace Projekt.Controllers
                 tmp.state = "ended";
                 tmp.endDate = DateTime.Now.ToString();
                 _context.SaveChanges();
+                notifyWatchers(tmp.ID);
                 
             }
             return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
         }
 
+
+        public async void notifyWatchers(int auctionId)
+        {
+            string title ="", message = "" ; 
+            var usersWatching = _context.AuctionsUsersWatching.Where(a => a.AuctionId == auctionId).ToList();
+            
+            foreach(AuctionsUsersWatching auw in usersWatching)
+            {
+                if(_context.Users.Where(u => u.Id == auw.UserId).FirstOrDefault().Id == _context.Auctions.Where(a => auw.AuctionId == auctionId).FirstOrDefault().SignupId)
+                {
+                    title = "Nowa oferta kupna w Twojej aukcji!";
+                    message = "Witaj! Ktoś zalicytował w Twojej aukcji: <br/> http://localhost:5000/pl-PL/Auction/AuctionPage/";
+                }else
+                {
+                    title = "Nowa oferta kupna w aukcji, którą obserwujesz";
+                    message = "Witaj! Ktoś złożył ofertę w aukcji, którą obserwujesz: <br/> http://localhost:5000/pl-PL/Auction/AuctionPage/";
+                }
+                await EmailSender.SendEmailAsync(_context.Users.Where(u=> u.Id == auw.UserId).FirstOrDefault().Email, title, message + auw.AuctionId);
+
+            }
+
+            
+        }
 
         [Authorize]
         [HttpGet]

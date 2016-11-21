@@ -127,8 +127,10 @@ namespace ApiAuctionShop.Controllers
             {
                 return HttpBadRequest(ModelState);
             }
+            if (!User.IsSignedIn())
+                return new HttpStatusCodeResult(StatusCodes.Status401Unauthorized);
 
-            AuctionsUsersWatching auctionsUsersWatching = _context.AuctionsUsersWatching.Single(m => m.AuctionId == id);
+            AuctionsUsersWatching auctionsUsersWatching = _context.AuctionsUsersWatching.Single(m => m.AuctionId == id && m.UserId == User.GetUserId());
             if (auctionsUsersWatching == null)
             {
                 return HttpNotFound();

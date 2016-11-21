@@ -129,7 +129,9 @@
         }
     </div>
     <div id="activeAuctions" class="tab-pane fade">
-        <h3>Wszystkie aukcje</h3>
+        <div id="AllAuctionsTitle">
+            <h3>Wszystkie aukcje</h3>
+        </div>
         <br />
         @if (Model[1].Count > 0)
         {
@@ -156,7 +158,7 @@
                     @foreach (var item in Model[1].Select((value, i) => new { i = ++i, value }))
                     {
                         <tr>
-                            <td >
+                            <td>
                                 <div class="row auctionTitleRow">
                                     <div class="col-md-3">
                                         @if (item.value.ImageData != null)
@@ -206,7 +208,7 @@
                                     else
                                     {
                                         @:(@item.value.timeLeft.howManyLeft @item.value.timeLeft.timeMeasure do końca)
-                                }
+                            }
                                 </div>
                             </td>
                             <td>
@@ -217,12 +219,20 @@
                                 else
                                 {
                                     @: -
-                                }
+                            }
                             </td>
                             <td>
-                                <a  style="cursor: pointer;" onclick="sendData('@item.value.ID')"><img onclick="changeImage(this.id)" id="star-@item.i" class ="star-inactive" src="~/images/star-inactive.png" title="Obserwuj" /></a>
+                                <a style="cursor: pointer;">
+                                    @if (item.value.isWatched)
+                                    {
+                                        <img onclick="toggleAuctionWatch(this.id, @item.value.ID)" id="star-@item.i" class="star-active" src="~/images/star-active.png" title="Obserwuj" />
+                                    }
+                                    else
+                                    {
+                                        <img onclick="toggleAuctionWatch(this.id, @item.value.ID)" id="star-@item.i" class="star-inactive" src="~/images/star-inactive.png" title="Obserwuj" />
+                                    }
+                                </a>
                             </td>
-
                         </tr>
                     }
 
@@ -341,10 +351,9 @@
     </div>
     <div id="watchedAuctions" class="tab-pane fade"></div>
 </div>
-
 <br /><br />
-
-
+<div id="myalert" class="">
+</div>
 
 <link rel="stylesheet" type="text/css" href="~/css/jquery.dataTables.min.css">
 <link rel="stylesheet" type="text/css" href="~/css/custom.css">
@@ -371,52 +380,85 @@
     //    });
     //});
 
-    function changeImage(id) {
+    function toggleAuctionWatch(id, idAuction) {
         var target = document.getElementById(id);
         if (target.src == location.origin + "/images/star-inactive.png") {
             $('#' + target.id).attr("src", "../../images/star-active.png");
             $('#' + target.id).addClass('star-active');
             $('#' + target.id).removeClass('star-inactive');
+            var AuctionsUsersWatching = {
+                AuctionId: idAuction,
+                UserId: ''
+            };
+            $.ajax({
+                url: '/api/APIAuctionsUsersWatchings',
+                type: 'POST',
+                data: JSON.stringify(AuctionsUsersWatching),
+                dataType: "json",
+                contentType: 'application/json',
+                statusCode: {
+                    201: handle201,
+                    401: handle401,
+                    409: handle409
+                }
+            });
 
         }
         else {
             $('#' + target.id).attr("src", "../../images/star-inactive.png");
             $('#' + target.id).addClass('star-inactive');
             $('#' + target.id).removeClass('star-active');
+            $.ajax({
+                url: '/api/APIAuctionsUsersWatchings/' + idAuction,
+                type: 'DELETE',
+                dataType: "json",
+                contentType: 'application/json',
+                statusCode: {
+                    200: handle200,
+                    401: handle401,
+                    409: handle409
+                }
+            });
+            
         }
 
     }
+    var handle200 = function (data, textStatus, jqXHR) {
+        $('#myalert').append("<div class='alert alert-warning sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> Usunięto aukcję z obserwowanych. </div>");
+        $('#myalert').children('.alert-warning').click(function () {
+            $(this).remove();
+        });
+        $("#myalert").children('.alert-warning').delay(4000).fadeOut(500, function () {
+            $(this).remove();
+        });
+    };
+    var handle401 = function (data, textStatus, jqXHR) {
+        $('#myalert').append("<div class='alert alert-danger sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> Nie posiadasz uprawnień do obserwowania aukcji. </div>");
+        $('#myalert').children('.alert-danger').click(function () {
+            $(this).remove();
+        });
+        $("#myalert").children('.alert-danger').delay(4000).fadeOut(500, function () {
+            $(this).remove();
+        });
+    };
     var handle201 = function (data, textStatus, jqXHR) {
-        //alert('201'); // success codes have the success signature
-        // test it if you are in doubt:
-        console.log(data);
-        console.log(textStatus);
+        $('#myalert').append("<div class='alert alert-success sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> Dodano aukcję do obserwowanych. </div>");
+        $('#myalert').children('.alert-success').click(function () {
+            $(this).remove();
+        });
+        $("#myalert").children('.alert-success').delay(4000).fadeOut(500, function () {
+            $(this).remove();
+        });
     };
     var handle409 = function (data, textStatus, jqXHR) {
-        //alert('201'); // success codes have the success signature
-        // test it if you are in doubt:
-        console.log(data);
-        console.log(textStatus);
-    };
-   function sendData(idAuction) {
-        //alert(idAuction);
-        var AuctionsUsersWatching = {
-            AuctionId: idAuction,
-            UserId: ''
-        };
-
-
-        $.ajax({
-            url: '/api/APIAuctionsUsersWatchings',
-            type: 'POST',
-            data: JSON.stringify(AuctionsUsersWatching),
-            dataType: "json",
-            contentType: 'application/json',
-            statusCode: {
-                201: handle201,
-                409: handle409
-            }
+        $('#myalert').append("<div class='alert alert-danger sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> Błąd bazy danych. </div>");
+        $('#myalert').children('.alert-danger').click(function () {
+            $(this).remove();
         });
-
-    }
+        $("#myalert").children('.alert-danger').delay(4000).fadeOut(500, function () {
+            $(this).remove();
+        });
+        //console.log(jqXHR);
+    };
+   
 </script>
