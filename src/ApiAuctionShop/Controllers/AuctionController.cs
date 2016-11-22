@@ -60,6 +60,7 @@ namespace Projekt.Controllers
             BiddingViewModel bvm = new BiddingViewModel
             {
                 auctionToSend = tmp,
+                timePeriods = settings.timePeriods,
                 hasBuyNowGlobal = settings.hasBuyNow,
                 bids = bids,
                 d = dict
@@ -167,18 +168,16 @@ namespace Projekt.Controllers
             AuctionCreateViewModel model = new AuctionCreateViewModel();
             var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             model.hasBuyNowGlobal = settings.hasBuyNow;
+            model.timePeriods = settings.timePeriods;
             return View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, bool? now, ICollection<IFormFile> files = null)
+        public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, ICollection<IFormFile> files = null)
         {
             TryValidateModel(acvm.auction);
-            if(now == null)
-                DateValidation(acvm.auction);
-            else
-                DateValidation(acvm.auction, true);
+
             PriceValidation(acvm.auction);
 
             if (!ModelState.IsValid)
@@ -188,24 +187,20 @@ namespace Projekt.Controllers
                 AuctionCreateViewModel model = new AuctionCreateViewModel();
                 var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
                 model.hasBuyNowGlobal = settings.hasBuyNow;
+                model.timePeriods = settings.timePeriods;
                 return View(model);
             }
-            
-            string sqlFormattedDate;
-            if (now != null)
-            {
-                sqlFormattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            }else
-            {
-                sqlFormattedDate = DateTime.Parse(acvm.auction.startDate).ToString("yyyy-MM-dd HH:mm:ss");
-            }
+            DateTime dtnow = DateTime.Now;
+            DateTime dtend = calculateEndDate(dtnow, acvm.auction.duration);
+
+            string sqlFormattedStartDate = dtnow.ToString("yyyy-MM-dd HH:mm:ss");
+            string sqlFormattedEndDate = dtend.ToString("yyyy-MM-dd HH:mm:ss");
             var _auction = new Auctions()
             {
                 title = acvm.auction.title,
                 description = acvm.auction.description,
-                startDate = sqlFormattedDate,
-
-                endDate = DateTime.Parse(acvm.auction.endDate).ToString("yyyy-MM-dd HH:mm:ss"),
+                startDate = sqlFormattedStartDate,
+                endDate = sqlFormattedEndDate,
                 startPrice = acvm.auction.startPrice,
                 buyPrice = acvm.auction.buyPrice,
                 author = acvm.auction.author,
@@ -251,7 +246,6 @@ namespace Projekt.Controllers
 
             var result = await _userManager.UpdateAsync(user);
 
-            
             return RedirectToAction("AuctionList", "Auction");
         }
 
@@ -269,6 +263,7 @@ namespace Projekt.Controllers
             Auctions auctionToEdit = _context.Auctions.First(i => i.ID == id);
             var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             acvm.hasBuyNowGlobal = settings.hasBuyNow;
+            acvm.timePeriods = settings.timePeriods;
             _context.ImageFiles.Where(i => i.AuctionId == acvm.auction.ID).ToList(); 
             if (auctionToEdit == null)
             {
@@ -284,9 +279,8 @@ namespace Projekt.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
 
-        public async Task<ActionResult> Edit(AuctionCreateViewModel acvm, bool? now, IFormFile file = null)
+        public async Task<ActionResult> Edit(AuctionCreateViewModel acvm, IFormFile file = null)
         {
-            DateValidation(acvm.auction);
             PriceValidation(acvm.auction);
             if (!ModelState.IsValid)
             {
@@ -297,6 +291,7 @@ namespace Projekt.Controllers
                 Auctions auctionToEdit = _context.Auctions.First(i => i.ID == acvm.auction.ID);
                 var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
                 acvm.hasBuyNowGlobal = settings.hasBuyNow;
+                acvm.timePeriods = settings.timePeriods;
                 _context.ImageFiles.Where(i => i.AuctionId == acvm.auction.ID).ToList();
                 return View(acvm);
             }
@@ -315,7 +310,7 @@ namespace Projekt.Controllers
                         tmp.buyPrice = acvm.auction.buyPrice;
                         tmp.endDate = acvm.auction.endDate;
                         tmp.startPrice = acvm.auction.startPrice;
-                        tmp.startDate = (now != null)? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") : acvm.auction.startDate;
+                        tmp.startDate = acvm.auction.startDate;
                         tmp.editable = acvm.auction.editable;
                     }else if (tmp.state == "active")
                     {
@@ -529,30 +524,24 @@ namespace Projekt.Controllers
             }else return new TimeLeft((d - DateTime.Now).Minutes, "minut");
             
         }
-        private void DateValidation(Auctions auction, bool ignoreStartDate = false)
+        private DateTime calculateEndDate(DateTime d, string duration)
         {
-            DateTime startDate, endDate;
-            if (!DateTime.TryParse(auction.startDate, out startDate))
+            if(duration.Contains("h"))
             {
-                if(!ignoreStartDate)
-                    ModelState.AddModelError("startDate", "Wrong start date format!");
+                int hours = int.Parse(duration.Replace("h", ""));
+                d = d.AddHours(hours);
             }
-            else if (!ignoreStartDate && startDate.CompareTo(DateTime.Now) < 1)
+            else if(duration.Contains("d"))
             {
-
-                ModelState.AddModelError("startDate", "Start date must be later than now!");
+                int days = int.Parse(duration.Replace("d", ""));
+                d = d.AddDays(days);
             }
-            if (!DateTime.TryParse(auction.endDate, out endDate))
+            else if(duration.Contains("w"))
             {
-                ModelState.AddModelError("endDate", "Wrong end date format!");
+                int weeks = int.Parse(duration.Replace("w", ""));
+                d = d.AddDays(7 * weeks);
             }
-            else
-            {
-                if (endDate.CompareTo(DateTime.Now) < 1)
-                    ModelState.AddModelError("endDate", "End date must be later than now!");
-                if (!ignoreStartDate && endDate.CompareTo(startDate) < 1)
-                    ModelState.AddModelError("endDate", "End date must be later than the start date!");
-            }
+            return d;
         }
         private void PriceValidation(Auctions auction)
         {

@@ -11,5 +11,6 @@ namespace ApiAuctionShop.Models
     {
         public Auctions auction { get; set; }
         public bool hasBuyNowGlobal { get; set; }
+        public string timePeriods { get; set; }
     }
 }
