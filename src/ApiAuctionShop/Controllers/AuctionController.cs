@@ -546,7 +546,7 @@ namespace Projekt.Controllers
         private void PriceValidation(Auctions auction)
         {
             if (auction.buyPrice <= auction.startPrice)
-                ModelState.AddModelError("buyPrice", "Buy price must be greater than the start price!");
+                ModelState.AddModelError("auction.buyPrice", "Buy price must be greater than the start price!");
         }
     }
     public class Setting
