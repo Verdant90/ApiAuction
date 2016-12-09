@@ -1,48 +1,7 @@
 ﻿
 // All auctions table init
 $('#activeAuctionsTab').click(function () {
-    if (!$.fn.dataTable.isDataTable('#allAuctions')) {
-        $('#allAuctions').DataTable({
-            searching: true,
-            ordering: true,
-            paging: true,
-            processing: false,
-            serverSide: true,
-            orderMulti: false,
-            order: [[2, "asc"]],      //default sort
-            "ajax": {
-                url: "/api/APIAuctions",
-                type: "GET",
-                dataType: 'json',
-            },
-            "columnDefs": [
-                    { className: "auctionTitle", "targets": [0] },
-                    { className: "auctionPrice", "targets": [1] }
-            ],
-            columns: [
-               { data: 'title' },
-               { data: 'currentPrice' },
-               { data: 'endDate' },
-               { data: 'bidCount' },
-               { data: 'state' },
-            ],
-            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                var imagestr = "<div class='col-md-3'><img class='miniatureAuctionList img-thumbnail img-responsive center-block' src='" + aData['imageData'] + "'></div> "
-                var titlestr = "<div class='col-md-9 auctionTitleAuthor'><b class='col-xs-12 auctionTitle'><a href='" + aData['url'] + "'>" + aData['title'] + "</a></b><div class='col-xs-12 auctionAuthor'>(Autor: " + aData['signupEmail'] + ")</div></div>"
-                var title = "<div class='row auctionTitleRow'>" + imagestr + titlestr + "</div>";
-                var bidCount = aData['bidCount'] ? aData['bidCount'] : '-';
-                var starState = aData['isWatched'] ? 'active' : 'inactive';
-                var star = "<img onclick='toggleAuctionWatch(this.id, " + aData['id'] + ")' id='star-all-auctions-" + aData['id'] + "' class='star-" + starState + "' src='/images/star-" + starState + ".png' title='Obserwuj'>";
-                var timeLeft = (aData['timeLeft']['howManyLeft'] !== -1) ? '(' + aData['timeLeft']['howManyLeft'] + ' ' + aData['timeLeft']['timeMeasure'] + ' do końca)' : '(Aukcja zakończona)';
-
-                $('td:eq(0)', nRow).html(title);
-                $('td:eq(1)', nRow).html(formatter.format(aData['currentPrice']));
-                $('td:eq(2)', nRow).html(aData['endDate'] + '<div class="timeLeft">' + timeLeft + '</div>');
-                $('td:eq(3)', nRow).html(bidCount);
-                $('td:eq(4)', nRow).html(star);
-            }
-        });
-    } else {
+    if ($.fn.dataTable.isDataTable('#allAuctions')) {
         $('#allAuctions').DataTable().ajax.reload(null, false);
     }
 });
@@ -102,6 +61,51 @@ $('#archieveAuctionsTab').click(function () {
 
 // My auctions table init
 $(document).ready(function () {
+    if (!$.fn.dataTable.isDataTable('#allAuctions')) {
+        $('#allAuctions').DataTable({
+            searching: true,
+            ordering: true,
+            paging: true,
+            processing: false,
+            serverSide: true,
+            orderMulti: false,
+            order: [[2, "asc"]],      //default sort
+            "ajax": {
+                url: "/api/APIAuctions",
+                type: "GET",
+                dataType: 'json',
+            },
+            "columnDefs": [
+                    { className: "auctionTitle", "targets": [0] },
+                    { className: "auctionPrice", "targets": [1] }
+            ],
+            columns: [
+               { data: 'title' },
+               { data: 'currentPrice' },
+               { data: 'endDate' },
+               { data: 'bidCount' },
+               { data: 'state' },
+            ],
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                var imagestr = "<div class='col-md-3'><img class='miniatureAuctionList img-thumbnail img-responsive center-block' src='" + aData['imageData'] + "'></div> "
+                var titlestr = "<div class='col-md-9 auctionTitleAuthor'><b class='col-xs-12 auctionTitle'><a href='" + aData['url'] + "'>" + aData['title'] + "</a></b><div class='col-xs-12 auctionAuthor'>(Autor: " + aData['signupEmail'] + ")</div></div>"
+                var title = "<div class='row auctionTitleRow'>" + imagestr + titlestr + "</div>";
+                var bidCount = aData['bidCount'] ? aData['bidCount'] : '-';
+                var starState = aData['isWatched'] ? 'active' : 'inactive';
+                var star = "<img onclick='toggleAuctionWatch(this.id, " + aData['id'] + ")' id='star-all-auctions-" + aData['id'] + "' class='star-" + starState + "' src='/images/star-" + starState + ".png' title='Obserwuj'>";
+                var timeLeft = (aData['timeLeft']['howManyLeft'] !== -1) ? '(' + aData['timeLeft']['howManyLeft'] + ' ' + aData['timeLeft']['timeMeasure'] + ' do końca)' : '(Aukcja zakończona)';
+
+                $('td:eq(0)', nRow).html(title);
+                $('td:eq(1)', nRow).html(formatter.format(aData['currentPrice']));
+                $('td:eq(2)', nRow).html(aData['endDate'] + '<div class="timeLeft">' + timeLeft + '</div>');
+                $('td:eq(3)', nRow).html(bidCount);
+                $('td:eq(4)', nRow).html(star);
+            }
+        });
+    } else {
+        $('#allAuctions').DataTable().ajax.reload(null, false);
+    }
+
     if (!$.fn.dataTable.isDataTable('#myAuctions')) {
         var oTable = $('#myAuctions').DataTable({
             searching: true,

@@ -74,7 +74,7 @@ namespace Projekt.Controllers
         }
 
         //zmienic nazwe na AuctionLists
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult AuctionList()
         {

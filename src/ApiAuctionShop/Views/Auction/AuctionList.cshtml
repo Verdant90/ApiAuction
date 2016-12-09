@@ -1,15 +1,31 @@
 ﻿@model List<List<AuctionViewModel>>
+@using System.Security.Claims; 
 @{
     ViewData["Title"] = "Moje aukcje";
 }
 <br />
-<ul class="nav nav-tabs">
-    <li class="active"><a id="myAuctionsTab" data-toggle="tab" href="#myAuctionsList">Moje aukcje</a></li>
-    <li><a id="activeAuctionsTab"  data-toggle="tab" href="#activeAuctions">Aukcje w toku</a></li>
-    <li><a id="archieveAuctionsTab"  data-toggle="tab" href="#archieveAuctions">Archiwum</a></li>
-    <li><a id="watchedAuctionsTab"  data-toggle="tab" href="#watchedAuctions">Obserwowane</a></li>
-</ul>
+@if (User.IsSignedIn())
+{
+    <ul class="nav nav-tabs">
+        <li class="active"><a id="myAuctionsTab" data-toggle="tab" href="#myAuctionsList">Moje aukcje</a></li>
+        <li><a id="activeAuctionsTab" data-toggle="tab" href="#activeAuctions">Aukcje w toku</a></li>
+        <li><a id="archieveAuctionsTab" data-toggle="tab" href="#archieveAuctions">Archiwum</a></li>
+        <li><a id="watchedAuctionsTab" data-toggle="tab" href="#watchedAuctions">Obserwowane</a></li>
+    </ul>
+
+}
+else
+{
+    <ul class="nav nav-tabs">
+        <li class="active"><a id="activeAuctionsTab" data-toggle="tab" href="#activeAuctions">Aukcje w toku</a></li>
+        <li><a id="archieveAuctionsTab" data-toggle="tab" href="#archieveAuctions">Archiwum</a></li>
+    </ul>
+
+}
+
 <div class="tab-content">
+@if (User.IsSignedIn())
+{
     <div id="myAuctionsList" class="tab-pane fade in active">
         <h3>Moje aukcje</h3>
         <br />
@@ -37,7 +53,8 @@
             <tbody></tbody>
         </table>
     </div>
-    <div id="activeAuctions" class="tab-pane fade">
+}
+    <div id="activeAuctions" class="tab-pane fade @(!User.IsSignedIn() ? "in active" : "" )">
         <div id="AllAuctionsTitle">
             <h3>Wszystkie aukcje</h3>
         </div>
@@ -89,6 +106,8 @@
             <tbody></tbody>
         </table>
     </div>
+@if (User.IsSignedIn())
+{
     <div id="watchedAuctions" class="tab-pane fade">
         <h3>Obserwowane</h3>
         <br />
@@ -114,6 +133,7 @@
             <tbody></tbody>
         </table>
     </div>
+}
 </div>
 <br /><br />
 <div id="myalert" class="">
