@@ -76,94 +76,9 @@ namespace Projekt.Controllers
         //zmienic nazwe na AuctionLists
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult> AuctionList()
+        public IActionResult AuctionList()
         {
-            var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
-            var users = _context.Users;
-            var bids = _context.Bids;
-            var list_mine = _context.Auctions.Where(d => d.SignupId == user.Id).ToList();
-            List<List<AuctionViewModel>> model = new List<List<AuctionViewModel>>();
-            model.Add(new List<AuctionViewModel>()); //my auctions
-            model.Add(new List<AuctionViewModel>()); //active auctions 
-            model.Add(new List<AuctionViewModel>()); //archived auctions 
-            foreach (Auctions auction in list_mine)
-            {
-                AuctionViewModel tmp = new AuctionViewModel() {
-                    ID = auction.ID,
-                    title = auction.title,
-                    startDate = auction.startDate,
-                    endDate = auction.endDate,
-                    state = auction.state,
-                    startPrice = auction.startPrice,
-                    editable = auction.editable,
-                    bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId)
-                    
-                };
-                _context.ImageFiles.Where(i => i.AuctionId == auction.ID).ToList(); // lazy loading: wystarczy się odwołać do ImagesFiles żeby zostały załadowane do aukcji
-                if (auction.imageFiles != null)
-                    tmp.ImageData = auction.imageFiles.ElementAt(0).ImagePath;
-
-                if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
-                tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
-                tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
-                model[0].Add(tmp);
-            }
-            
-            var list_active = _context.Auctions.Where(a => a.state == "active").ToList();
-            foreach (Auctions auction in list_active)
-            {
-                AuctionViewModel tmp = new AuctionViewModel()
-                {
-                    ID = auction.ID,
-                    title = auction.title,
-                    startDate = auction.startDate,
-                    endDate = auction.endDate,
-                    state = auction.state,
-                    startPrice = auction.startPrice,
-                    bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
-                    isWatched = (_context.AuctionsUsersWatching.Where(item => item.UserId == user.Id && item.AuctionId == auction.ID).Count() == 1)
-
-                };
-                _context.ImageFiles.Where(i => i.AuctionId == auction.ID).ToList();
-                if (auction.imageFiles != null)
-                    tmp.ImageData = auction.imageFiles.ElementAt(0).ImagePath;
-
-                if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
-                    tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
-                tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
-                model[1].Add(tmp);
-
-            }
-
-            var list_ended = _context.Auctions.Where(a => a.state == "ended").ToList();
-            foreach (Auctions auction in list_ended)
-            {
-                AuctionViewModel tmp = new AuctionViewModel()
-                {
-                    ID = auction.ID,
-                    title = auction.title,
-                    startDate = auction.startDate,
-                    endDate = auction.endDate,
-                    state = auction.state,
-                    startPrice = auction.startPrice,
-                    bidCount = bids.Where(b => b.auctionId == auction.ID).ToList().Count(),
-                    Signup = users.FirstOrDefault(u => u.Id == auction.SignupId),
-                    winner = auction.winner
-                };
-                _context.ImageFiles.Where(i => i.AuctionId == auction.ID).ToList();
-                if (auction.imageFiles != null)
-                    tmp.ImageData = auction.imageFiles.ElementAt(0).ImagePath;
-
-                if (bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
-                    tmp.highestBid = bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
-                
-                model[2].Add(tmp);
-
-            }
-
-            return View(model);
+            return View();
         }
 
         //////////////////TEST /////////////////////////

@@ -21,6 +21,10 @@ using ApiAuctionShop.Database;
 using System.Data.SqlClient;
 using System.Data;
 using Microsoft.AspNet.Authentication.Cookies;
+using Microsoft.AspNet.Localization;
+using System.Globalization;
+using Microsoft.AspNet.Mvc.Razor;
+using Microsoft.Extensions.OptionsModel;
 
 namespace ApiAuctionShop
 {
@@ -53,7 +57,7 @@ namespace ApiAuctionShop
                     SqlCommand cmd = new SqlCommand();
                     SqlDataReader reader; 
 
-                    cmd.CommandText = "UPDATE[master].[dbo].[Auctions] SET state = 'active' WHERE startDate <= GETDATE() and endDate >= GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'waiting' WHERE startDate > GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'ended', winnerID = c.Id FROM [master].[dbo].[Auctions] a RIGHT JOIN [master].[dbo].[Bid] b on a.ID = b.auctionId LEFT JOIN [master].[dbo].[AspNetUsers] c on b.bidAuthor = c.Email WHERE endDate < GETDATE() and(state != 'inactive' or state IS null) and state != 'ended' and bidAuthor in(SELECT TOP 1 bidAuthor FROM [master].[dbo].[Bid] b where b.auctionId = a.ID order by b.bid DESC); ";
+                    cmd.CommandText = "UPDATE[master].[dbo].[Auctions] SET state = 'active' WHERE startDate <= GETDATE() and endDate >= GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'waiting' WHERE startDate > GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'ended', winnerID = c.Id FROM [master].[dbo].[Auctions] a RIGHT JOIN [master].[dbo].[Bid] b on a.ID = b.auctionId LEFT JOIN [master].[dbo].[AspNetUsers] c on b.bidAuthor = c.Email WHERE endDate < GETDATE() and(state != 'inactive' or state IS null) and state != 'ended' and bidAuthor in(SELECT TOP 1 bidAuthor FROM [master].[dbo].[Bid] b where b.auctionId = a.ID order by b.bid DESC); UPDATE[master].[dbo].[Auctions] SET state = 'ended' WHERE endDate < GETDATE() and(state = 'active' or state = 'waiting') ";
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = sqlConnection1;
                     sqlConnection1.Open();
@@ -88,8 +92,33 @@ namespace ApiAuctionShop
             services.AddIdentity<Signup, IdentityRole>()
                  .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 
-            services.AddMvc().AddJsonOptions(a => a.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+            services.AddMvc()
+                .AddViewLocalization(
+                    LanguageViewLocationExpanderFormat.Suffix,
+                    opts => { opts.ResourcesPath = "Resources"; })
+                .AddDataAnnotationsLocalization();///////////////
+            services.AddMvc().AddJsonOptions(a =>
+            {
+                a.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                a.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            }
+            );
+            services.Configure<RequestLocalizationOptions>(
+       opts =>
+       {
+           var supportedCultures = new[]
+           {
+                new CultureInfo("en-GB"),
+                new CultureInfo("pl-PL")
+           };
+           
+            // Formatting numbers, dates, etc.
+            opts.SupportedCultures = supportedCultures;
+            // UI strings that we have localized.
+            opts.SupportedUICultures = supportedCultures;
+       });
         }
 
 
@@ -97,6 +126,27 @@ namespace ApiAuctionShop
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            /////
+            
+            var requestLocalizationOptions = new RequestLocalizationOptions
+            {
+                SupportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("pl-PL"),
+                    new CultureInfo("en-GB"),
+                },
+                SupportedUICultures = new List<CultureInfo>
+                {
+                    new CultureInfo("pl-PL"),
+                    new CultureInfo("en-GB"),
+                }
+            };
+
+            app.UseRequestLocalization(requestLocalizationOptions,
+                             new RequestCulture(new CultureInfo("pl-PL")));
+
+            ///////
+           
 
             app.UseApplicationInsightsRequestTelemetry();
             app.UseDeveloperExceptionPage();
@@ -150,4 +200,7 @@ namespace ApiAuctionShop
 
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);
     }
+}
+public class SharedResource
+{
 }

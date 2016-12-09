@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Mvc.Localization
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
@@ -61,7 +63,7 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a asp-controller="Home" asp-action="Index">Główna</a></li>
+                        <li><a asp-controller="Home" asp-action="Index">@SharedLocalizer["Enda"] Główna</a></li>
                         <li><a asp-controller="Auction" asp-action="AuctionList">Lista aukcji</a></li>
                         <li><a asp-controller="Auction" asp-action="AddAuction">Dodaj aukcję</a></li>
                         <!--<li>Html.ActionLink("Główna", "Index", "Home");</li>

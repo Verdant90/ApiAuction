@@ -1,4 +1,6 @@
 ﻿@using System.Security.Claims
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer LocString 
 @model AdminSettingsViewModel
 @{
     ViewData["Title"] = "Home Page";
@@ -76,7 +78,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="text-muted bootstrap-admin-box-title">Welcome!</div>
+                    <div class="text-muted bootstrap-admin-box-title"> @LocString["Hello"]<br /></div>
                 </div>
                 <div class="bootstrap-admin-panel-content">
                     <p>@Html.Raw(Model.startMessage)</p>
