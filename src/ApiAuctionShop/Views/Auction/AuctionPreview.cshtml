@@ -1,0 +1,207 @@
+@model ApiAuctionShop.Models.AuctionCreateViewModel
+@using Projekt.Controllers;
+
+
+@{
+    ViewData["Title"] = "Podgląd aukcji";
+}
+
+<h2>@ViewData["Title"]</h2>
+@using (Html.BeginForm("AddAuction", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("acvm.auction.title", Model.auction.title)
+    //@Html.HiddenFor(model => model.auction.title)
+    @Html.Hidden("acvm.auction.startPrice", Model.auction.startPrice)
+    //@Html.HiddenFor(model => model.auction.startPrice)
+    @Html.Hidden("acvm.auction.buyPrice", Model.auction.buyPrice)
+    //@Html.HiddenFor(model => model.auction.buyPrice)
+    //@Html.HiddenFor(model => model.auction.imageFiles)
+    @Html.Hidden("acvm.auction.description", Model.auction.description)
+    //@Html.HiddenFor(model => model.auction.description)
+    @Html.Hidden("acvm.auction.duration", Model.auction.duration)
+    //@Html.HiddenFor(model => model.auction.duration)
+    @Html.Hidden("acvm.hasBuyNowGlobal", Model.hasBuyNowGlobal)
+    //@Html.HiddenFor(model => model.hasBuyNowGlobal)
+    @Html.Hidden("acvm.timePeriods", Model.timePeriods)
+    //@Html.HiddenFor(model => model.timePeriods)
+    
+    
+    <div>
+        @{ var imageIndex = 0; }
+        @foreach (var imagefile in Model.auction.imageFiles)
+        {
+            // Tylko ImagePath, bo reszta i tak się sama generuje
+            @Html.Hidden("acvm.auction.imageFiles[" + imageIndex + "].ImagePath", imagefile.ImagePath);
+            imageIndex++;
+        }
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.auction.title)
+            </dt>
+            <dd>
+                <h4>
+                    @Html.DisplayFor(model => model.auction.title)
+                </h4>
+            </dd>
+            <dd>
+                @if (Model.auction.imageFiles != null && Model.auction.imageFiles.Count > 0)
+                {
+                    // sparsowanie �cie�ki
+                    String path = Model.auction.imageFiles.ElementAt(0).ImagePath;
+                    int index = path.IndexOf(@"\images");
+                    path = path.Substring(index);
+                    <img id="mainimage" src="@String.Format(path)" width="400" height="400" alt="" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="setCarouselActiveItem()" />
+                }
+                else
+                {
+                    @: Brak zdjecia.
+
+                }
+            </dd>
+            <dd>
+                @if (Model.auction.imageFiles != null && Model.auction.imageFiles.Count > 1)
+                {
+                    @foreach (var image in Model.auction.imageFiles)
+                    {
+
+                        // sparsowanie �cie�ki
+                        String path = image.ImagePath;
+                        int index = path.IndexOf(@"\images");
+                        path = path.Substring(index);
+                        <img onclick="changeImage(this)" src="@String.Format(path)" width="100" height="100" alt="" />
+
+                    }
+                }
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.auction.description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.auction.description)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.auction.startDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.auction.startDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.auction.endDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.auction.endDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.auction.startPrice)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.auction.startPrice)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.auction.buyPrice)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.auction.buyPrice)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.auction.state)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.auction.state)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.auction.editable)
+            </dt>
+            <dd>
+                @if (Model.auction.editable)
+                {
+                    @: Yes
+
+                }
+                else
+                {
+                    @: No
+                }
+            </dd>
+
+
+        </dl>
+
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+
+                        <div class="carousel-inner">
+                            @if (Model.auction.imageFiles != null && Model.auction.imageFiles.Count > 0)
+                            {
+                                var i = 0;
+                                @foreach (var image in Model.auction.imageFiles)
+                                {
+
+                                    // sparsowanie �cie�ki
+                                    String path = image.ImagePath;
+                                    int index = path.IndexOf(@"\images");
+                                    path = path.Substring(index);
+
+                                    var itemClass = i++ == 0 ? "item active" : "item";
+                                    <div class="@itemClass">
+                                        <img class="img-responsive" src=@path alt="" style="width:1440px;height:720px" />
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                        <!-- Controls -->
+                        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                        </a>
+                        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-success" name="submit" value="send">Submit</button>
+                <button type="submit" class="btn btn-danger" name="submit" value="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+<script>
+
+    // ustawienie slajdu Carousel na obrazek, kt�ry obecnie jest obrazkiemm g��wnym
+    function setCarouselActiveItem()
+    {
+        var currentActive = jQuery('.carousel-inner').find('.active');
+        currentActive.removeClass('active');
+
+        var path = mainimage.src
+        var index = path.indexOf("\images");
+        path = path.substring(index - 1);
+        path = path.replace(/\//g, '\\');
+
+        // szukanie w Carousel slajdu, kt�ry ma taki sam url co obrazek g��wny
+        $('.carousel-inner .item').each(function (index)
+        {
+            if ($(this).find('img').attr('src') == path)
+                $(this).addClass('active');
+        });
+
+    }
+
+    function changeImage(img)
+    {
+        var mainimage = document.getElementById("mainimage")
+        mainimage.src = img.src;
+    }
+</script>

@@ -62,12 +62,10 @@ namespace ApiAuctionShop.Models
         public decimal? buyPrice { get; set; }
         public string state { get; set; } = "waiting";
 
-        [Required(ErrorMessage = "Start date is required!")]
-        [DataType(DataType.DateTime, ErrorMessage = "Wrong data format!")]
+        public string duration { get; set; }
+
         public string startDate { get; set; }
 
-        [Required(ErrorMessage = "End date is required!")]
-        [DataType(DataType.DateTime, ErrorMessage = "Wrong data format!")]
         public string endDate { get; set; }
 
         public bool editable { get; set; } = true;

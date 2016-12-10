@@ -1,4 +1,3 @@
-﻿
 using ApiAuctionShop.Database;
 using ApiAuctionShop.Helpers;
 using ApiAuctionShop.Models;
@@ -72,70 +71,20 @@ namespace Projekt.Controllers
 
             return View(bvm);
         }
-
-        //zmienic nazwe na AuctionLists
-        [AllowAnonymous]
-        [HttpGet]
-        public IActionResult AuctionList()
-        {
-            return View();
-        }
-
-        //////////////////TEST /////////////////////////
-        [Authorize]
-        public IActionResult AddAuction()
-        {
-            AuctionCreateViewModel model = new AuctionCreateViewModel();
-            var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
-            model.hasBuyNowGlobal = settings.hasBuyNow;
-            return View(model);
-        }
-
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, bool? now, ICollection<IFormFile> files = null)
+        public async Task<ActionResult> AuctionPreview(AuctionCreateViewModel acvm, ICollection<IFormFile> files = null)
         {
-            TryValidateModel(acvm.auction);
-            if(now == null)
-                DateValidation(acvm.auction);
-            else
-                DateValidation(acvm.auction, true);
-            PriceValidation(acvm.auction);
-
-            if (!ModelState.IsValid)
+            var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+            AuctionCreateViewModel tmp = new AuctionCreateViewModel()
             {
-                var errors = ModelState.Where(x => x.Value.Errors.Any())
-                            .Select(x => new { x.Key, x.Value.Errors });
-                AuctionCreateViewModel model = new AuctionCreateViewModel();
-                var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
-                model.hasBuyNowGlobal = settings.hasBuyNow;
-                return View(model);
-            }
-            
-            string sqlFormattedDate;
-            if (now != null)
-            {
-                sqlFormattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            }else
-            {
-                sqlFormattedDate = DateTime.Parse(acvm.auction.startDate).ToString("yyyy-MM-dd HH:mm:ss");
-            }
-            var _auction = new Auctions()
-            {
-                title = acvm.auction.title,
-                description = acvm.auction.description,
-                startDate = sqlFormattedDate,
-
-                endDate = DateTime.Parse(acvm.auction.endDate).ToString("yyyy-MM-dd HH:mm:ss"),
-                startPrice = acvm.auction.startPrice,
-                buyPrice = acvm.auction.buyPrice,
-                author = acvm.auction.author,
-                editable = acvm.auction.editable
-
-            //currentPrice = (decimal)auction.price,
+                auction = acvm.auction,
+                hasBuyNowGlobal = settings.hasBuyNow,
+                timePeriods = settings.timePeriods
             };
-            foreach(var file in files)
-            { 
+            tmp.auction.imageFiles = new List<ImageFile>();
+            foreach (var file in files)
+            {
                 if (file != null)
                 {
                     if (file.ContentType.Contains("image"))
@@ -156,14 +105,117 @@ namespace Projekt.Controllers
                             var img = new ImageFile()
                             {
                                 ImagePath = fullpath,
-                                Auction = _auction
+                                Auction = tmp.auction
                             };
-                            _context.ImageFiles.Add(img);
-                            
+                            tmp.auction.imageFiles.Add(img);
+
                         }
                     }
                 }
             }
+
+            return View(tmp);
+        }
+
+        //zmienic nazwe na AuctionLists
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult AuctionList()
+        {
+            return View();
+        }
+
+        //////////////////TEST /////////////////////////
+        [Authorize]
+        public IActionResult AddAuction()
+        {
+            AuctionCreateViewModel model = new AuctionCreateViewModel();
+            var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+            model.hasBuyNowGlobal = settings.hasBuyNow;
+            model.timePeriods = settings.timePeriods;
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, string submit, ICollection<ImageFile> files)
+        {
+            if (submit.Equals("cancel"))
+            {
+                return View("AddAuction", acvm);
+            }
+
+            TryValidateModel(acvm.auction);
+
+            PriceValidation(acvm.auction);
+
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Where(x => x.Value.Errors.Any())
+                            .Select(x => new { x.Key, x.Value.Errors });
+                AuctionCreateViewModel model = new AuctionCreateViewModel();
+                var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+                model.hasBuyNowGlobal = settings.hasBuyNow;
+                model.timePeriods = settings.timePeriods;
+                return View(model);
+            }
+            DateTime dtnow = DateTime.Now;
+            DateTime dtend = calculateEndDate(dtnow, acvm.auction.duration);
+
+            string sqlFormattedStartDate = dtnow.ToString("yyyy-MM-dd HH:mm:ss");
+            string sqlFormattedEndDate = dtend.ToString("yyyy-MM-dd HH:mm:ss");
+            var _auction = new Auctions()
+            {
+                title = acvm.auction.title,
+                description = acvm.auction.description,
+                startDate = sqlFormattedStartDate,
+                endDate = sqlFormattedEndDate,
+                startPrice = acvm.auction.startPrice,
+                buyPrice = acvm.auction.buyPrice,
+                author = acvm.auction.author,
+                editable = acvm.auction.editable
+
+            //currentPrice = (decimal)auction.price,
+            };
+            foreach(var file in acvm.auction.imageFiles)
+            {
+                var img = new ImageFile()
+                {
+                    ImagePath = file.ImagePath,
+                    Auction = _auction
+                };
+                _context.ImageFiles.Add(img);
+            }
+            //foreach(var file in files)
+            //{ 
+            //    if (file != null)
+            //    {
+            //        if (file.ContentType.Contains("image"))
+            //        {
+            //            using (var fileStream = file.OpenReadStream())
+            //            {
+
+            //                var uploads = Path.Combine(_environment.WebRootPath, "images");
+            //                Directory.CreateDirectory(uploads);
+            //                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            //                var fullpath = Path.Combine(uploads, fileName);
+            //                using (var fs = new FileStream(fullpath, FileMode.Create))
+            //                {
+
+            //                    await fileStream.CopyToAsync(fs);
+            //                }
+
+            //                var img = new ImageFile()
+            //                {
+            //                    ImagePath = fullpath,
+            //                    Auction = _auction
+            //                };
+            //                _context.ImageFiles.Add(img);
+                            
+            //            }
+            //        }
+            //    }
+            //}
             
             if (DateTime.Parse(_auction.startDate) <= DateTime.Now) _auction.state = "active";
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
@@ -172,7 +224,6 @@ namespace Projekt.Controllers
 
             var result = await _userManager.UpdateAsync(user);
 
-            
             return RedirectToAction("AuctionList", "Auction");
         }
 
@@ -190,6 +241,7 @@ namespace Projekt.Controllers
             Auctions auctionToEdit = _context.Auctions.First(i => i.ID == id);
             var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             acvm.hasBuyNowGlobal = settings.hasBuyNow;
+            acvm.timePeriods = settings.timePeriods;
             _context.ImageFiles.Where(i => i.AuctionId == acvm.auction.ID).ToList(); 
             if (auctionToEdit == null)
             {
@@ -205,9 +257,8 @@ namespace Projekt.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
 
-        public async Task<ActionResult> Edit(AuctionCreateViewModel acvm, bool? now, IFormFile file = null)
+        public async Task<ActionResult> Edit(AuctionCreateViewModel acvm, IFormFile file = null)
         {
-            DateValidation(acvm.auction);
             PriceValidation(acvm.auction);
             if (!ModelState.IsValid)
             {
@@ -218,6 +269,7 @@ namespace Projekt.Controllers
                 Auctions auctionToEdit = _context.Auctions.First(i => i.ID == acvm.auction.ID);
                 var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
                 acvm.hasBuyNowGlobal = settings.hasBuyNow;
+                acvm.timePeriods = settings.timePeriods;
                 _context.ImageFiles.Where(i => i.AuctionId == acvm.auction.ID).ToList();
                 return View(acvm);
             }
@@ -236,7 +288,7 @@ namespace Projekt.Controllers
                         tmp.buyPrice = acvm.auction.buyPrice;
                         tmp.endDate = acvm.auction.endDate;
                         tmp.startPrice = acvm.auction.startPrice;
-                        tmp.startDate = (now != null)? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") : acvm.auction.startDate;
+                        tmp.startDate = acvm.auction.startDate;
                         tmp.editable = acvm.auction.editable;
                     }else if (tmp.state == "active")
                     {
@@ -476,35 +528,29 @@ namespace Projekt.Controllers
             }else return new TimeLeft((d - DateTime.Now).Minutes, "minut");
             
         }
-        private void DateValidation(Auctions auction, bool ignoreStartDate = false)
+        private DateTime calculateEndDate(DateTime d, string duration)
         {
-            DateTime startDate, endDate;
-            if (!DateTime.TryParse(auction.startDate, out startDate))
+            if(duration.Contains("h"))
             {
-                if(!ignoreStartDate)
-                    ModelState.AddModelError("startDate", "Wrong start date format!");
+                int hours = int.Parse(duration.Replace("h", ""));
+                d = d.AddHours(hours);
             }
-            else if (!ignoreStartDate && startDate.CompareTo(DateTime.Now) < 1)
+            else if(duration.Contains("d"))
             {
-
-                ModelState.AddModelError("startDate", "Start date must be later than now!");
+                int days = int.Parse(duration.Replace("d", ""));
+                d = d.AddDays(days);
             }
-            if (!DateTime.TryParse(auction.endDate, out endDate))
+            else if(duration.Contains("w"))
             {
-                ModelState.AddModelError("endDate", "Wrong end date format!");
+                int weeks = int.Parse(duration.Replace("w", ""));
+                d = d.AddDays(7 * weeks);
             }
-            else
-            {
-                if (endDate.CompareTo(DateTime.Now) < 1)
-                    ModelState.AddModelError("endDate", "End date must be later than now!");
-                if (!ignoreStartDate && endDate.CompareTo(startDate) < 1)
-                    ModelState.AddModelError("endDate", "End date must be later than the start date!");
-            }
+            return d;
         }
         private void PriceValidation(Auctions auction)
         {
             if (auction.buyPrice <= auction.startPrice)
-                ModelState.AddModelError("buyPrice", "Buy price must be greater than the start price!");
+                ModelState.AddModelError("auction.buyPrice", "Buy price must be greater than the start price!");
         }
     }
     public class Setting
