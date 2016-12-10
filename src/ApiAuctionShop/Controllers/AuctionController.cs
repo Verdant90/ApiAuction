@@ -1,5 +1,4 @@
-﻿
-using ApiAuctionShop.Database;
+﻿using ApiAuctionShop.Database;
 using ApiAuctionShop.Models;
 using ImageProcessor;
 using ImageProcessor.Imaging;
@@ -60,13 +59,57 @@ namespace Projekt.Controllers
             BiddingViewModel bvm = new BiddingViewModel
             {
                 auctionToSend = tmp,
-                timePeriods = settings.timePeriods,
                 hasBuyNowGlobal = settings.hasBuyNow,
                 bids = bids,
                 d = dict
             };
 
             return View(bvm);
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult> AuctionPreview(AuctionCreateViewModel acvm, ICollection<IFormFile> files = null)
+        {
+            var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
+            AuctionCreateViewModel tmp = new AuctionCreateViewModel()
+            {
+                auction = acvm.auction,
+                hasBuyNowGlobal = settings.hasBuyNow,
+                timePeriods = settings.timePeriods
+            };
+            tmp.auction.imageFiles = new List<ImageFile>();
+            foreach (var file in files)
+            {
+                if (file != null)
+                {
+                    if (file.ContentType.Contains("image"))
+                    {
+                        using (var fileStream = file.OpenReadStream())
+                        {
+
+                            var uploads = Path.Combine(_environment.WebRootPath, "images");
+                            Directory.CreateDirectory(uploads);
+                            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                            var fullpath = Path.Combine(uploads, fileName);
+                            using (var fs = new FileStream(fullpath, FileMode.Create))
+                            {
+
+                                await fileStream.CopyToAsync(fs);
+                            }
+
+                            var img = new ImageFile()
+                            {
+                                ImagePath = fullpath,
+                                Auction = tmp.auction
+                            };
+                            tmp.auction.imageFiles.Add(img);
+
+                        }
+                    }
+                }
+            }
+
+            return View(tmp);
         }
 
         //zmienic nazwe na AuctionLists
@@ -174,8 +217,13 @@ namespace Projekt.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, ICollection<IFormFile> files = null)
+        public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, string submit, ICollection<ImageFile> files)
         {
+            if (submit.Equals("cancel"))
+            {
+                return View("AddAuction", acvm);
+            }
+
             TryValidateModel(acvm.auction);
 
             PriceValidation(acvm.auction);
@@ -208,36 +256,45 @@ namespace Projekt.Controllers
 
             //currentPrice = (decimal)auction.price,
             };
-            foreach(var file in files)
-            { 
-                if (file != null)
+            foreach(var file in acvm.auction.imageFiles)
+            {
+                var img = new ImageFile()
                 {
-                    if (file.ContentType.Contains("image"))
-                    {
-                        using (var fileStream = file.OpenReadStream())
-                        {
-
-                            var uploads = Path.Combine(_environment.WebRootPath, "images");
-                            Directory.CreateDirectory(uploads);
-                            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                            var fullpath = Path.Combine(uploads, fileName);
-                            using (var fs = new FileStream(fullpath, FileMode.Create))
-                            {
-
-                                await fileStream.CopyToAsync(fs);
-                            }
-
-                            var img = new ImageFile()
-                            {
-                                ImagePath = fullpath,
-                                Auction = _auction
-                            };
-                            _context.ImageFiles.Add(img);
-                            
-                        }
-                    }
-                }
+                    ImagePath = file.ImagePath,
+                    Auction = _auction
+                };
+                _context.ImageFiles.Add(img);
             }
+            //foreach(var file in files)
+            //{ 
+            //    if (file != null)
+            //    {
+            //        if (file.ContentType.Contains("image"))
+            //        {
+            //            using (var fileStream = file.OpenReadStream())
+            //            {
+
+            //                var uploads = Path.Combine(_environment.WebRootPath, "images");
+            //                Directory.CreateDirectory(uploads);
+            //                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            //                var fullpath = Path.Combine(uploads, fileName);
+            //                using (var fs = new FileStream(fullpath, FileMode.Create))
+            //                {
+
+            //                    await fileStream.CopyToAsync(fs);
+            //                }
+
+            //                var img = new ImageFile()
+            //                {
+            //                    ImagePath = fullpath,
+            //                    Auction = _auction
+            //                };
+            //                _context.ImageFiles.Add(img);
+                            
+            //            }
+            //        }
+            //    }
+            //}
             
             if (DateTime.Parse(_auction.startDate) <= DateTime.Now) _auction.state = "active";
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
