@@ -15,11 +15,11 @@ namespace Projekt.Controllers
 {
     public class HomeController : Controller
     {
-        readonly IStringLocalizer<HomeController> _localizer;
+        readonly IHtmlLocalizer<HomeController> _localizer;
         public ApplicationDbContext _context;
         private readonly UserManager<Signup> _userManager;
         public HomeController(
-           UserManager<Signup> userManager, ApplicationDbContext context, IStringLocalizer<HomeController> localizer)
+           UserManager<Signup> userManager, ApplicationDbContext context, IHtmlLocalizer<HomeController> localizer)
         {
             _userManager = userManager;
             _context = context;

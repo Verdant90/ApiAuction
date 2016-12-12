@@ -92,33 +92,18 @@ namespace ApiAuctionShop
             services.AddIdentity<Signup, IdentityRole>()
                  .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-            services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
+            services.AddJsonLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddMvc()
-                .AddViewLocalization(
-                    LanguageViewLocationExpanderFormat.Suffix,
-                    opts => { opts.ResourcesPath = "Resources"; })
-                .AddDataAnnotationsLocalization();///////////////
+                .AddViewLocalization();
             services.AddMvc().AddJsonOptions(a =>
             {
                 a.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 a.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             }
             );
-            services.Configure<RequestLocalizationOptions>(
-       opts =>
-       {
-           var supportedCultures = new[]
-           {
-                new CultureInfo("en-GB"),
-                new CultureInfo("pl-PL")
-           };
+            
            
-            // Formatting numbers, dates, etc.
-            opts.SupportedCultures = supportedCultures;
-            // UI strings that we have localized.
-            opts.SupportedUICultures = supportedCultures;
-       });
         }
 
 
@@ -200,7 +185,4 @@ namespace ApiAuctionShop
 
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);
     }
-}
-public class SharedResource
-{
 }

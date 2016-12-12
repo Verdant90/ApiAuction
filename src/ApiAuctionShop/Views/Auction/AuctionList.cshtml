@@ -1,5 +1,7 @@
 ﻿@model List<List<AuctionViewModel>>
 @using System.Security.Claims; 
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
 @{
     ViewData["Title"] = "Moje aukcje";
 }
@@ -7,18 +9,18 @@
 @if (User.IsSignedIn())
 {
     <ul class="nav nav-tabs">
-        <li class="active"><a id="myAuctionsTab" data-toggle="tab" href="#myAuctionsList">Moje aukcje</a></li>
-        <li><a id="activeAuctionsTab" data-toggle="tab" href="#activeAuctions">Aukcje w toku</a></li>
-        <li><a id="archieveAuctionsTab" data-toggle="tab" href="#archieveAuctions">Archiwum</a></li>
-        <li><a id="watchedAuctionsTab" data-toggle="tab" href="#watchedAuctions">Obserwowane</a></li>
+        <li class="active"><a id="myAuctionsTab" data-toggle="tab" href="#myAuctionsList">@Loc["MyAuctions"]</a></li>
+        <li><a id="activeAuctionsTab" data-toggle="tab" href="#activeAuctions">@Loc["ActiveAuctions"]</a></li>
+        <li><a id="archieveAuctionsTab" data-toggle="tab" href="#archieveAuctions">@Loc["Archive"]</a></li>
+        <li><a id="watchedAuctionsTab" data-toggle="tab" href="#watchedAuctions">@Loc["WatchedAuctions"]</a></li>
     </ul>
 
 }
 else
 {
     <ul class="nav nav-tabs">
-        <li class="active"><a id="activeAuctionsTab" data-toggle="tab" href="#activeAuctions">Aukcje w toku</a></li>
-        <li><a id="archieveAuctionsTab" data-toggle="tab" href="#archieveAuctions">Archiwum</a></li>
+        <li class="active"><a id="activeAuctionsTab" data-toggle="tab" href="#activeAuctions">@Loc["ActiveAuctions"]</a></li>
+        <li><a id="archieveAuctionsTab" data-toggle="tab" href="#archieveAuctions">@Loc["Archive"]</a></li>
     </ul>
 
 }
@@ -27,26 +29,26 @@ else
 @if (User.IsSignedIn())
 {
     <div id="myAuctionsList" class="tab-pane fade in active">
-        <h3>Moje aukcje</h3>
+        <h3>@Loc["MyAuctions"]</h3>
         <br />
         <table id="myAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <td>Tytuł</td>
-                    <td>Aktualna cena</td>
-                    <td>Data zakończenia</td>
-                    <td>Ilość ofert</td>
-                    <td>Stan</td>
+                    <td>@Loc["Title"]</td>
+                    <td>@Loc["CurrentPrice"]</td>
+                    <td>@Loc["EndDate"]</td>
+                    <td>@Loc["NumberOfBids"]</td>
+                    <td>@Loc["State"]</td>
                     <td></td>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
-                    <td>Tytuł</td>
-                    <td>Aktualna cena</td>
-                    <td>Data zakończenia</td>
-                    <td>Ilość ofert</td>
-                    <td>Stan</td>
+                    <td>@Loc["Title"]</td>
+                    <td>@Loc["CurrentPrice"]</td>
+                    <td>@Loc["EndDate"]</td>
+                    <td>@Loc["NumberOfBids"]</td>
+                    <td>@Loc["State"]</td>
                     <td></td>
                 </tr>
             </tfoot>
@@ -56,51 +58,51 @@ else
 }
     <div id="activeAuctions" class="tab-pane fade @(!User.IsSignedIn() ? "in active" : "" )">
         <div id="AllAuctionsTitle">
-            <h3>Wszystkie aukcje</h3>
+            <h3>@Loc["ActiveAuctions"]</h3>
         </div>
         <br />
         <table id="allAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <td>Tytuł</td>
-                    <td>Aktualna cena</td>
-                    <td>Data zakończenia</td>
-                    <td>Ilość ofert</td>
-                    <td>Obserwuj</td>
+                    <td>@Loc["Title"]</td>
+                    <td>@Loc["CurrentPrice"]</td>
+                    <td>@Loc["EndDate"]</td>
+                    <td>@Loc["NumberOfBids"]</td>
+                    <td>@Loc["StartWatching"]</td>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
-                    <td>Tytuł</td>
-                    <td>Aktualna cena</td>
-                    <td>Data zakończenia</td>
-                    <td>Ilość ofert</td>
-                    <td>Obserwuj</td>
+                    <td>@Loc["Title"]</td>
+                    <td>@Loc["CurrentPrice"]</td>
+                    <td>@Loc["EndDate"]</td>
+                    <td>@Loc["NumberOfBids"]</td>
+                    <td>@Loc["StartWatching"]</td>
                 </tr>
             </tfoot>
             <tbody></tbody>
         </table>
     </div>
     <div id="archieveAuctions" class="tab-pane fade">
-        <h3>Archiwum aukcji</h3>
+        <h3>@Loc["AuctionArchive"]</h3>
         <br />
         <table id="archievedAuctions" class="table table-striped grid-table" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <td>Tytuł</td>
-                    <td>Cena końcowa</td>
-                    <td>Data zakończenia</td>
-                    <td>Ilość ofert</td>
-                    <td>Zwycięzca</td>
+                    <td>@Loc["Title"]</td>
+                    <td>@Loc["EndPrice"]</td>
+                    <td>@Loc["EndDate"]</td>
+                    <td>@Loc["NumberOfBids"]</td>
+                    <td>@Loc["Winner"]</td>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
-                    <td>Tytuł</td>
-                    <td>Cena końcowa</td>
-                    <td>Data zakończenia</td>
-                    <td>Ilość ofert</td>
-                    <td>Zwycięzca</td>
+                    <td>@Loc["Title"]</td>
+                    <td>@Loc["EndPrice"]</td>
+                    <td>@Loc["EndDate"]</td>
+                    <td>@Loc["NumberOfBids"]</td>
+                    <td>@Loc["Winner"]</td>
                 </tr>
             </tfoot>
             <tbody></tbody>
@@ -109,7 +111,7 @@ else
 @if (User.IsSignedIn())
 {
     <div id="watchedAuctions" class="tab-pane fade">
-        <h3>Obserwowane</h3>
+        <h3>@Loc["WatchedAuctions"]</h3>
         <br />
         <table id="watchedAuctionsTable" class="table table-striped grid-table" cellspacing="0" width="100%">
             <thead>

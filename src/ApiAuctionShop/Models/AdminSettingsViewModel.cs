@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ApiAuctionShop.Models
@@ -12,7 +13,7 @@ namespace ApiAuctionShop.Models
         public AdminMenuModel adminMenuModel;
 
         [Required(ErrorMessage = "This field must not be empty.")]
-        [NumbersSeparatedByComma(ErrorMessage = "Must be a list of numbers separated by a comma!")]
+        [NumbersWithLetterSeparatedByCommaAttribute(ErrorMessage = "Must be a list of numbers separated by a comma!")]
         public string timePeriods { get; set; }
 
         public bool hasBuyNow { get; set; }
@@ -30,7 +31,7 @@ namespace ApiAuctionShop.Models
     }
 
 
-    public class NumbersSeparatedByCommaAttribute : ValidationAttribute
+    public class NumbersWithLetterSeparatedByCommaAttribute : ValidationAttribute
     {
 
         public override bool IsValid(object value)
@@ -38,14 +39,11 @@ namespace ApiAuctionShop.Models
             string strValue = value as string;
             if (!string.IsNullOrEmpty(strValue))
             {
-                List<string> numbers = strValue.Split(',').ToList();
-                foreach(string s in numbers)
+                Regex r = new Regex("([1-9][0-9]*[hdw])(','[1-9][0-9]*[hdw])*");
+                List<string> periods = strValue.Split(',').ToList();
+                foreach(string s in periods)
                 {
-                    foreach(char c in s)
-                    {
-                        if (c < '0' || c > '9')
-                            return false;
-                    }
+                    if (!r.IsMatch(s)) return false;
                 }
             }
             return true;

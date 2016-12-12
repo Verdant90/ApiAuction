@@ -1,0 +1,22 @@
+﻿{
+  "Main": "Strona główna",
+  "AuctionList": "Lista aukcji",
+  "AddAuction": "Dodaj aukcję",
+  "GroupProject": "2016 Projekt Grupowy",
+
+
+  "MyAuctions": "Moje aukcje",
+  "ActiveAuctions": "Aukcje w toku",
+  "Archive": "Archiwum",
+  "WatchedAuctions": "Obserwowane",
+  "AuctionArchive": "Archiwum aukcji",
+  "Title": "Tytuł",
+  "CurrentPrice": "Aktualna cena",
+  "EndDate": "Data zakończenia",
+  "NumberOfBids": "Ilość ofert",
+  "State": "Stan",
+  "StartWatching": "Obserwuj",
+  "EndPrice": "Cena końcowa",
+  "Winner": "Zwycięzca"
+
+}

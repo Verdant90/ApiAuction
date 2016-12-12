@@ -13,11 +13,13 @@ using Microsoft.Data.Entity;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Projekt.Controllers
@@ -52,8 +54,11 @@ namespace Projekt.Controllers
 
 
         [AllowAnonymous]
-        public ActionResult AuctionPage(int id)
+        public ActionResult AuctionPage(int id, string language)
         {
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
             //var bids = _context.Bids.Count(i => i.auctionId == id);
             var bids = _context.Bids.Where(i => i.auctionId == id).ToList().OrderByDescending(o => o.bid).ToList();
             var tmp = _context.Auctions.FirstOrDefault(i => i.ID == id);
@@ -120,8 +125,11 @@ namespace Projekt.Controllers
         //zmienic nazwe na AuctionLists
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult AuctionList()
+        public IActionResult AuctionList(string language)
         {
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
             return View();
         }
 

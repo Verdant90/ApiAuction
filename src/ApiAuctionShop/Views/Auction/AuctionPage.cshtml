@@ -1,6 +1,8 @@
 @model BiddingViewModel
 @using Projekt.Controllers;
 @using System.Security.Claims; 
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
 
 <div class="auctionPage">
     <header class="page-header">
@@ -53,7 +55,7 @@
                                         @switch (Model.auctionToSend.state)
                                         {
                                             case "active":
-                                                <small> Status: <span class="label label-success">licytacja trwa</span></small>
+                                                <small> Status: <span class="label label-success">@Loc["AuctionPending"]</span></small>
                                                 break;
                                             case "ended":
                                                 <small> Status: <span class="label label-default">zakończona</span></small>
