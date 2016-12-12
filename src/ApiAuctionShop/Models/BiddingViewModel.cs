@@ -11,7 +11,6 @@ namespace ApiAuctionShop.Models
         public bool hasBuyNowGlobal { get; set; }
         public decimal bid { get; set; }
         public List<Bid> bids { get; set; }
-        public Dictionary<string, Dictionary<string, string>> d;
     }
     
 }

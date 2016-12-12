@@ -30,26 +30,13 @@ namespace Projekt.Controllers
         public ApplicationDbContext _context;
         private readonly UserManager<Signup> _userManager;
         private readonly IHostingEnvironment _environment;
-        public Dictionary<string, Dictionary<string,string>> dict;
         public AuctionController(IHostingEnvironment environment,
             UserManager<Signup> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
             _environment = environment;
-            string xmlString = System.IO.File.ReadAllText(@"Resources/translations.xml");
-            var document = System.Xml.Linq.XDocument.Parse(xmlString);
-            var settingsList = (from element in document.Root.Elements("word")
-                                select new Setting
-                                {
-                                    Code = element.Attribute("code").Value,
-                                    Lang = element.Attribute("lang").Value,
-                                    Value = element.Value
-                                }).ToList();
-            dict = settingsList.GroupBy(i => i.Code)
-                            .ToDictionary(j => j.Key,
-                                          k => k.ToDictionary(i => i.Lang, thing => thing.Value));
-            
+           
         }
 
 
@@ -70,8 +57,7 @@ namespace Projekt.Controllers
             {
                 auctionToSend = tmp,
                 hasBuyNowGlobal = settings.hasBuyNow,
-                bids = bids,
-                d = dict
+                bids = bids
             };
 
             return View(bvm);
