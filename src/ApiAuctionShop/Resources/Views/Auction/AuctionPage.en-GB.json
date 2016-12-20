@@ -5,6 +5,32 @@
   "GroupProject": "2016 Group Project",
 
 
-  "AuctionPending":  "auction pending"
+  "State": "State",
+  "AuctionPending": "auction pending",
+  "AuctionWaiting": "waiting",
+  "AuctionInactive": "blocked",
+  "AuctionEnded": "ended",
+  "Author": "Author",
+  "StartDate": "Start date",
+  "EndDate": "End date",
+  "AuthorWantsToBeAbleToEndTheAuctionBeforeEndDate": "The author of the auction requested to be able to end the auction before its end date.",
+  "CurrentPrice": "Current price",
+  "EndPrice": "Final price",
+  "StartingPrice": "Starting price",
+  "LogInToBeAbleToBid": "Log in to be able to bid.",
+  "YouAreTheAuthorOfThisAuctionAndThereforeCantBid": "You are the author of this auction and therefore you can't bid.",
+  "TheFieldBidMustBeANumber": "Enter a correct price",
+  "YouMustEnterThePrice": "You must enter a price",
+  "Bid": "Bid",
+  "BuyNowFor": "Buy now for ",
+  "AdminCantBid": "As an administrator, you can't bid",
+  "ItemDescription": "Item description",
+  "BuyOffers": "Offers",
+  "Number": "No",
+  "User": "User",
+  "BidValue": "Offer",
+  "Date": "Date",
+  "NoBidsYet": "No bids yet!",
+  "AuctionHasntStarted": "The auction hasn't started yet!"
 
 }

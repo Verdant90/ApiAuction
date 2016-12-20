@@ -55,30 +55,30 @@
                                         @switch (Model.auctionToSend.state)
                                         {
                                             case "active":
-                                                <small> Status: <span class="label label-success">@Loc["AuctionPending"]</span></small>
+                                                <small> @Loc["State"]: <span class="label label-success">@Loc["AuctionPending"]</span></small>
                                                 break;
                                             case "ended":
-                                                <small> Status: <span class="label label-default">zakończona</span></small>
+                                                <small> @Loc["State"]: <span class="label label-default">@Loc["AuctionEnded"]</span></small>
                                                 break;
                                             case "inactive":
-                                                <small> Status: <span class="label label-danger">zablokowana</span></small>
+                                                <small> @Loc["State"]: <span class="label label-danger">@Loc["AuctionInactive"]</span></small>
                                                 break;
                                             case "waiting":
-                                                <small> Status: <span class="label label-warning">oczekująca</span></small>
+                                                <small> @Loc["State"]: <span class="label label-warning">@Loc["AuctionWaiting"]</span></small>
                                                 break;
 
                                         }
                                     </li>
-                                    <li class="list-group-item">Autor: @Model.auctionToSend.author </li>
-                                    <li class="list-group-item glyphicon glyphicon-off" title="Data rozpoczecia">@Html.Raw(" ") @Model.auctionToSend.startDate</li>
-                                    <li class="list-group-item " title="Data zakończenia">
+                                    <li class="list-group-item">@Loc["Author"]: @Model.auctionToSend.author </li>
+                                    <li class="list-group-item glyphicon glyphicon-off" title="@Loc["StartDate"]">@Html.Raw(" ") @Model.auctionToSend.startDate</li>
+                                    <li class="list-group-item " title="@Loc["EndDate"]">
                                         <div class="glyphicon glyphicon-stop">
                                             @Html.Raw(" ") @Model.auctionToSend.endDate 
                                         </div>
                                         <br />
                                         @if (Model.auctionToSend.state == "active" && Model.auctionToSend.editable == true)
                                         {
-                                            <div class="smaller">(Autor zastrzegł prawo do zakończenia aukcji przed czasem.)</div>
+                                            <div class="smaller">(@Loc["AuthorWantsToBeAbleToEndTheAuctionBeforeEndDate"] )</div>
                                             
 
                                         }
@@ -86,57 +86,78 @@
                                     <li class="list-group-item">
                                         @if (Model.bids.Count > 0)
                                         {
-                                            @:Aktualna cena: @Model.bids.First().bid zł
+                                            @if (Model.auctionToSend.state == "ended")
+                                            {
+                                                @Loc["EndPrice"]
+                                            }
+                                            else
+                                            {
+                                                @Loc["CurrentPrice"]
+
+                                            }
+                                            @: : @Model.bids.First().bid zł
                                         }
                                         else
                                         {
-                                            @:Cena wywoławcza: <b class="titleOfAuction">@Model.auctionToSend.startPrice zł </b>
+                                            @:@Loc["StartingPrice"]: <b class="titleOfAuction">@Model.auctionToSend.startPrice zł </b>
                                                               
                                         }
                                     </li>
                                 </ul>
-                                @if (User.GetUserName() == Model.auctionToSend.author)
+                                @if (!User.IsSignedIn())
                                 {
-                                    <b>Jako autor tej aukcji nie możesz licytować.</b>
-
+                                    <b>@Loc["LogInToBeAbleToBid"]</b>
+                                   
                                 }
                                 else
                                 {
-                                    if (!User.IsInRole("Admin"))
+                                    @if (User.GetUserName() == Model.auctionToSend.author)
                                     {
-                                        @if (Model.auctionToSend.state == "active")
-                                        {
-                                            @using (Html.BeginForm("CreateBid", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                            {
-                                                <div class="col-md-9">
-                                                    @Html.AntiForgeryToken()
-                                                    @Html.HiddenFor(model => model.auctionToSend.ID)
-                                                    <div class="col-md-6 col-md-offset-3">
-                                                        <input type="text" class="form-control" data-val="true" data-val-number="The field bid must be a number." data-val-required="Pole bid jest wymagane." id="bid" name="bid" value="0,00">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <button type="submit" class="btn btn-success">Licytuj! </button>
-                                                    </div>
-                                                </div>
-                                            }
-                                            if (Model.hasBuyNowGlobal && Model.auctionToSend.buyPrice != null)
-                                            {
-                                                @using (Html.BeginForm("BuyNow", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                                {
-                                                    @Html.AntiForgeryToken()
-                                                    @Html.HiddenFor(model => model.auctionToSend.ID)
-                                                    <div class="col-md-3 no-padding">
-                                                        <button type="submit" class="btn btn-warning">Kup teraz za @Model.auctionToSend.buyPrice.ToString() zł! </button>
-                                                    </div>
-                                                }
-                                            }
-                                        }
+                                        <b>@Loc["YouAreTheAuthorOfThisAuctionAndThereforeCantBid"]</b>
+
                                     }
                                     else
                                     {
-                                        <b>Jako administrator nie możesz licytować w aukcjach.</b>
+                                        if (!User.IsInRole("Admin"))
+                                        {
+                                            @if (Model.auctionToSend.state == "active")
+                                            {
+                                                @using (Html.BeginForm("CreateBid", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                                {
+                                                    <div class="col-md-9">
+                                                        @Html.AntiForgeryToken()
+                                                        @Html.HiddenFor(model => model.auctionToSend.ID)
+                                                        <div class="col-md-6 col-md-offset-3">
+                                                            <input type="text" class="form-control" data-val="true" data-val-number="@Loc["TheFieldBidMustBeANumber"]" data-val-required="@Loc["YouMustEnterThePrice"]" id="bid" name="bid" value="0,00">
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <button type="submit" class="btn btn-success">@Loc["Bid"]! </button>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                if (Model.hasBuyNowGlobal && Model.auctionToSend.buyPrice != null)
+                                                {
+                                                    @using (Html.BeginForm("BuyNow", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                                    {
+                                                        @Html.AntiForgeryToken()
+                                                        @Html.HiddenFor(model => model.auctionToSend.ID)
+                                                        <div class="col-md-3 no-padding">
+                                                            <button type="submit" class="btn btn-warning">@Loc["BuyNowFor"] @Model.auctionToSend.buyPrice.ToString() zł! </button>
+                                                        </div>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            <b>@Loc["AdminCantBid"]</b>
+
+                                        }
                                     }
+
                                 }
+                               
                             </div>
                         </div>
                     </div>
@@ -145,7 +166,7 @@
             </div>
                 <br />
                 <div class="col-md-12">
-                    <h4>Opis przedmiotu</h4>
+                    <h4>@Loc["ItemDescription"]</h4>
                     <hr />
                     <p>
                        @Model.auctionToSend.description
@@ -153,7 +174,7 @@
                 </div>
                 <br />
                 <div class="col-md-12">
-                    <h4>Oferty kupna</h4>
+                    <h4>@Loc["BuyOffers"]</h4>
                     <hr />
                     @if (Model.bids.Count > 0)
                     {
@@ -161,10 +182,10 @@
                         <table class="table table-striped table-responsive ">
                             <thead>
                                 <tr>
-                                    <th>Numer</th>
-                                    <th>Uzytkownik</th>
-                                    <th>Cena</th>
-                                    <th>Data</th>
+                                    <th>@Loc["Number"]</th>
+                                    <th>@Loc["User"]</th>
+                                    <th>@Loc["BidValue"]</th>
+                                    <th>@Loc["Date"]</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -173,7 +194,7 @@
                                     <tr>
                                         <td>@b.i.</td>
                                         <td>@b.value.bidAuthor</td>
-                                        <td>@b.value.bid.ToString("C")</td>
+                                        <td>@b.value.bid.ToString() zł</td>
                                         <td>@b.value.bidDate.ToString()</td>
                                     </tr>
 
@@ -186,12 +207,12 @@
                     {
                         @if (Model.auctionToSend.state == "active")
                         {
-                            <h4>Jeszcze nie ma ofert kupna!</h4>
+                            <h4>@Loc["NoBidsYet"]</h4>
                         }
                         else if (Model.auctionToSend.state == "waiting")
                         {
 
-                            <h4>Aukcja się jeszcze nie rozpoczęła. </h4>
+                            <h4>@Loc["AuctionHasntStarted"]</h4>
                         }
 
                     }

@@ -50,5 +50,28 @@ else
     <ul class="nav navbar-nav navbar-right">
         <li><a asp-controller="Account" asp-action="Register">Register</a></li>
         <li><a asp-controller="Account" asp-action="Login">Log in</a></li>
+        <li>
+            <div>
+                @if (ViewContext.RouteData.Values["language"].ToString() == "pl-PL")
+                {
+                    <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "pl-PL", id = ViewContext.RouteData.Values["id"] }, null)">
+                        <img src="~/images/pl.ico" height="30" />
+                    </a>
+                        <a class="lang-inactive" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "en-GB", id = ViewContext.RouteData.Values["id"] }, null)">
+                            <img src="~/images/en.ico" height="30" />
+                        </a>
+                }
+                else
+                {
+                    <a class="lang-inactive" href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "pl-PL" , id = ViewContext.RouteData.Values["id"]}, null)">
+                        <img src="~/images/pl.ico" height="30" />
+                    </a>
+                        <a href="@Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString(), new { language = "en-GB", id = ViewContext.RouteData.Values["id"] }, null)">
+                            <img src="~/images/en.ico" height="30" />
+                        </a>
+
+                }
+            </div>
+        </li>
     </ul>
 }

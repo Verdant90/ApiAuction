@@ -62,6 +62,7 @@ namespace Projekt.Controllers
 
             return View(bvm);
         }
+
         [Authorize]
         [HttpPost]
         public async Task<ActionResult> AuctionPreview(AuctionCreateViewModel acvm, ICollection<IFormFile> files = null)
