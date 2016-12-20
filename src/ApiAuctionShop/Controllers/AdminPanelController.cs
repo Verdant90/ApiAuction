@@ -9,6 +9,9 @@ using System.Security.Claims;
 using Microsoft.AspNet.Identity;
 using ApiAuctionShop.Database;
 using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.AspNet.Hosting;
+using System.Threading;
+using System.Globalization;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,19 +23,23 @@ namespace ApiAuctionShop.Controllers
 
         public ApplicationDbContext _context;
         private readonly UserManager<Signup> _userManager;
-        
+        private readonly IHostingEnvironment _environment;
+
 
         public AdminPanelController(
-            UserManager<Signup> userManager, ApplicationDbContext context)
+            UserManager<Signup> userManager, ApplicationDbContext context, IHostingEnvironment environment)
         {
             _userManager = userManager;
             _context = context;
+            _environment = environment;
 
         }
 
         // GET: /AdminPanel/
-        public IActionResult AdminPanel()
+        public IActionResult AdminPanel(string language)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
             var users = _context.Users;
             var userCount = users.Count();
             var bidsCount = _context.Bids.Count();
