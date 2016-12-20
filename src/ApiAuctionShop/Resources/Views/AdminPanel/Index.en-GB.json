@@ -2,7 +2,10 @@
   "Main": "Main page",
   "AuctionList": "Auction List",
   "AddAuction": "Add an auction",
-  "GroupProject": "2016 Group Project"
+  "GroupProject": "2016 Group Project",
 
-
+  "KainosAuctionSystemAdminPanel": "Kainos auction system admin panel",
+  "Authors": "Authors",
+  "Links": "Links",
+  "ReadMe": "ReadMe"
 }
