@@ -1,0 +1,17 @@
+﻿{
+  "Main": "Strona główna",
+  "AuctionList": "Lista aukcji",
+  "AddAuction": "Dodaj aukcję",
+  "GroupProject": "2016 Projekt Grupowy",
+
+
+  "SiteSettings": "Ustawienia strony",
+  "MainWebsiteSettings": "Główne ustawienia",
+  "ChangeTheSettings": "Zmiana ustawień",
+  "BuyNowOption": "Opcja Kup Teraz",
+  "SelectThisToEnableTheBuyNowOptionInTheAuctions": "Zaznacz aby udostępnić opcję Kup Teraz dla wszystkich aukcji.",
+  "TimePeriods": "Czasy trwania aukcji",
+  "TimePeriodsDesc": "Zdefiniuj opcje przedziałów czasowych, spośród których będzie można wybierać czas trwania aukcji np. 4d - 4 dni, 3m - 3 miesiące, 2h - 2 godziny itd. Wartości oddzielaj przecinkiem.",
+  "StartingMessage": "Wiadomość początkowa",
+  "SaveChanges": "Zapisz zmiany"
+}

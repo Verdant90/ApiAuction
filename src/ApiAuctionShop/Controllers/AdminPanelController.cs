@@ -171,8 +171,11 @@ namespace ApiAuctionShop.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult> Settings()
+        public async Task<ActionResult> Settings(string language)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
+
             var users = _context.Users.ToList();
             var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             AdminSettingsViewModel model = new AdminSettingsViewModel();

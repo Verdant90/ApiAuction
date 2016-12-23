@@ -7,6 +7,8 @@
 @{
     ViewBag.Title = "Site Settings";
 }
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
 @section scripts{
     <link href="~/css/bootstrap-admin-theme.css" rel="stylesheet" asp-file-version="true" />
 <link href="~/css/bootstrap-wysihtml5/core-b3.css" rel="stylesheet" asp-file-version="true" />
@@ -35,7 +37,7 @@
     <div class="row">
         <div class="bootstrap-admin-content-title">
             <h1>
-                @ViewBag.Title
+                @Loc["SiteSettings"] 
             </h1>
         </div>
     </div>
@@ -45,28 +47,28 @@
     <div class="row">
         <div class="panel panel-default bootstrap-admin-no-table-panel">
             <div class="panel-heading">
-                <div class="text-muted bootstrap-admin-box-title">Main website settings</div>
+                <div class="text-muted bootstrap-admin-box-title">@Loc["MainWebsiteSettings"]</div>
             </div>
             <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
              @using (Html.BeginForm("Settings", "AdminPanel", FormMethod.Post, new { enctype = "multipart/form-data" }))
              {
                 <div class="form-horizontal">
                     <fieldset>
-                        <legend>Change the settings</legend>
+                        <legend>@Loc["ChangeTheSettings"]</legend>
                         <div class="form-group">
-                            <label class="col-lg-2 control-label" for="optionsCheckbox2">Buy-Now option</label>
+                            <label class="col-lg-2 control-label" for="optionsCheckbox2">@Loc["BuyNowOption"]</label>
                             <div class="col-lg-10">
                                 <label>
                                     @Html.CheckBoxFor(m => m.hasBuyNow)
-                                    Select this to enable the Buy-Now option in the auctions.
+                                    @Loc["SelectThisToEnableTheBuyNowOptionInTheAuctions"]
                                 </label>
                             </div>
                         </div>
                         <br />
                         <div class="form-group">
-                            <label class="col-lg-2 control-label" for="focusedInput">Time periods</label>
+                            <label class="col-lg-2 control-label" for="focusedInput">@Loc["TimePeriods"]</label>
                             <div class="col-lg-10">
-                                Here you can define specific time periods (in days) the users can choose from when selecting the auction's duration. Separate the values with a comma.
+                                @Loc["TimePeriodsDesc"]
                                 <br />
                                 @Html.TextBoxFor(model => model.timePeriods)
                                 @Html.ValidationMessageFor(model => model.timePeriods)
@@ -74,12 +76,12 @@
                         </div>
                         <br />
                         <div class="form-group">
-                            <label class="col-lg-2 control-label" for="textarea-wysihtml5">Starting Message</label>
+                            <label class="col-lg-2 control-label" for="textarea-wysihtml5">@Loc["StartingMessage"]</label>
                             <div class="col-lg-10">
                                 @Html.TextAreaFor(m => m.startMessage, htmlAttributes: new { id = "textarea-wysihtml5", @class="form-control textarea-wysihtml5", placeholder="Enter text...", style="width: 100%; height: 200px" })
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary">@Loc["SaveChanges"]</button>
                     </fieldset>
                 </div>
              }   
