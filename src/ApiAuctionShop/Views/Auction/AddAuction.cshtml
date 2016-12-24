@@ -56,7 +56,12 @@
                         
                         @foreach (string s in tp)
                         {
-                            <label class="btn btn-primary">
+                            string c = "btn btn-primary";
+                            if (Model.auction != null && s == Model.auction.duration)
+                            {
+                                c += " active";
+                            }
+                            <label class="@c">
                                 @Html.RadioButtonFor(model => model.auction.duration, s)@s
                             </label>
                         }
