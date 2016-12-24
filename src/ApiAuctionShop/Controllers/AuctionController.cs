@@ -134,7 +134,7 @@ namespace Projekt.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, string submit, ICollection<ImageFile> files)
         {
-            if (submit.Equals("cancel"))
+            if (submit != null && submit.Equals("cancel"))
             {
                 return View("AddAuction", acvm);
             }
@@ -171,7 +171,7 @@ namespace Projekt.Controllers
 
             //currentPrice = (decimal)auction.price,
             };
-            foreach(var file in acvm.auction.imageFiles)
+            foreach(var file in files)
             {
                 var img = new ImageFile()
                 {

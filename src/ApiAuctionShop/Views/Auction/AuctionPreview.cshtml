@@ -10,30 +10,38 @@
 @using (Html.BeginForm("AddAuction", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    @Html.Hidden("acvm.auction.title", Model.auction.title)
-    //@Html.HiddenFor(model => model.auction.title)
-    @Html.Hidden("acvm.auction.startPrice", Model.auction.startPrice)
-    //@Html.HiddenFor(model => model.auction.startPrice)
-    @Html.Hidden("acvm.auction.buyPrice", Model.auction.buyPrice)
-    //@Html.HiddenFor(model => model.auction.buyPrice)
-    @Html.Hidden("acvm.auction.imageFiles", Model.auction.imageFiles)
-    //@Html.HiddenFor(model => model.auction.imageFiles)
-    @Html.Hidden("acvm.auction.description", Model.auction.description)
-    //@Html.HiddenFor(model => model.auction.description)
-    @Html.Hidden("acvm.auction.duration", Model.auction.duration)
-    //@Html.HiddenFor(model => model.auction.duration)
-    @Html.Hidden("acvm.hasBuyNowGlobal", Model.hasBuyNowGlobal)
-    //@Html.HiddenFor(model => model.hasBuyNowGlobal)
-    @Html.Hidden("acvm.timePeriods", Model.timePeriods)
-    //@Html.HiddenFor(model => model.timePeriods)
+    @Html.ValidationSummary(true)
+    //@Html.Hidden("acvm.auction.title", Model.auction.title)
+    @Html.HiddenFor(model => model.auction.title)
+    //@Html.Hidden("acvm.auction.startPrice", Model.auction.startPrice)
+    @Html.HiddenFor(model => model.auction.startPrice)
+    //@Html.Hidden("acvm.auction.buyPrice", Model.auction.buyPrice)
+    @Html.HiddenFor(model => model.auction.buyPrice)
+    //@Html.Hidden("acvm.auction.imageFiles", Model.auction.imageFiles)
+    @Html.HiddenFor(model => model.auction.imageFiles)
+    //@Html.Hidden("acvm.auction.description", Model.auction.description)
+    @Html.HiddenFor(model => model.auction.description)
+    //@Html.Hidden("acvm.auction.duration", Model.auction.duration)
+    @Html.HiddenFor(model => model.auction.duration)
+    //@Html.Hidden("acvm.hasBuyNowGlobal", Model.hasBuyNowGlobal)
+    @Html.HiddenFor(model => model.hasBuyNowGlobal)
+    //@Html.Hidden("acvm.timePeriods", Model.timePeriods)
+    @Html.HiddenFor(model => model.timePeriods)
     
     
     <div>
+        <div style="display: none;">@Html.EditorFor(model => model.auction.imageFiles)</div>
+
         @{ var imageIndex = 0; }
         @foreach (var imagefile in Model.auction.imageFiles)
         {
             // Tylko ImagePath, bo reszta i tak się sama generuje
-            @Html.Hidden("acvm.auction.imageFiles[" + imageIndex + "].ImagePath", imagefile.ImagePath);
+            @Html.HiddenFor(model => Model.auction.imageFiles.ToList()[imageIndex].ImagePath);
+            //@Html.TextBoxFor(model => Model.auction.imageFiles.ToList()[imageIndex].ImagePath);
+
+            //@Html.TextBoxFor(model => model.auction.);
+            //@Html.HiddenFor(model => model.auction.imageFiles.ElementAt(imageIndex).ImagePath);
+            //@Html.Hidden("acvm.auction.imageFiles[" + imageIndex + "].ImagePath", imagefile.ImagePath);
             imageIndex++;
         }
         <hr />
