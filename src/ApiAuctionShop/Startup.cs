@@ -44,7 +44,7 @@ namespace ApiAuctionShop
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
-
+            /**
             var waitHandle = new AutoResetEvent(false);
             ThreadPool.RegisterWaitForSingleObject(
                 waitHandle,
@@ -72,7 +72,7 @@ namespace ApiAuctionShop
                 // Set this to false to execute it repeatedly every 5 seconds
                 false
             );
-
+            **/
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
