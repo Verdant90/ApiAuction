@@ -8,6 +8,9 @@
 <br />
 @if (User.IsSignedIn())
 {
+    <cache expires-after="@TimeSpan.FromMinutes(60)">
+        @Html.Partial("_ChatPartial")
+    </cache>
     <ul class="nav nav-tabs">
         <li class="active"><a id="myAuctionsTab" data-toggle="tab" href="#myAuctionsList">@Loc["MyAuctions"]</a></li>
         <li><a id="activeAuctionsTab" data-toggle="tab" href="#activeAuctions">@Loc["ActiveAuctions"]</a></li>

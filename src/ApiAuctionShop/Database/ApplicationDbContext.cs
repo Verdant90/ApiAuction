@@ -18,6 +18,7 @@ namespace ApiAuctionShop.Database
         public DbSet<Bid> Bids { get; set; }
         public DbSet<ImageFile> ImageFiles { get; set; }
         public DbSet<AuctionsUsersWatching> AuctionsUsersWatching { get; set; }
+        public DbSet<Chat> chat { get; set; }
         public ApplicationDbContext()
         : base()
         {
@@ -58,6 +59,11 @@ namespace ApiAuctionShop.Database
                 .HasForeignKey(pt => pt.UserId);
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Data Source=(localdb)\\v11.0;Initial Catalog=ProjektGrupowy;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
     }
 }

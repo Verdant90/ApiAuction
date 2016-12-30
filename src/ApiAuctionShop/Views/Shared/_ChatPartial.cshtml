@@ -1,0 +1,67 @@
+﻿@using System.Security.Claims
+@if (User.IsSignedIn())
+{
+    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jQuery/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+
+        <link type="text/css" href="~/js/jquery.ui.chatbox.css" rel="stylesheet" />
+        <script type="text/javascript" src="~/js/jquery.ui.chatbox.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var wsUri = "ws://" + window.location.host + "/";
+                var output = document.getElementById("output");
+                websocket = new WebSocket(wsUri);
+                var box = null;
+                box = $("#chat_div").chatbox({
+                    id: "chat_div",
+                    user: { key: "value" },
+                    title: "",
+                    messageSent: function (id, user, msg, touser) {
+                        $("#chat_div").chatbox("option", "boxManager").addMsg("@User.GetUserName()", msg, touser);
+                        websocket.send("@User.GetUserName()" + '%' + msg + '%' + touser + '%');
+                    }
+
+                });
+                websocket.onmessage = function (evt) {
+                    $("#chat_div").chatbox("option", "boxManager").addMsg("", evt.data);
+                };
+
+                ///request
+                var getJSON = function (url) {
+                    return new Promise(function (resolve, reject) {
+                        var xhr = new XMLHttpRequest();
+                        xhr.open('get', url, true);
+                        xhr.responseType = 'json';
+                        xhr.onload = function () {
+                            var status = xhr.status;
+                            if (status == 200) {
+                                resolve(xhr.response);
+                            } else {
+                                reject(status);
+                            }
+                        };
+                        xhr.send();
+                    });
+                };
+
+                var req = 'http://localhost:5000/chat/get/' + '@User.GetUserName()';
+                getJSON(req).then(function (data) {
+                    // TUTAJ MOZNA data.lenght ale chcemy tylko 100 wiadomosci
+                    for (var i = 0; i < data.length; i++) {
+                        var resp = data[i].someProperty + ":" + data[i].someOtherProperty;
+                        $("#chat_div").chatbox("option", "boxManager").addMsg("", resp);
+                    }
+                 
+                }, function (status) {
+                    alert('Something went wrong.');
+                });
+
+
+
+
+
+            });
+        </script>
+        <div id="chat_div"></div>       
+}

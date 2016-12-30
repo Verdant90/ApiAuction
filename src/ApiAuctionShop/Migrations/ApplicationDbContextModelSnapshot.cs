@@ -21,10 +21,6 @@ namespace ApiAuctionShop.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<byte[]>("ImageData");
-
-                    b.Property<string>("ImageMimeType");
-
                     b.Property<string>("SignupId")
                         .HasAnnotation("Relational:ColumnName", "SignupId");
 
@@ -32,22 +28,22 @@ namespace ApiAuctionShop.Migrations
 
                     b.Property<string>("bid");
 
-                    b.Property<decimal>("buyPrice");
+                    b.Property<decimal?>("buyPrice");
 
                     b.Property<string>("cathegory");
 
                     b.Property<string>("description")
                         .IsRequired();
 
+                    b.Property<string>("duration");
+
                     b.Property<bool>("editable");
 
-                    b.Property<string>("endDate")
-                        .IsRequired();
+                    b.Property<string>("endDate");
 
                     b.Property<int>("price");
 
-                    b.Property<string>("startDate")
-                        .IsRequired();
+                    b.Property<string>("startDate");
 
                     b.Property<decimal>("startPrice");
 
@@ -59,6 +55,15 @@ namespace ApiAuctionShop.Migrations
                     b.Property<string>("winnerID");
 
                     b.HasKey("ID");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.AuctionsUsersWatching", b =>
+                {
+                    b.Property<int>("AuctionId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("AuctionId", "UserId");
                 });
 
             modelBuilder.Entity("ApiAuctionShop.Models.Bid", b =>
@@ -75,6 +80,36 @@ namespace ApiAuctionShop.Migrations
                     b.Property<string>("bidDate");
 
                     b.HasKey("bidId");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.Chat", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("author");
+
+                    b.Property<string>("message");
+
+                    b.Property<DateTime>("messagedate");
+
+                    b.Property<bool>("sendedmsg");
+
+                    b.Property<string>("toperson");
+
+                    b.HasKey("ID");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.ImageFile", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AuctionId");
+
+                    b.Property<string>("ImagePath");
+
+                    b.HasKey("ID");
                 });
 
             modelBuilder.Entity("ApiAuctionShop.Models.Signup", b =>
@@ -136,11 +171,13 @@ namespace ApiAuctionShop.Migrations
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ColorTheme");
+                    b.Property<string>("colorTheme");
 
                     b.Property<bool>("hasBuyNow");
 
-                    b.Property<int>("photoSize");
+                    b.Property<string>("photoSize");
+
+                    b.Property<string>("startMessage");
 
                     b.Property<string>("timePeriods");
 
@@ -240,11 +277,29 @@ namespace ApiAuctionShop.Migrations
                         .HasForeignKey("winnerID");
                 });
 
+            modelBuilder.Entity("ApiAuctionShop.Models.AuctionsUsersWatching", b =>
+                {
+                    b.HasOne("ApiAuctionShop.Models.Auctions")
+                        .WithMany()
+                        .HasForeignKey("AuctionId");
+
+                    b.HasOne("ApiAuctionShop.Models.Signup")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("ApiAuctionShop.Models.Bid", b =>
                 {
                     b.HasOne("ApiAuctionShop.Models.Auctions")
                         .WithMany()
                         .HasForeignKey("auctionId");
+                });
+
+            modelBuilder.Entity("ApiAuctionShop.Models.ImageFile", b =>
+                {
+                    b.HasOne("ApiAuctionShop.Models.Auctions")
+                        .WithMany()
+                        .HasForeignKey("AuctionId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRoleClaim<string>", b =>
