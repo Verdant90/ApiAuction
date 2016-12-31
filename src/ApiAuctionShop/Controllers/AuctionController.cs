@@ -43,7 +43,7 @@ namespace Projekt.Controllers
         [AllowAnonymous]
         public ActionResult AuctionPage(int id, string language)
         {
-
+            HttpContext.Session.SetString("URL", Request.Host.ToString() + Request.Path.ToString());
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
             //var bids = _context.Bids.Count(i => i.auctionId == id);
@@ -113,7 +113,7 @@ namespace Projekt.Controllers
         [HttpGet]
         public IActionResult AuctionList(string language)
         {
-
+            HttpContext.Session.SetString("URL", Request.Host.ToString() + Request.Path.ToString());
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
             return View();
@@ -484,7 +484,7 @@ namespace Projekt.Controllers
         [HttpGet]
         public Auctions GetAuction(int id)
         {
-          
+            HttpContext.Session.SetString("URL", Request.Host.ToString() + Request.Path.ToString());
             var y = (Auctions)_context.Auctions.Where(d => d.ID == id).ToList()[0];
             return (Auctions) _context.Auctions.Where(d => d.ID == id).ToList()[0];
         }

@@ -54,7 +54,10 @@ namespace Projekt.Controllers
                 var result = await _signInManager.PasswordSignInAsync(decryptedstring[0], decryptedstring[0] + "0D?", isPersistent: false, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    if (HttpContext.Session.GetString("URL") != null)
+                        return Redirect(HttpContext.Session.GetString("URL"));
+                    else
+                        return RedirectToAction("Index", "Home");
                 }
             }
             return RedirectToAction("Login", "Account");
@@ -92,6 +95,7 @@ namespace Projekt.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
+            HttpContext.Session.SetString("URL", Request.Host.ToString() + Request.Path.ToString());
             return View();
         }
 

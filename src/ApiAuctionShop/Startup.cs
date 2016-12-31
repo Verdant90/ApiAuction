@@ -102,8 +102,10 @@ namespace ApiAuctionShop
                 a.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             }
             );
-            
-           
+   
+            services.AddCaching(); // Adds a default in-memory implementation of IDistributedCache
+            services.AddSession();
+
         }
 
 
@@ -168,7 +170,7 @@ namespace ApiAuctionShop
 
             app.Use(WebSocketHandlerServer.ChatHandler);
 
-            //Jak obsluzyc MonitorController :C
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
