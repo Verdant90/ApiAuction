@@ -65,8 +65,11 @@ namespace ApiAuctionShop.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult> Auctions()
+        public async Task<ActionResult> Auctions(string language)
         {
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var users = _context.Users;
             var list_auctions = _context.Auctions.ToList();
