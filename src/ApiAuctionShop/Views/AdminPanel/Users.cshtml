@@ -1,4 +1,7 @@
 ﻿@model AdminUsersModel
+
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
 @{
     ViewBag.Title = "Users";
 }
@@ -19,18 +22,18 @@
         <div class="row">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="text-muted bootstrap-admin-box-title">Users</div>
+                    <div class="text-muted bootstrap-admin-box-title">@Loc["Users"]</div>
                 </div>
                 <table class="table table-striped grid-table">
                     <tr>
-                        <td>No.</td>
-                        <td>E-mail</td>
-                        <td>Role</td>
-                        <td>Auctions Count</td>
-                        <td>Bids Count</td>
-                        <td>Auctions Won Count</td>
-                        <td>Sold Items Count</td>
-                        <td></td>
+                        <td>@Loc["No"].</td>
+                        <td>@Loc["E-mail"]</td>
+                        <td>@Loc["Role"]</td>
+                        <td>@Loc["AuctionsCount"]</td>
+                        <td>@Loc["BidsCount"]</td>
+                        <td>@Loc["AuctionsWonCount"]</td>
+                        <td>@Loc["SoldItemsCount"]</td>
+
                     </tr>
 
                     @foreach (var item in Model.users.Select((value, i) => new { i = ++i, value }))
@@ -45,10 +48,7 @@
                             <td>@item.value.bidsCount</td>
                             <td>@item.value.auctionsWonCount</td>
                             <td>@item.value.soldItemsCount</td>
-                            <td>
-                                <button class="btn btn-xs btn-default" >PM</button>
-                                <button class="btn btn-xs btn-default" >Ban</button>
-                            </td>
+
                         </tr>
                     }
                 </table>

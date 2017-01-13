@@ -17,5 +17,13 @@
   "State": "State",
   "StartWatching": "Start watching",
   "EndPrice": "Final price",
-  "Winner":  "Winner"
+  "Winner": "Winner",
+  "Author": "Author",
+  "Left": "left",
+  "AuctionEnded": "Auction ended",
+  "UnWatched": "You no longer watch the auction",
+  "NoPermission": "No permission to watch the auction",
+  "Watched": "You now watch the auction",
+  "DatabaseError": "Database error",
+  "Language": "en"
 }

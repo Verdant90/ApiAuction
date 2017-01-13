@@ -1,3 +1,16 @@
 ﻿{
+  "Main": "Strona główna",
+  "AuctionList": "Lista aukcji",
+  "AddAuction": "Dodaj aukcję",
+  "GroupProject": "2016 Projekt Grupowy",
 
+
+  "Users": "Użytkownicy",
+  "No": "Lp",
+  "E-mail": "E-mail",
+  "Role": "Rola",
+  "AuctionsCount": "Liczba aukcji",
+  "BidsCount": "Liczba ofert",
+  "AuctionsWonCount": "Zwycięstwa w aukcjach",
+  "SoldItemsCount": "Sprzedane przedmioty"
 }

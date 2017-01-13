@@ -11,6 +11,7 @@ $('#activeAuctionsTab').click(function () {
 $('#archieveAuctionsTab').click(function () {
     if (!$.fn.dataTable.isDataTable('#archievedAuctions')) {
         $('#archievedAuctions').DataTable({
+            "language": (window.res.language == "pl") ? polish : english,
             searching: true,
             ordering: true,
             paging: true,
@@ -36,7 +37,7 @@ $('#archieveAuctionsTab').click(function () {
             ],
             "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 var imagestr = "<div class='col-md-3'><img class='miniatureAuctionList img-thumbnail img-responsive center-block' src='" + aData['imageData'] + "'></div> "
-                var titlestr = "<div class='col-md-9 auctionTitleAuthor'><b class='col-xs-12 auctionTitle'><a href='" + aData['url'] + "'>" + aData['title'] + "</a></b><div class='col-xs-12 auctionAuthor'>(Autor: " + aData['signupEmail'] + ")</div></div>"
+                var titlestr = "<div class='col-md-9 auctionTitleAuthor'><b class='col-xs-12 auctionTitle'><a href='" + aData['url'] + "'>" + aData['title'] + "</a></b><div class='col-xs-12 auctionAuthor'>("+window.res.author + ": " + aData['signupEmail'] + ")</div></div>"
                 var title = "<div class='row auctionTitleRow'>" + imagestr + titlestr + "</div>";
                 var bidCount = aData['bidCount'] ? aData['bidCount'] : '-';
                 var winnerEmail = aData['winnerEmail'] ? aData['winnerEmail'] : '-';
@@ -63,6 +64,7 @@ $('#archieveAuctionsTab').click(function () {
 $(document).ready(function () {
     if (!$.fn.dataTable.isDataTable('#allAuctions')) {
         $('#allAuctions').DataTable({
+            "language": (window.res.language == "pl") ? polish : english,
             searching: true,
             ordering: true,
             paging: true,
@@ -88,12 +90,12 @@ $(document).ready(function () {
             ],
             "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                 var imagestr = "<div class='col-md-3'><img class='miniatureAuctionList img-thumbnail img-responsive center-block' src='" + aData['imageData'] + "'></div> "
-                var titlestr = "<div class='col-md-9 auctionTitleAuthor'><b class='col-xs-12 auctionTitle'><a href='" + aData['url'] + "'>" + aData['title'] + "</a></b><div class='col-xs-12 auctionAuthor'>(Autor: " + aData['signupEmail'] + ")</div></div>"
+                var titlestr = "<div class='col-md-9 auctionTitleAuthor'><b class='col-xs-12 auctionTitle'><a href='" + aData['url'] + "'>" + aData['title'] + "</a></b><div class='col-xs-12 auctionAuthor'>("+window.res.author + ": " + aData['signupEmail'] + ")</div></div>"
                 var title = "<div class='row auctionTitleRow'>" + imagestr + titlestr + "</div>";
                 var bidCount = aData['bidCount'] ? aData['bidCount'] : '-';
                 var starState = aData['isWatched'] ? 'active' : 'inactive';
-                var star = "<img onclick='toggleAuctionWatch(this.id, " + aData['id'] + ")' id='star-all-auctions-" + aData['id'] + "' class='star-" + starState + "' src='/images/star-" + starState + ".png' title='Obserwuj'>";
-                var timeLeft = (aData['timeLeft']['howManyLeft'] !== -1) ? '(' + aData['timeLeft']['howManyLeft'] + ' ' + aData['timeLeft']['timeMeasure'] + ' do końca)' : '(Aukcja zakończona)';
+                var star = "<img onclick='toggleAuctionWatch(this.id, " + aData['id'] + ")' id='star-all-auctions-" + aData['id'] + "' class='star-" + starState + "' src='/images/star-" + starState + ".png' title='"+window.res.startWatching+"'>";
+                var timeLeft = (aData['timeLeft']['howManyLeft'] !== -1) ? '(' + aData['timeLeft']['howManyLeft'] + ' ' + aData['timeLeft']['timeMeasure'] + ' ' + window.res.left + ')' : '('+window.res.auctionEnded+')';
 
                 $('td:eq(0)', nRow).html(title);
                 $('td:eq(1)', nRow).html(formatter.format(aData['currentPrice']));
@@ -108,6 +110,7 @@ $(document).ready(function () {
 
     if (!$.fn.dataTable.isDataTable('#myAuctions')) {
         var oTable = $('#myAuctions').DataTable({
+            "language": (window.res.language == "pl") ? polish : english,
             searching: true,
             ordering: true,
             paging: true,
@@ -139,7 +142,7 @@ $(document).ready(function () {
                 var bidCount = aData['bidCount'] ? aData['bidCount'] : '-';
                 var state = " <div title='State:  " + aData['state'] + "'><img src='/images/auction_" + aData['state'] + ".png'></div>";
                 var actions = (aData['editable'] && aData['state'] === 'active') ? "<input type='button' class='btn btn-xs btn-default' value='Zakończ' onclick='window.location.href='/pl-PL/Auction/End/" + aData['id'] + "''> " : "";
-                var timeLeft = (aData['timeLeft']['howManyLeft'] !== -1) ? '(' + aData['timeLeft']['howManyLeft'] + ' ' + aData['timeLeft']['timeMeasure'] + ' do końca)' : '(Aukcja zakończona)';
+                var timeLeft = (aData['timeLeft']['howManyLeft'] !== -1) ? '(' + aData['timeLeft']['howManyLeft'] + ' ' + aData['timeLeft']['timeMeasure'] + ' ' + window.res.left + ')' : '(' + window.res.auctionEnded + ')';
 
                 $('td:eq(0)', nRow).html(title);
                 $('td:eq(1)', nRow).html(formatter.format(aData['currentPrice']));
@@ -162,6 +165,7 @@ $('#myAuctionsTab').click(function () {
 $('#watchedAuctionsTab').click(function () {
     if (!$.fn.dataTable.isDataTable('#watchedAuctionsTable')) {
         $('#watchedAuctionsTable').DataTable({
+            "language": (window.res.language == "pl")? polish:english,
             searching: true,
             ordering: true,
             paging: true,
@@ -191,8 +195,8 @@ $('#watchedAuctionsTab').click(function () {
                 var title = "<div class='row auctionTitleRow'>" + imagestr + titlestr + "</div>";
                 var bidCount = aData['bidCount'] ? aData['bidCount'] : '-';
                 var starState = aData['isWatched'] ? 'active' : 'inactive';
-                var star = "<img onclick='toggleAuctionWatch(this.id, " + aData['id'] + ")' id='star-" + aData['id'] + "' class='star-" + starState + "' src='/images/star-" + starState + ".png' title='Obserwuj'>";
-                var timeLeft = (aData['timeLeft']['howManyLeft'] !== -1) ? '(' + aData['timeLeft']['howManyLeft'] + ' ' + aData['timeLeft']['timeMeasure'] + ' do końca)' : '(Aukcja zakończona)';
+                var star = "<img onclick='toggleAuctionWatch(this.id, " + aData['id'] + ")' id='star-" + aData['id'] + "' class='star-" + starState + "' src='/images/star-" + starState + ".png' title='" + window.res.startWatching + "'> ";
+                var timeLeft = (aData['timeLeft']['howManyLeft'] !== -1) ? '(' + aData['timeLeft']['howManyLeft'] + ' ' + aData['timeLeft']['timeMeasure'] + ' ' + window.res.left + ')' : '(' + window.res.auctionEnded + ')';
 
                 $('td:eq(0)', nRow).html(title);
                 $('td:eq(1)', nRow).html(formatter.format(aData['currentPrice']));
@@ -261,7 +265,7 @@ function toggleAuctionWatch(id, idAuction) {
 
 }
 var handle200 = function (data, textStatus, jqXHR) {
-    $('#myalert').append("<div class='alert alert-warning sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> Usunięto aukcję z obserwowanych. </div>");
+    $('#myalert').append("<div class='alert alert-warning sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a>" + window.res.unWatched + ". </div>");
     $('#myalert').children('.alert-warning').click(function () {
         $(this).remove();
     });
@@ -270,7 +274,7 @@ var handle200 = function (data, textStatus, jqXHR) {
     });
 };
 var handle401 = function (data, textStatus, jqXHR) {
-    $('#myalert').append("<div class='alert alert-danger sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> Nie posiadasz uprawnień do obserwowania aukcji. </div>");
+    $('#myalert').append("<div class='alert alert-danger sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> " + window.res.noPermission + ". </div>");
     $('#myalert').children('.alert-danger').click(function () {
         $(this).remove();
     });
@@ -279,7 +283,7 @@ var handle401 = function (data, textStatus, jqXHR) {
     });
 };
 var handle201 = function (data, textStatus, jqXHR) {
-    $('#myalert').append("<div class='alert alert-success sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> Dodano aukcję do obserwowanych. </div>");
+    $('#myalert').append("<div class='alert alert-success sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a>" + window.res.watched + ". </div>");
     $('#myalert').children('.alert-success').click(function () {
         $(this).remove();
     });
@@ -288,7 +292,7 @@ var handle201 = function (data, textStatus, jqXHR) {
     });
 };
 var handle409 = function (data, textStatus, jqXHR) {
-    $('#myalert').append("<div class='alert alert-danger sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> Błąd bazy danych. </div>");
+    $('#myalert').append("<div class='alert alert-danger sticky-alert'> <a class='close' data-dismiss='alert' href='#'>×</a> " + window.res.databaseError + ".</div>");
     $('#myalert').children('.alert-danger').click(function () {
         $(this).remove();
     });
@@ -297,3 +301,50 @@ var handle409 = function (data, textStatus, jqXHR) {
     });
     //console.log(jqXHR);
 };
+
+
+var polish = {
+    "processing":     "Przetwarzanie...",
+    "search":         "Szukaj:",
+    "lengthMenu":     "Pokaż _MENU_ pozycji",
+    "info":           "Pozycje od _START_ do _END_ z _TOTAL_ łącznie",
+    "infoEmpty":      "Pozycji 0 z 0 dostępnych",
+    "infoFiltered":   "(filtrowanie spośród _MAX_ dostępnych pozycji)",
+    "infoPostFix":    "",
+    "loadingRecords": "Wczytywanie...",
+    "zeroRecords":    "Nie znaleziono pasujących pozycji",
+    "emptyTable":     "Brak danych",
+    "paginate": {
+        "first":      "Pierwsza",
+        "previous":   "Poprzednia",
+        "next":       "Następna",
+        "last":       "Ostatnia"
+    },
+    "aria": {
+        "sortAscending": ": aktywuj, by posortować kolumnę rosnąco",
+        "sortDescending": ": aktywuj, by posortować kolumnę malejąco"
+    }
+}
+var english = {
+    "sEmptyTable": "No data available in table",
+    "sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
+    "sInfoEmpty": "Showing 0 to 0 of 0 entries",
+    "sInfoFiltered": "(filtered from _MAX_ total entries)",
+    "sInfoPostFix": "",
+    "sInfoThousands": ",",
+    "sLengthMenu": "Show _MENU_ entries",
+    "sLoadingRecords": "Loading...",
+    "sProcessing": "Processing...",
+    "sSearch": "Search:",
+    "sZeroRecords": "No matching records found",
+    "oPaginate": {
+        "sFirst": "First",
+        "sLast": "Last",
+        "sNext": "Next",
+        "sPrevious": "Previous"
+    },
+    "oAria": {
+        "sSortAscending": ": activate to sort column ascending",
+        "sSortDescending": ": activate to sort column descending"
+    }
+}
