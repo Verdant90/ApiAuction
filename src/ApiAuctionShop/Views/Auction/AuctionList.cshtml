@@ -116,20 +116,20 @@ else
         <table id="watchedAuctionsTable" class="table table-striped grid-table" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <td>Tytuł</td>
-                    <td>Aktualna cena</td>
-                    <td>Data zakończenia</td>
-                    <td>Ilość ofert</td>
-                    <td>Obserwuj</td>
+                    <td>@Loc["Title"]</td>
+                    <td>@Loc["CurrentPrice"]</td>
+                    <td>@Loc["EndDate"]</td>
+                    <td>@Loc["NumberOfBids"]</td>
+                    <td>@Loc["StartWatching"]</td>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
-                    <td>Tytuł</td>
-                    <td>Aktualna cena</td>
-                    <td>Data zakończenia</td>
-                    <td>Ilość ofert</td>
-                    <td>Obserwuj</td>
+                    <td>@Loc["Title"]</td>
+                    <td>@Loc["CurrentPrice"]</td>
+                    <td>@Loc["EndDate"]</td>
+                    <td>@Loc["NumberOfBids"]</td>
+                    <td>@Loc["StartWatching"]</td>
                 </tr>
             </tfoot>
             <tbody></tbody>
@@ -140,7 +140,22 @@ else
 <br /><br />
 <div id="myalert" class="">
 </div>
+<script type="text/javascript">
 
+    if (!window.res) {
+    window.res = {
+        author: '@Loc["Author"]',
+        left: '@Loc["Left"]',
+        auctionEnded: '@Loc["AuctionEnded"]',
+        startWatching: '@Loc["StartWatching"]',
+        unWatched: '@Loc["UnWatched"]',
+        noPermission: '@Loc["NoPermission"]',
+        watched: '@Loc["Watched"]',
+        databaseError: '@Loc["DatabaseError"]', 
+        language: '@Loc["Language"]'
+    };
+}
+</script> 
 <link rel="stylesheet" type="text/css" href="~/css/jquery.dataTables.min.css">
 <link rel="stylesheet" type="text/css" href="~/css/custom.css">
 <script type="text/javascript" language="javascript" src="~/js/jquery.dataTables.min.js"></script>

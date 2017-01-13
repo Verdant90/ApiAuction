@@ -17,6 +17,13 @@
   "State": "Stan",
   "StartWatching": "Obserwuj",
   "EndPrice": "Cena końcowa",
-  "Winner": "Zwycięzca"
-
+  "Winner": "Zwycięzca",
+  "Author": "Autor",
+  "Left": "do końca",
+  "AuctionEnded": "Aukcja zakończona",
+  "UnWatched": "Usunięto aukcję z obserwowanych",
+  "NoPermission": "Nie posiadasz uprawnień do obserwowania aukcji",
+  "Watched": "Dodano aukcję do obserwowanych",
+  "DatabaseError": "Błąd bazy danych",
+  "Language":  "pl"
 }
