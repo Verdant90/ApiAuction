@@ -13,40 +13,40 @@
         @Html.ValidationSummary(true)
         <div class="form-group">
             <div class="form-group">
-                @Html.LabelFor(model => model.auction.title, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.auction.title, "Tytuł aukcji", new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.auction.title, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.auction.title, new { @class = "form-control",  style = "width:475px; max-width: 90%"  })
                     @Html.ValidationMessageFor(model => model.auction.title)
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.auction.description, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.auction.description, "Opis", new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextAreaFor(model => model.auction.description, new { @class = "form-control" })
+                    @Html.TextAreaFor(model => model.auction.description, new { @class = "form-control", style = "width:475px; max-width:90%;  height: 150px;" })
                     @Html.ValidationMessageFor(model => model.auction.description)
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.auction.startPrice, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.auction.startPrice, "Cena początkowa", new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.auction.startPrice, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.auction.startPrice, new { @class = "form-control", @maxlength = 6, style= "max-width:90px" })
                     @Html.ValidationMessageFor(model => model.auction.startPrice)
                 </div>
             </div>
             @if (Model.hasBuyNowGlobal)
             {
                 <div class="form-group">
-                    @Html.LabelFor(model => model.auction.buyPrice, new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.auction.buyPrice, "Cena wywoławcza", new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.auction.buyPrice, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.auction.buyPrice, new { @class = "form-control", @maxlength = 6, style = "max-width:90px" })
                         @Html.ValidationMessageFor(model => model.auction.buyPrice)
                     </div>
                 </div>
 
             }
             <div class="form-group">
-                @Html.LabelFor(model => model.auction.duration, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.auction.duration, "Czas trwania aukcji", new { @class = "control-label col-md-2" })
                 @{
                     List<string> tp = Model.timePeriods.Split(',').ToList();
                 }
@@ -69,23 +69,24 @@
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.auction.editable, new { @class = "control-label col-md-2" })
-                <div class="col-md-10 form-control-static">
+                @Html.LabelFor(model => model.auction.editable, "Możliwość edycji", new { @class = "control-label col-md-2" })
+                <div class="checkbox-inline col-md-10 form-control-static">
                     @Html.CheckBoxFor(model => model.auction.editable)
                 </div>
             </div>
-        </div>
-
-    </div>
-    <input name="files" multiple id="fileUpload" type="file" class="file-loading" accept="image/*">
-
-    <div class="form-group">
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                @*<button type="submit" class="btn btn-default">Send</button>*@
-                <button type="submit" class="btn btn-success">Preview</button>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-8">
+                    <input name="files" multiple id="fileUpload" type="file" class="file-loading" accept="image/*" style="min-width10px">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    @*<button type="submit" class="btn btn-default">Send</button>*@
+                    <button type="submit" class="btn btn-success">Preview</button>
+                </div>
             </div>
         </div>
+        
     </div>
 
 }
