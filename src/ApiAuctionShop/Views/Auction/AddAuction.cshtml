@@ -66,7 +66,9 @@
                             </label>
                         }
                     </div>
+                    @Html.ValidationMessageFor(model => model.auction.duration)
                 </div>
+                
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.auction.editable, "Możliwość edycji", new { @class = "control-label col-md-2" })

@@ -75,6 +75,19 @@ namespace Projekt.Controllers
                 timePeriods = settings.timePeriods
             };
             tmp.auction.imageFiles = new List<ImageFile>();
+
+            TryValidateModel(tmp.auction);
+
+            PriceValidation(tmp.auction);
+
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Where(x => x.Value.Errors.Any())
+                            .Select(x => new { x.Key, x.Value.Errors });
+
+                return View("AddAuction", tmp) ;
+            }
+
             foreach (var file in files)
             {
                 if (file != null)
@@ -105,7 +118,7 @@ namespace Projekt.Controllers
                     }
                 }
             }
-
+            
             return View(tmp);
         }
 
@@ -140,6 +153,7 @@ namespace Projekt.Controllers
                 return View("AddAuction", acvm);
             }
 
+            /*
             TryValidateModel(acvm.auction);
 
             PriceValidation(acvm.auction);
@@ -154,6 +168,7 @@ namespace Projekt.Controllers
                 model.timePeriods = settings.timePeriods;
                 return View(model);
             }
+            */
             DateTime dtnow = DateTime.Now;
             DateTime dtend = calculateEndDate(dtnow, acvm.auction.duration);
 

@@ -62,6 +62,7 @@ namespace ApiAuctionShop.Models
         public decimal? buyPrice { get; set; }
         public string state { get; set; } = "waiting";
 
+        [Required(ErrorMessage = "Please select the duration for this auction.")]
         public string duration { get; set; }
 
         public string startDate { get; set; }
