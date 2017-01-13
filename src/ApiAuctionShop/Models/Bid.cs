@@ -12,7 +12,6 @@ namespace ApiAuctionShop.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int bidId { get; set; }
-
         public int auctionId { get; set; }
         public virtual Auctions Auction { get; set; }
         public string bidAuthor { get; set; }

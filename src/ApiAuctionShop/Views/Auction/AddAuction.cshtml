@@ -1,84 +1,103 @@
-﻿@model ApiAuctionShop.Models.Auctions
+﻿@model ApiAuctionShop.Models.AuctionCreateViewModel
 @{
     ViewData["Title"] = "Nowa aukcja";
 }
 
 <h2>@ViewData["Title"]</h2>
-@using (Html.BeginForm("AddAuction", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("AuctionPreview", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    @Html.ValidationSummary(true)
-    <div class="form-group">
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h4>Aukcja</h4>
+        <hr />
+        @Html.ValidationSummary(true)
         <div class="form-group">
-            @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.title, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.title)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.description, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextAreaFor(model => model.description, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.description)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.startPrice, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.startPrice, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.startPrice)
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.buyPrice, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.buyPrice, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.buyPrice)
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.startDate, new { @class = "control-label col-md-2" })
-            <div class="col-md-10 ">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        @Html.TextBoxFor(model => model.startDate, new { @class = "form-control" })
-                        <input class="btn btn-default" type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
-                    </span>
+            <div class="form-group">
+                @Html.LabelFor(model => model.auction.title, "Tytuł aukcji", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.auction.title, new { @class = "form-control",  style = "width:475px; max-width: 90%"  })
+                    @Html.ValidationMessageFor(model => model.auction.title)
                 </div>
-                @Html.ValidationMessageFor(model => model.startDate)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.auction.description, "Opis", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.auction.description, new { @class = "form-control", style = "width:475px; max-width:90%;  height: 150px;" })
+                    @Html.ValidationMessageFor(model => model.auction.description)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.auction.startPrice, "Cena początkowa", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.auction.startPrice, new { @class = "form-control", @maxlength = 6, style= "max-width:90px" })
+                    @Html.ValidationMessageFor(model => model.auction.startPrice)
+                </div>
+            </div>
+            @if (Model.hasBuyNowGlobal)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.auction.buyPrice, "Cena wywoławcza", new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.auction.buyPrice, new { @class = "form-control", @maxlength = 6, style = "max-width:90px" })
+                        @Html.ValidationMessageFor(model => model.auction.buyPrice)
+                    </div>
+                </div>
+
+            }
+            <div class="form-group">
+                @Html.LabelFor(model => model.auction.duration, "Czas trwania aukcji", new { @class = "control-label col-md-2" })
+                @{
+                    List<string> tp = Model.timePeriods.Split(',').ToList();
+                }
+                
+                <div class="col-md-10">
+                    <div class="btn-group" data-toggle="buttons">
+                        
+                        @foreach (string s in tp)
+                        {
+                            string c = "btn btn-primary";
+                            if (Model.auction != null && s == Model.auction.duration)
+                            {
+                                c += " active";
+                            }
+                            <label class="@c">
+                                @Html.RadioButtonFor(model => model.auction.duration, s)@s
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.auction.editable, "Możliwość edycji", new { @class = "control-label col-md-2" })
+                <div class="checkbox-inline col-md-10 form-control-static">
+                    @Html.CheckBoxFor(model => model.auction.editable)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-8">
+                    <input name="files" multiple id="fileUpload" type="file" class="file-loading" accept="image/*" style="min-width10px">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    @*<button type="submit" class="btn btn-default">Send</button>*@
+                    <button type="submit" class="btn btn-success">Preview</button>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.endDate, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.endDate)
-            </div>
-        </div>
-
+        
     </div>
 
-    <div class="form-group">
-        <div class="col-md-10">
-            <input type="file" name="file" accept="image/*" />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-default">Send</button>
-        </div>
-    </div>
 }
+<script src="~/bootstrap-fileinput-master/js/fileinput.min.js"></script>
+<link href="~/bootstrap-fileinput-master/css/fileinput.min.css" rel="stylesheet" />
 
-<script type="text/javascript">
-	function FillNow(element)
-	{
-	    var datetimeNow = new Date();
-	    document.getElementById(element).value = datetimeNow.getFullYear() + "-" + ("0" + (datetimeNow.getMonth() + 1)).slice(-2) + "-" + ("0" + (datetimeNow.getDate())).slice(-2) + " " + ("0" + datetimeNow.getHours()).slice(-2) + ":" + ("0" + datetimeNow.getMinutes()).slice(-2) + ":" + ("0" + datetimeNow.getSeconds()).slice(-2) + ".000";
-	}
+<script>
+    $("#fileUpload").fileinput({
+        showPreview: false,
+        showUpload: false,
+        maxFileCount: 4,
+        allowedFileExtensions: ["jpg", "png", "gif"]
+    });
 </script>

@@ -1,0 +1,24 @@
+﻿{
+  "Main": "Main page",
+  "AuctionList": "Auction List",
+  "AddAuction": "Add an auction",
+  "GroupProject": "2016 Group Project",
+
+  "LastWeekAuctions": "Last weeks auctions",
+  "NewAuctionsLastWeek": "new auctions last week",
+  "AuctionStates": "Auction States",
+  "NewBidsIn": "New bids in",
+  "Monday": "Monday",
+  "Tuesday": "Tuesday",
+  "Wednesday": "Wednesday",
+  "Thursday": "Thursday",
+  "Friday": "Friday",
+  "Saturday": "Saturday",
+  "Sunday": "Sunday",
+  "Ended": "Ended",
+  "Active": "Active",
+  "Inactive": "Inactive",
+  "Waiting": "Waiting",
+  "NumberOfBids": "Number of bids",
+  "From" : "from"
+}

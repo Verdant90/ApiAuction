@@ -17,6 +17,9 @@ textarea {
     max-width: 280px;
 }
 
+a.lang-inactive {
+    opacity: 0.5;
+}
 /* Carousel */
 .carousel-caption {
     z-index: 10 !important;
@@ -31,4 +34,16 @@ textarea {
     .carousel-caption {
         z-index: 10 !important;
     }
+}
+
+.no-padding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+
+.titleOfAuction{
+    font-size: 130%;
+}
+.smaller{
+    font-size: 70%; 
 }

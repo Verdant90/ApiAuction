@@ -1,0 +1,91 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model ApiAuctionShop.Models.AdminSettingsViewModel
+@{
+    ViewBag.Title = "Site Settings";
+}
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
+@section scripts{
+    <link href="~/css/bootstrap-admin-theme.css" rel="stylesheet" asp-file-version="true" />
+<link href="~/css/bootstrap-wysihtml5/core-b3.css" rel="stylesheet" asp-file-version="true" />
+<script type="text/javascript" src="~/js/bootstrap.js"></script>
+<script type="text/javascript" src="~/js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="~/js/modernizr-2.6.2.js"></script>
+<script type="text/javascript" src="~/js/site.js"></script>
+<script type="text/javascript" src="~/js/bootstrap-wysihtml5/wysihtml5.js"></script>
+<script type="text/javascript" src="~/js/bootstrap-wysihtml5/core-b3.js"></script>
+<script type="text/javascript" src="~/js/twitter-bootstrap-hover-dropdown.js"></script>
+    <script>
+    $(function () {
+            
+            $('.textarea-wysihtml5').wysihtml5({
+                stylesheets: [
+                    'vendors/bootstrap-wysihtml5-rails-b3/vendor/assets/stylesheets/bootstrap-wysihtml5/wysiwyg-color.css'
+                ]
+            });
+
+        });
+</script>
+}
+
+@Html.Partial("_AdminLeftMenu", Model.adminMenuModel)
+<div class="col-md-10">
+    <div class="row">
+        <div class="bootstrap-admin-content-title">
+            <h1>
+                @Loc["SiteSettings"] 
+            </h1>
+        </div>
+    </div>
+</div> 
+
+<div class="col-md-10">
+    <div class="row">
+        <div class="panel panel-default bootstrap-admin-no-table-panel">
+            <div class="panel-heading">
+                <div class="text-muted bootstrap-admin-box-title">@Loc["MainWebsiteSettings"]</div>
+            </div>
+            <div class="bootstrap-admin-no-table-panel-content bootstrap-admin-panel-content collapse in">
+             @using (Html.BeginForm("Settings", "AdminPanel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+             {
+                <div class="form-horizontal">
+                    <fieldset>
+                        <legend>@Loc["ChangeTheSettings"]</legend>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="optionsCheckbox2">@Loc["BuyNowOption"]</label>
+                            <div class="col-lg-10">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.hasBuyNow)
+                                    @Loc["SelectThisToEnableTheBuyNowOptionInTheAuctions"]
+                                </label>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="focusedInput">@Loc["TimePeriods"]</label>
+                            <div class="col-lg-10">
+                                @Loc["TimePeriodsDesc"]
+                                <br />
+                                @Html.TextBoxFor(model => model.timePeriods)
+                                @Html.ValidationMessageFor(model => model.timePeriods)
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label" for="textarea-wysihtml5">@Loc["StartingMessage"]</label>
+                            <div class="col-lg-10">
+                                @Html.TextAreaFor(m => m.startMessage, htmlAttributes: new { id = "textarea-wysihtml5", @class="form-control textarea-wysihtml5", placeholder="Enter text...", style="width: 100%; height: 200px" })
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">@Loc["SaveChanges"]</button>
+                    </fieldset>
+                </div>
+             }   
+            </div>
+        </div>
+    </div>
+</div>

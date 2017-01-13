@@ -1,0 +1,92 @@
+﻿@model AdminAuctionsViewModel
+
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
+@{
+    ViewBag.Title = "Auctions";
+}
+@section scripts{
+    <link href="~/css/bootstrap-admin-theme.css" rel="stylesheet" asp-file-version="true" />
+
+
+}
+@Html.Partial("_AdminLeftMenu", Model.adminMenuModel)
+<!-- content -->
+
+
+
+
+@if (Model.auctions.Count > 0)
+{
+    <div class="col-md-10">
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="text-muted bootstrap-admin-box-title">@Loc["Auctions"]</div>
+                </div>
+                <table class="table table-striped grid-table">
+                    <tr>
+
+                        <td>@Loc["No"]</td>
+                        <td>@Loc["Title"]</td>
+                        <td>@Loc["StartDate"]</td>
+                        <td>@Loc["EndDate"]</td>
+                        <td>@Loc["CurrentPrice"]</td>
+                        <td>@Loc["NumberOfBids"]</td>
+                        <td>@Loc["State"]</td>
+                        <td></td>
+                    </tr>
+
+                    @foreach (var item in Model.auctions.Select((value, i) => new { i = ++i, value }))
+                    {
+                        <tr>
+                            <td>@item.i.</td>
+                            <td>
+                                @Html.ActionLink(item.value.title, "AuctionPage", "Auction", new { id = item.value.ID }, null)
+                            </td>
+                            <td>@item.value.startDate</td>
+                            <td>@item.value.endDate</td>
+                            <td>
+                                @if (item.value.highestBid != 0)
+                    {
+                                    @item.value.highestBid.ToString(); @:zł
+                    }
+                    else
+                    {
+                                    @item.value.startPrice.ToString(); @: zł;
+                    }
+
+                            </td>
+                            <td>
+                                @if (item.value.bidCount != 0)
+                    {
+                                    @item.value.bidCount
+                                }
+                                else
+                                {
+                                    @: -
+                    }
+                            </td>
+                            <td>@item.value.state</td>
+                            <td>
+                     @if ((@item.value.state == "active" && @item.value.editable == true) || @item.value.state == "waiting")
+                     {
+                        <button class="btn btn-xs btn-default"  onclick="@("window.location.href='" + @Url.Action("End", "Auction", new { id = item.value.ID }) + "'");">@Loc["End"]</button>
+                     }
+                     else
+                     {
+                                    @: -
+
+                     }
+                            </td>
+                        </tr>
+                    }
+                </table>
+                </div>
+            </div>
+        </div>
+}
+
+               
+
+

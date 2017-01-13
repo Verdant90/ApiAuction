@@ -1,0 +1,19 @@
+﻿{
+  "Main": "Main page",
+  "AuctionList": "Auction List",
+  "AddAuction": "Add an auction",
+  "GroupProject": "2016 Group Project",
+
+  "Auctions": "Auctions",
+  "No": "No",
+  "StartDate": "Start date",
+  "Title": "Title",
+  "CurrentPrice": "Current price",
+  "EndDate": "End date",
+  "NumberOfBids": "Number of bids",
+  "State": "State",
+  "End":  "End"
+
+
+
+}

@@ -1,0 +1,15 @@
+﻿{
+  "Main": "Main page",
+  "AuctionList": "Auction List",
+  "AddAuction": "Add an auction",
+  "GroupProject": "2016 Group Project",
+
+  "Users": "Users",
+  "No": "No",
+  "E-mail": "E-mail",
+  "Role": "Role",
+  "AuctionsCount": "Auctions Count",
+  "BidsCount": "Bids Count",
+  "AuctionsWonCount": "Auctions Won Count",
+  "SoldItemsCount": "Sold Items Count"
+}

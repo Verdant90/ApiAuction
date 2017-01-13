@@ -1,0 +1,62 @@
+﻿@model AdminUsersModel
+
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
+@{
+    ViewBag.Title = "Users";
+}
+@section scripts{
+    <link href="~/css/bootstrap-admin-theme.css" rel="stylesheet" asp-file-version="true" />
+
+
+}
+@Html.Partial("_AdminLeftMenu", Model.adminMenuModel)
+<!-- content -->
+
+
+
+
+@if (Model.users.Count > 0)
+{
+    <div class="col-md-10">
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="text-muted bootstrap-admin-box-title">@Loc["Users"]</div>
+                </div>
+                <table class="table table-striped grid-table">
+                    <tr>
+                        <td>@Loc["No"].</td>
+                        <td>@Loc["E-mail"]</td>
+                        <td>@Loc["Role"]</td>
+                        <td>@Loc["AuctionsCount"]</td>
+                        <td>@Loc["BidsCount"]</td>
+                        <td>@Loc["AuctionsWonCount"]</td>
+                        <td>@Loc["SoldItemsCount"]</td>
+
+                    </tr>
+
+                    @foreach (var item in Model.users.Select((value, i) => new { i = ++i, value }))
+                    {
+                        <tr>
+                            <td>@item.i.</td>
+                            <td>
+                                @item.value.email
+                            </td>
+                            <td>@item.value.role</td>
+                            <td>@item.value.auctionsCount</td>
+                            <td>@item.value.bidsCount</td>
+                            <td>@item.value.auctionsWonCount</td>
+                            <td>@item.value.soldItemsCount</td>
+
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+

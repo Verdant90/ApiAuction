@@ -39,6 +39,7 @@ namespace Projekt.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
             _context = context;
+
         }
 
         //sprawdzanie tokena (unikalny link) 
@@ -102,8 +103,17 @@ namespace Projekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new Signup { UserName = model.Email, Email = model.Email};
-                              
+                string userName = (model.UserName == null) ? model.Email : model.UserName;
+                var user = new Signup { UserName = userName, Email = model.Email};
+                var users = _context.Users.ToList<Signup>();
+                int index = users.FindIndex(item => item.Email == user.Email);
+                if (index >= 0)
+                {
+                    //email already taken
+                    return View();
+                }
+
+
                 var result = await _userManager.CreateAsync(user, model.Email + "0D?");
                 
                 //////////////////TEST ROLES//////////////////////////////////////////

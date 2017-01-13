@@ -20,6 +20,11 @@ using Projekt.Controllers;
 using ApiAuctionShop.Database;
 using System.Data.SqlClient;
 using System.Data;
+using Microsoft.AspNet.Authentication.Cookies;
+using Microsoft.AspNet.Localization;
+using System.Globalization;
+using Microsoft.AspNet.Mvc.Razor;
+using Microsoft.Extensions.OptionsModel;
 
 namespace ApiAuctionShop
 {
@@ -40,33 +45,33 @@ namespace ApiAuctionShop
             }
 
 
-                    var waitHandle = new AutoResetEvent(false);
-                    ThreadPool.RegisterWaitForSingleObject(
-                        waitHandle,
-                        // Method to execute
-                        (state, timeout) =>
-                        {
+            var waitHandle = new AutoResetEvent(false);
+            ThreadPool.RegisterWaitForSingleObject(
+                waitHandle,
+                // Method to execute
+                (state, timeout) =>
+                {
                             
-                            Console.WriteLine(DateTime.Now + " START: Updating auction states.");
-                            SqlConnection sqlConnection1 = new SqlConnection(Configuration["Data:DefaultConnection:ConnectionString"]);
-                            SqlCommand cmd = new SqlCommand();
-                            SqlDataReader reader; 
+                    Console.WriteLine(DateTime.Now + " START: Updating auction states.");
+                    SqlConnection sqlConnection1 = new SqlConnection(Configuration["Data:DefaultConnection:ConnectionString"]);
+                    SqlCommand cmd = new SqlCommand();
+                    SqlDataReader reader; 
 
-                            cmd.CommandText = "UPDATE[master].[dbo].[Auctions] SET state = 'active' WHERE startDate <= GETDATE() and endDate >= GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'waiting' WHERE startDate > GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'ended' WHERE endDate < GETDATE() and(state != 'inactive' or state IS null) and state != 'ended'; ";
-                            cmd.CommandType = CommandType.Text;
-                            cmd.Connection = sqlConnection1;
-                            sqlConnection1.Open();
-                            reader = cmd.ExecuteReader();
-                            sqlConnection1.Close();
-                            Console.WriteLine(DateTime.Now + " END: Updating auction states complete.");
-                        },              
-                        // optional state object to pass to the method
-                        null,
-                        // Execute the method after 1 minute
-                        TimeSpan.FromMinutes(1),
-                        // Set this to false to execute it repeatedly every 5 seconds
-                        false
-                    );
+                    cmd.CommandText = "UPDATE[master].[dbo].[Auctions] SET state = 'active' WHERE startDate <= GETDATE() and endDate >= GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'waiting' WHERE startDate > GETDATE() and state != 'inactive' and state != 'ended'; UPDATE[master].[dbo].[Auctions] SET state = 'ended', winnerID = c.Id FROM [master].[dbo].[Auctions] a RIGHT JOIN [master].[dbo].[Bid] b on a.ID = b.auctionId LEFT JOIN [master].[dbo].[AspNetUsers] c on b.bidAuthor = c.Email WHERE endDate < GETDATE() and(state != 'inactive' or state IS null) and state != 'ended' and bidAuthor in(SELECT TOP 1 bidAuthor FROM [master].[dbo].[Bid] b where b.auctionId = a.ID order by b.bid DESC); UPDATE[master].[dbo].[Auctions] SET state = 'ended' WHERE endDate < GETDATE() and(state = 'active' or state = 'waiting') ";
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Connection = sqlConnection1;
+                    sqlConnection1.Open();
+                    reader = cmd.ExecuteReader();
+                    sqlConnection1.Close();
+                    Console.WriteLine(DateTime.Now + " END: Updating auction states complete.");
+                },              
+                // optional state object to pass to the method
+                null,
+                // Execute the method after 1 minute
+                TimeSpan.FromMinutes(1),
+                // Set this to false to execute it repeatedly every 5 seconds
+                false
+            );
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -87,8 +92,18 @@ namespace ApiAuctionShop
             services.AddIdentity<Signup, IdentityRole>()
                  .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            services.AddJsonLocalization(options => options.ResourcesPath = "Resources");
+
+            services.AddMvc()
+                .AddViewLocalization();
+            services.AddMvc().AddJsonOptions(a =>
+            {
+                a.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                a.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            }
+            );
             
-            services.AddMvc().AddJsonOptions(a => a.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
+           
         }
 
 
@@ -96,18 +111,38 @@ namespace ApiAuctionShop
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            /////
+            
+            var requestLocalizationOptions = new RequestLocalizationOptions
+            {
+                SupportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("pl-PL"),
+                    new CultureInfo("en-GB"),
+                },
+                SupportedUICultures = new List<CultureInfo>
+                {
+                    new CultureInfo("pl-PL"),
+                    new CultureInfo("en-GB"),
+                }
+            };
+
+            app.UseRequestLocalization(requestLocalizationOptions,
+                             new RequestCulture(new CultureInfo("pl-PL")));
+
+            ///////
+           
 
             app.UseApplicationInsightsRequestTelemetry();
-
+            app.UseDeveloperExceptionPage();
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/pl-PL/Home/Error");
 
                 try
                 {
@@ -139,9 +174,13 @@ namespace ApiAuctionShop
             {
                 routes.MapRoute(
                     name: "default",
+                    template: "{language=pl-PL}/{controller=Home}/{action=Index}/{*id}");
+
+                routes.MapRoute(
+                    name: "s",
                     template: "{controller=Home}/{action=Index}/{*id}");
             });
-
+            
         }
 
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);

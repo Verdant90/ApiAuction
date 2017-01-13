@@ -1,4 +1,4 @@
-﻿@model Auctions
+﻿@model AuctionCreateViewModel
 
 @{
     ViewBag.Title = "Edit";
@@ -11,108 +11,152 @@
         <h4>Aukcja</h4>
         <hr />
         @Html.ValidationSummary(true)
-        @Html.HiddenFor(model => model.ID)
-        @if (Model.state == "waiting")
+        @Html.HiddenFor(model => model.auction.ID)
+        @if (Model.auction.state == "waiting")
         {
             <div class="form-group">
-                @Html.LabelFor(model => model.title, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.auction.title, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.title, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.title)
+                    @Html.TextBoxFor(model => model.auction.title, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.auction.title)
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.description, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.auction.description, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextAreaFor(model => model.description, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.description)
+                    @Html.TextAreaFor(model => model.auction.description, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.auction.description)
                 </div>
             </div>
+            
             <div class="form-group">
-                @Html.LabelFor(model => model.startDate, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.auction.startPrice, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.auction.startPrice, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.auction.startPrice)
+                    <input type="checkbox" name="now" value="true" onclick=""> Teraz<br>
+                </div>
+            </div>
+            @if (Model.hasBuyNowGlobal)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.auction.buyPrice, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.auction.buyPrice, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.auction.buyPrice)
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                @Html.LabelFor(model => model.auction.startDate, new { @class = "control-label col-md-2" })
                 <div class="col-md-10 ">
-                    <div class="input-group">
+                    <div class="input-group input-group-btn">
+                        @Html.TextBoxFor(model => model.auction.startDate, new { @class = "form-control", @placeholder = "yyyy-MM-dd HH:mm:ss.fff", @format = "yyyy -MM-dd HH:mm:ss.fff" })
                         <span class="input-group-btn">
-                            @Html.TextBoxFor(model => model.startDate, new { @class = "form-control" })
                             <input class="btn btn-default" type="button" id="GetNow" value="Teraz" onclick="FillNow('startDate');" />
                         </span>
                     </div>
-                    @Html.ValidationMessageFor(model => model.startDate)
+                    @Html.ValidationMessageFor(model => model.auction.startDate)
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.auction.endDate, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.endDate, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.endDate)
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.startPrice, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.startPrice, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.startPrice)
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.buyPrice, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.buyPrice, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.buyPrice)
-                </div>
-            </div>
-            @if (Model.ImageData != null)
-            {
-                <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.ImageData))" />
-            }
-        }
-        else if (Model.state == "active")
-        {
-            @Html.HiddenFor(model => model.title)
-            @Html.HiddenFor(model => model.description)
-            @Html.HiddenFor(model => model.startPrice)
-            @Html.HiddenFor(model => model.startDate)
-            @Html.HiddenFor(model => model.state)
-            @Html.HiddenFor(model => model.buyPrice)
-            <div class="form-group">
-                <h3>@Html.DisplayFor(model => model.title, new { @class = "control-label col-md-2" })</h3>
-                <h4>Wybrana aukcja jest już w toku. Możliwa jest jedynie zmiana daty zakończenia aukcji.</h4>
-                <br />
-                @Html.LabelFor(model => model.endDate, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <div class="input-group">
-                        <span class="input-group-btn">
-                            @Html.TextBoxFor(model => model.endDate, new { @class = "form-control" })
-                            <input class="btn btn-default" type="button" id="GetNow" value="Teraz" onclick="FillNow('endDate');" />
-                        </span>
-                    </div>
+                    @Html.TextBoxFor(model => model.auction.endDate, new { @class = "form-control", @placeholder = "yyyy-MM-dd HH:mm:ss.fff" })
+                    @Html.ValidationMessageFor(model => model.auction.endDate)
                 </div>
             </div>
 
+            <div class="form-group">
+                @Html.LabelFor(model => model.auction.editable, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.CheckBoxFor(model => model.auction.editable)
+                </div>
+            </div>
+
+            @if (Model.auction.imageFiles != null && Model.auction.imageFiles.Count > 0)
+            {
+                <div class="row auctionTitleRow">
+                    <div class="col-md-3">
+                        @foreach (ImageFile image in Model.auction.imageFiles)
+                        {
+                            // sparsowanie ścieżki
+                            string path = image.ImagePath;
+                            int index = path.IndexOf(@"\images");
+                            path = path.Substring(index);
+                            <img class="miniatureAuctionList img-thumbnail img-responsive center-block" src="@String.Format(path)" />
+                            
+                            <input type="file" name="file" class="file-loading" accept="image/*"/>
+                            <input type="submit" class="btn btn-xs btn-default" value="Zapisz zmiany" formaction=@Url.Action("EditImage", "Auction", new { id = image.ID })/>
+                            <input type="button" class="btn btn-xs btn-default" value="Usuń" onclick="@("window.location.href='" + @Url.Action("DeleteImage", "Auction", new { id = image.ID }) + "'");" />
+
+                        }
+                    </div>
+                    @if (Model.auction.imageFiles.Count < 4)
+                    {
+                        <input type="file" name="file" class="file-loading" accept="image/*" />
+                        <input type="submit" class="btn btn-xs btn-default" value="Dodaj zdjęcie" formaction=@Url.Action("AddImage", "Auction") />
+
+                    }
+                </div>
+            }
+            @*@if (Model.auction.ImageData != null)
+            {
+                <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.auction.ImageData))" />
+            }*@
         }
-        else if (Model.state == "ended")
+        else if(Model.auction.state == "active")
+        {
+            if (Model.auction.editable == true)
+            {
+                <div class="form-group">
+                    <h3>@Html.DisplayFor(model => model.auction.title, new { @class = "control-label col-md-2" })</h3>
+                    <h4>Wybrana aukcja jest już w toku. Możliwa jest jedynie zmiana daty zakończenia aukcji.</h4>
+                    <br />
+                    @Html.LabelFor(model => model.auction.endDate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10 ">
+                        <div class="input-group input-group-btn">
+                            @Html.TextBoxFor(model => model.auction.endDate, new { @class = "form-control", @placeholder = "yyyy-MM-dd HH:mm:ss.fff", @format = "yyyy -MM-dd HH:mm:ss.fff" })
+                            <span class="input-group-btn">
+                                <input class="btn btn-default" type="button" id="GetNow" value="Teraz" onclick="FillNow('endDate');" />
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.auction.endDate)
+                    </div>
+                </div>
+            }else
+            {
+                @: Aukcja trwa, nie posiadasz mozliwosci zakonczenia jej przed czasem.
+
+            }
+
+        }
+        else if (Model.auction.state == "ended")
         {
             <div class="form-group">
-                <h3>@Html.DisplayFor(model => model.title, new { @class = "control-label col-md-2" })</h3>
+                <h3>@Html.DisplayFor(model => model.auction.title, new { @class = "control-label col-md-2" })</h3>
                 <h4>Wybrana aukcja się skończyła.</h4>
                 <br />
             </div>
 
         }
-        @if (Model.state == "waiting")
+        @*@if (Model.auction.state == "waiting")
         {
         <div class="form-group">
             <div class="col-md-10">
                 <input type="file" name="file" accept="image/*" />
             </div>
         </div>
-        }
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+        }*@
+        @if ((Model.auction.state != "active" || Model.auction.editable != false) && (Model.auction.state != "ended"))
+        {
+            
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
             </div>
-        </div>
-        
+        }
     </div>
 }
 
@@ -122,4 +166,20 @@
 	    var datetimeNow = new Date();
 	    document.getElementById(element).value = datetimeNow.getFullYear() + "-" + ("0" + (datetimeNow.getMonth() + 1)).slice(-2) + "-" + ("0" + (datetimeNow.getDate())).slice(-2) + " " + ("0" + datetimeNow.getHours()).slice(-2) + ":" + ("0" + datetimeNow.getMinutes()).slice(-2) + ":" + ("0" + datetimeNow.getSeconds()).slice(-2) + ".000";
 	}
+</script>
+
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="~/moment-develop/min/moment.min.js"></script>
+<script src="~/bootstrap-datetimepicker-master/build/js/bootstrap-datetimepicker.min.js"></script>
+
+<link href="~/bootstrap-datetimepicker-master/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script>
+    $(document).ready(function(){
+      $('input[name="startDate"]').datetimepicker({
+          format: 'YYYY-MM-DD HH:mm:ss'
+      });
+      $('input[name="endDate"]').datetimepicker({
+          format: 'YYYY-MM-DD HH:mm:ss'
+      });
+    })
 </script>

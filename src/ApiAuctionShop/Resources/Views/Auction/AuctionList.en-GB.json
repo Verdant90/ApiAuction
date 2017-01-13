@@ -1,0 +1,29 @@
+﻿{
+  "Main": "Main page",
+  "AuctionList": "Auction List",
+  "AddAuction": "Add an auction",
+  "GroupProject": "2016 Group Project",
+
+
+  "MyAuctions": "My Auctions",
+  "ActiveAuctions": "Active auctions",
+  "Archive": "Archive",
+  "WatchedAuctions": "Watched",
+  "AuctionArchive": "Auction archive",
+  "Title": "Title",
+  "CurrentPrice": "Current price",
+  "EndDate": "End date",
+  "NumberOfBids": "Number of bids",
+  "State": "State",
+  "StartWatching": "Start watching",
+  "EndPrice": "Final price",
+  "Winner": "Winner",
+  "Author": "Author",
+  "Left": "left",
+  "AuctionEnded": "Auction ended",
+  "UnWatched": "You no longer watch the auction",
+  "NoPermission": "No permission to watch the auction",
+  "Watched": "You now watch the auction",
+  "DatabaseError": "Database error",
+  "Language": "en"
+}

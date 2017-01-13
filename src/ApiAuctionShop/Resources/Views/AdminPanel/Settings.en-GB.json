@@ -1,0 +1,19 @@
+﻿{
+  "Main": "Main page",
+  "AuctionList": "Auction List",
+  "AddAuction": "Add an auction",
+  "GroupProject": "2016 Group Project",
+
+  "SiteSettings": "Site Settings",
+  "MainWebsiteSettings": "Main website settings",
+  "ChangeTheSettings": "Change the settings",
+  "BuyNowOption": "Buy-Now option",
+  "SelectThisToEnableTheBuyNowOptionInTheAuctions": "Select this to enable the Buy-Now option in the auctions.",
+  "TimePeriods": "Time Periods",
+  "TimePeriodsDesc": "Here you can define specific time periods the users can choose from when selecting the auction's duration. The numeric value is followed by the abbreviation for a time interval e.g. 4d - 4 days, 2h - 2 hours, 1m - 1 mouth etc. Separate the values with a comma. ",
+  "StartingMessage": "Starting Message",
+  "SaveChanges": "Save Changes"
+
+
+
+}
