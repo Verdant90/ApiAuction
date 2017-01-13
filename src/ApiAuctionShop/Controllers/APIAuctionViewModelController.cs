@@ -39,13 +39,13 @@ namespace ApiAuctionShop.Controllers
             var users = _context.Users;
             IQueryable<Auctions> query;
             query = _context.Auctions.Where(a => a.state == "active").Include(a => a.AuctionsUsersWatching).Include(a => a.bids);
-            var recordsFiltered = 0;
+            var totalCount = query.Count();
+            var recordsFiltered = totalCount;
             if (!String.IsNullOrEmpty(searchString))
             {
                 query = query.Where(s => s.title.ToLower().Contains(searchString) || s.endDate.Contains(searchString));
                 recordsFiltered = query.Count();
             }
-            var totalCount = query.Count();
             switch (orderby)
             {
                 case "0":   //title
@@ -116,8 +116,7 @@ namespace ApiAuctionShop.Controllers
                 tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
                 list_mine.Add(tmp);
             }
-
-            recordsFiltered = totalCount;
+            
             return new
             {
                 draw = draw,
@@ -143,6 +142,12 @@ namespace ApiAuctionShop.Controllers
             IQueryable<Auctions> query;
             query = _context.Auctions.Where(a => a.SignupId == userId).Include(a => a.bids);
             var totalCount = query.Count();
+            var recordsFiltered = totalCount;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(s => s.title.ToLower().Contains(searchString) || s.endDate.Contains(searchString));
+                recordsFiltered = query.Count();
+            }
 
             switch (orderby)
             {
@@ -210,15 +215,6 @@ namespace ApiAuctionShop.Controllers
                 }
                 tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
                 list_mine.Add(tmp);
-            }
-
-            var recordsFiltered = totalCount;
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                list_mine = list_mine.Where(s => s.currentPrice.ToString().Contains(searchString)
-                               || s.title.ToLower().Contains(searchString) || s.endDate.Contains(searchString)
-                               || s.SignupEmail.ToLower().Contains(searchString)).ToList();
-                recordsFiltered = list_mine.Count();
             }
             
             return new
@@ -357,13 +353,14 @@ namespace ApiAuctionShop.Controllers
             IQueryable<Auctions> query;
             query = _context.Auctions.Where(a => a.state == "ended").Include(a => a.bids).Include(a => a.winner);
 
-            var recordsFiltered = 0;
+            var totalCount = query.Count();
+            var recordsFiltered = totalCount;
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 query = query.Where(s => s.title.ToLower().Contains(searchString) || s.endDate.Contains(searchString));
                 recordsFiltered = query.Count();
             }
-            var totalCount = query.Count();
             switch (orderby)
             {
                 case "0":   //title
@@ -447,7 +444,7 @@ namespace ApiAuctionShop.Controllers
                 tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
                 list_mine.Add(tmp);
             }
-            recordsFiltered = totalCount;
+
             return new
             {
                 draw = draw,
