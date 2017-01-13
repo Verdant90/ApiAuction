@@ -1,0 +1,22 @@
+﻿{
+  "Main": "Main page",
+  "AuctionList": "Auction List",
+  "AddAuction": "Add an auction",
+  "GroupProject": "2016 Group Project",
+
+  "NewAuction": "New auction",
+  "AuctionTitle": "Auction title",
+  "AuctionDescription": "Description",
+  "StartPrice": "Starting price",
+  "BuyNowPrice": "Buy-Now price",
+  "AuctionDuration": "Auction duration",
+  "EndPrematurely": "Ability to end anytime",
+  "Preview": "Preview",
+  "NoPhoto": "No pictures",
+  "Yes": "Yes",
+  "No": "No",
+  "EndDate": "End date",
+  "Title": "Title",
+  "Submit": "Submit and create auction",
+  "Cancel": "Go back"
+}

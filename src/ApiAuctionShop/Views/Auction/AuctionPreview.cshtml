@@ -1,12 +1,11 @@
 @model ApiAuctionShop.Models.AuctionCreateViewModel
 @using Projekt.Controllers;
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
 
 
-@{
-    ViewData["Title"] = "Podgląd aukcji";
-}
 
-<h2>@ViewData["Title"]</h2>
+<h2>@Loc["Preview"]</h2>
 @using (Html.BeginForm("AddAuction", "Auction", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
@@ -47,7 +46,7 @@
         <hr />
         <dl class="dl-horizontal">
             <dt>
-                @Html.DisplayNameFor(model => model.auction.title)
+                @Loc["Title"]
             </dt>
             <dd>
                 <h4>
@@ -65,7 +64,7 @@
                 }
                 else
                 {
-                    @: Brak zdjecia.
+                    @: @Loc["NoPhoto"].
 
                 }
             </dd>
@@ -86,53 +85,41 @@
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => model.auction.description)
+                @Loc["AuctionDuration"]
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.auction.description)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.auction.startDate)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.auction.startDate)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.auction.endDate)
+                @Loc["EndDate"]
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.auction.endDate)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.auction.startPrice)
+                @Loc["StartPrice"]
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.auction.startPrice)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.auction.buyPrice)
+                @Loc["BuyNowPrice"]
             </dt>
             <dd>
                 @Html.DisplayFor(model => model.auction.buyPrice)
             </dd>
             <dt>
-                @Html.DisplayNameFor(model => model.auction.state)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.auction.state)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.auction.editable)
+                @Loc["EndPrematurely"]:
             </dt>
             <dd>
                 @if (Model.auction.editable)
                 {
-                    @: Yes
+                    @Loc["Yes"]
 
                 }
                 else
                 {
-                    @: No
+                    @Loc["No"]
                 }
             </dd>
 
@@ -180,8 +167,8 @@
     <div class="form-group">
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <button type="submit" class="btn btn-success" name="submit" value="send">Submit</button>
-                <button type="submit" class="btn btn-danger" name="submit" value="cancel">Cancel</button>
+                <button type="submit" class="btn btn-success" name="submit" value="send">@Loc["Submit"]</button>
+                <button type="submit" class="btn btn-danger" name="submit" value="cancel">@Loc["Cancel"]</button>
             </div>
         </div>
     </div>

@@ -1,0 +1,18 @@
+﻿{
+  "Main": "Strona główna",
+  "AuctionList": "Lista aukcji",
+  "AddAuction": "Dodaj aukcję",
+  "GroupProject": "2016 Projekt Grupowy",
+
+
+  "NewAuction": "Nowa aukcja",
+  "AuctionTitle": "Tytuł aukcji",
+  "AuctionDescription": "Opis",
+  "StartPrice": "Cena wywoławcza",
+  "BuyNowPrice": "Cena Kup Teraz",
+  "AuctionDuration": "Czas trwania aukcji",
+  "EndPrematurely": "Możliwość zakończenia aukcji przed czasem",
+  "Preview": "Podgląd"
+
+
+}

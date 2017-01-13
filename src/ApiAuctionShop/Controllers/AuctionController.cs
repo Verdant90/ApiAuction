@@ -65,8 +65,11 @@ namespace Projekt.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult> AuctionPreview(AuctionCreateViewModel acvm, ICollection<IFormFile> files = null)
+        public async Task<ActionResult> AuctionPreview(string language, AuctionCreateViewModel acvm, ICollection<IFormFile> files = null)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
+
             var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             AuctionCreateViewModel tmp = new AuctionCreateViewModel()
             {
@@ -122,8 +125,11 @@ namespace Projekt.Controllers
 
         //////////////////TEST /////////////////////////
         [Authorize]
-        public IActionResult AddAuction()
+        public IActionResult AddAuction(string language)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
+
             AuctionCreateViewModel model = new AuctionCreateViewModel();
             var settings = _context.Settings.Where(setting => setting.id == 1).FirstOrDefault();
             model.hasBuyNowGlobal = settings.hasBuyNow;

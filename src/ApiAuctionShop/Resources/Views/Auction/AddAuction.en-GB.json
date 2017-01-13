@@ -1,0 +1,15 @@
+﻿{
+  "Main": "Main page",
+  "AuctionList": "Auction List",
+  "AddAuction": "Add an auction",
+  "GroupProject": "2016 Group Project",
+
+  "NewAuction": "New auction",
+  "AuctionTitle": "Auction title",
+  "AuctionDescription": "Description",
+  "StartPrice": "Starting price",
+  "BuyNowPrice": "Buy-Now price",
+  "AuctionDuration": "Auction duration",
+  "EndPrematurely": "Select this to be able to end the auction prematurely",
+  "Preview": "Preview"
+}
