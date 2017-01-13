@@ -1,3 +1,25 @@
 ﻿{
+  "Main": "Strona główna",
+  "AuctionList": "Lista aukcji",
+  "AddAuction": "Dodaj aukcję",
+  "GroupProject": "2016 Projekt Grupowy",
+
+  "LastWeekAuctions": "Aukcje w zeszłym tygodniu",
+  "NewAuctionsLastWeek": "nowych aukcji w zeszłym tygodniu",
+  "AuctionStates": "Stany aukcji",
+  "NewBidsIn": "Oferty na miesiąc: ",
+  "Monday": "Poniedziałek",
+  "Tuesday": "Wtorek",
+  "Wednesday": "Środa",
+  "Thursday": "Czwartek",
+  "Friday": "Piątek",
+  "Saturday": "Sobota",
+  "Sunday": "Niedziela",
+  "Ended": "Zakończona",
+  "Active": "W toku",
+  "Inactive": "Nieaktywna",
+  "Waiting": "Oczekująca",
+  "NumberOfBids": "Nowe oferty",
+  "From": "na dzień: "
 
 }

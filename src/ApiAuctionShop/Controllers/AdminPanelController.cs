@@ -111,8 +111,10 @@ namespace ApiAuctionShop.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult> Statistics()
+        public async Task<ActionResult> Statistics(string language)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
             string[] states = {"active","waiting","ended","inactive" };
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var users = _context.Users.ToList();
@@ -147,8 +149,11 @@ namespace ApiAuctionShop.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult> Users()
+        public async Task<ActionResult> Users(string language)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
+
             var user = await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
             var users = _context.Users.ToList();
             var roles = _context.Roles;

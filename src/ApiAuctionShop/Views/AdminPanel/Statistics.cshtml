@@ -1,8 +1,10 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
-}
+
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
+
 @model AdminStatisticsViewModel
 
 
@@ -11,60 +13,60 @@
 }
 
 
+<body>
 
+    @Html.Partial("_AdminLeftMenu", Model.adminMenuModel)
+    <div class="col-md-10">
 
-@Html.Partial("_AdminLeftMenu", Model.adminMenuModel)
-<div class="col-md-10">
-
-    <div class="text-center">
-        <ul class="stats_box">
-            <li>
-                <div class="col-md-10">
-                    <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="text-muted bootstrap-admin-box-title">Last week auctions</div>
-                            </div>
-                            <div class="sparkline bar_week"></div>
-                            <div class="stat_text">
-                                <strong>@Model.lastWeekAuctionsCount.Sum()</strong> new auctions last week.
-                                <span class="percent down"> <i class="fa fa-caret-down"></i> +@Model.lastWeekAuctionsPercent%</span>
+        <div class="text-center">
+            <ul class="stats_box">
+                <li>
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="text-muted bootstrap-admin-box-title">@Loc["LastWeekAuctions"]</div>
+                                </div>
+                                <div class="sparkline bar_week"></div>
+                                <div class="stat_text">
+                                    <strong>@Model.lastWeekAuctionsCount.Sum()</strong> @Loc["NewAuctionsLastWeek"].
+                                    <span class="percent down"> <i class="fa fa-caret-down"></i> +@Model.lastWeekAuctionsPercent%</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </li>
-           
-            <li>
-                <div class="col-md-10">
-                    <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="text-muted bootstrap-admin-box-title">Auction states</div>
+                </li>
+
+                <li>
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="text-muted bootstrap-admin-box-title">@Loc["AuctionStates"]</div>
+                                </div>
+                                <div class="sparkline pie_week"></div>
                             </div>
-                            <div class="sparkline pie_week"></div>
                         </div>
                     </div>
-                </div>
-            </li>
-            <li>
-                <div class="col-md-10">
-                    <div class="row">
-                        <div class="panel panel-default">
-                            <header>
-                                <h5>New bids in  @DateTime.Now.ToString("MMMM")</h5>
-                            </header>
-                            <div class="body" id="trigo" style="height: 250px;"></div>
+                </li>
+                <li>
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <header>
+                                    <h5>@Loc["NewBidsIn"] @DateTime.Now.ToString("MMMM")</h5>
+                                </header>
+                                <div class="body" id="trigo" style="height: 250px;"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </div>
+
+
     </div>
-<hr>
-
-
-</div>
+</body>
 <!-- end .inner -->
 @section scripts
     {
@@ -84,8 +86,9 @@
         function dashboard() {
             "use strict";
             var d = new Date();
-            var weekday = ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday"]
-            
+            var weekday = ["@Loc["Sunday"]", "@Loc["Monday"]", "@Loc["Tuesday"]", "@Loc["Wednesday"]", "@Loc["Thursday"]", "@Loc["Friday"]", "@Loc["Saturday"]"];
+
+
 
             var datesOfPreviousWeek = [];
             var oneWeekAgo = new Date();
@@ -160,10 +163,10 @@
                 tooltipFormat: '<span style="color: {{color}}">&#9679;</span> {{offset:names}} ({{percent.1}}%)',
                 tooltipValueLookups: {
                     names: {
-                        0: 'Active',
-                        1: 'Waiting',
-                        2: 'Ended',
-                        3: 'Inactive'
+                        0: '@Loc["Active"]',
+                        1: '@Loc["Waiting"]',
+                        2: '@Loc["Ended"]',
+                        3: '@Loc["Inactive"]'
                     }
                 }
             });
@@ -193,7 +196,7 @@
                     [
                         {
                             data: sin,
-                            label: "Number of bids",
+                            label: "@Loc["NumberOfBids"]",
                             points: {
                                 fillColor: "#4572A7",
                                 size: 5
@@ -252,7 +255,7 @@
                                 y = item.datapoint[1].toFixed(0);
 
                         showTooltip(item.pageX, item.pageY,
-                                item.series.label + " of " + x + " = " + y);
+                                item.series.label + " @Loc["From"] " + x + " = " + y);
                     }
                 }
                 else {
