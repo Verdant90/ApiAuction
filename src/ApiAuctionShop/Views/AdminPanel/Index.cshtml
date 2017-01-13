@@ -2,6 +2,8 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model AdminMenuModel
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
 @section scripts{
     <link href="~/css/bootstrap-admin-theme.css" rel="stylesheet" asp-file-version="true" />
    
@@ -12,7 +14,7 @@
     <div class="row">
         <div class="bootstrap-admin-content-title">
             <h1>
-                Kainos Auction System Admin Panel
+                @Loc["KainosAuctionSystemAdminPanel"]
             </h1>
         </div>
     </div>
@@ -20,7 +22,7 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="text-muted bootstrap-admin-box-title">Authors</div>
+                    <div class="text-muted bootstrap-admin-box-title">@Loc["Authors"]</div>
                 </div>
                 <div class="bootstrap-admin-panel-content">
                     <ul>
@@ -34,7 +36,7 @@
         <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="text-muted bootstrap-admin-box-title">Links</div>
+                    <div class="text-muted bootstrap-admin-box-title">@Loc["Links"]</div>
                 </div>
                 <div class="bootstrap-admin-panel-content">
                     <ul>
@@ -56,7 +58,7 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="text-muted bootstrap-admin-box-title">Readme</div>
+                    <div class="text-muted bootstrap-admin-box-title">@Loc["ReadMe"]</div>
                 </div>
                 <div class="bootstrap-admin-panel-content">
                     <p>soon</p>

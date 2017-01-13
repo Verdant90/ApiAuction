@@ -1,0 +1,19 @@
+﻿{
+  "Main": "Main page",
+  "AuctionList": "Auction List",
+  "AddAuction": "Add an auction",
+  "GroupProject": "2016 Group Project",
+
+  "Auctions": "Aukcje",
+  "No": "Lp",
+  "StartDate": "Data rozpoczęcia",
+  "Title": "Tytuł",
+  "CurrentPrice": "Aktualna cena",
+  "EndDate": "Data zakończenia",
+  "NumberOfBids": "Ilość ofert",
+  "State": "Stan",
+  "End": "End"
+
+
+
+}

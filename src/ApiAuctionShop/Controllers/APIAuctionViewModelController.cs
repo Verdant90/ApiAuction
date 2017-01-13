@@ -340,6 +340,133 @@ namespace ApiAuctionShop.Controllers
         [HttpGet("ended")]
         public Object GetEndedAuctions(int start = 0, int length = 10, int draw = 0)
         {
+            //NOWE
+
+            //Access to everybody
+            // if (!User.IsSignedIn())   
+            //     return new HttpStatusCodeResult(StatusCodes.Status403Forbidden);
+
+            var orderby = Request.Query["order[0][column]"];
+            var order = Request.Query["order[0][dir]"];
+            var searchString = Request.Query["search[value]"].ToString().ToLower();
+
+            var userId = User.GetUserId();
+            var users = _context.Users;
+
+
+            IQueryable<Auctions> query;
+            query = _context.Auctions.Where(a => a.state == "ended").Include(a => a.bids).Include(a => a.winner);
+
+            var recordsFiltered = 0;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(s => s.title.ToLower().Contains(searchString) || s.endDate.Contains(searchString));
+                recordsFiltered = query.Count();
+            }
+            var totalCount = query.Count();
+            switch (orderby)
+            {
+                case "0":   //title
+                    query = (order == "asc") ? query.OrderBy(c => c.title).AsQueryable() : query.OrderByDescending(c => c.title).AsQueryable();
+                    break;
+
+                case "1":
+                    //query = (order == "asc") ? query.OrderBy(a => a.currentPrice).AsQueryable() : query.OrderByDescending(a => a.currentPrice).AsQueryable();
+                    break;
+
+                case "2":   //date
+                    query = (order == "asc") ? query.OrderBy(c => c.endDate).AsQueryable() : query.OrderByDescending(c => c.endDate).AsQueryable();
+                    break;
+
+                case "3":       //bid count
+                    //query = (order == "asc") ? query.OrderBy(c => c.bids.Count()).AsQueryable() : query.OrderByDescending(c => c.bids.Count()).AsQueryable();
+                    var selected = query.Select(n => new { N = n, NumberOfBids = n.bids.Count() });//.OrderBy(c => c.Count).Select(n => n.N).AsQueryable();
+
+                    break;
+                case "4":      //winnerEmail
+                    if(order == "asc")
+                    {
+
+                        //union not implemented for iQueryable in mvc core - has to convert to list first -.-
+                        var First = query.Where(u => u.winner != null).OrderBy(u=>u.winner.Email).ToList();
+                        var Second = query.Where(u => u.winner == null).ToList();
+                        query = First.Union(Second).AsQueryable();
+
+                    }else
+                    {
+                        var First = query.Where(u => u.winner != null).OrderBy(u => u.winner.Email).ToList();
+                        var Second = query.Where(u => u.winner == null).ToList();
+                        query = Second.Union(First).AsQueryable();
+                    }
+
+                    //query = (order == "asc") ? query.OrderBy(o => o.winner == null).ThenBy(o => o.winner.Email) : query.OrderBy(o => o.winner == null).ThenBy(o => o.winner.Email);
+                    break;
+            }
+            query = query
+               .Skip(start)
+               .Take(length);
+
+            List<AuctionViewModel> list_mine = new List<AuctionViewModel>();
+            foreach (Auctions auction in query)
+            {
+                AuctionViewModel tmp = new AuctionViewModel()
+                {
+                    ID = auction.ID,
+                    title = auction.title,
+                    startDate = auction.startDate,
+                    endDate = auction.endDate,
+                    state = auction.state,
+                    startPrice = auction.startPrice,
+                    editable = auction.editable,
+                    bidCount = auction.bids.Where(b => b.auctionId == auction.ID).Count(),
+                    url = Url.Action("AuctionPage", "Auction", new { id = auction.ID }),
+                    SignupEmail = users.FirstOrDefault(u => u.Id == auction.SignupId).Email,
+                    winnerEmail = (auction.winnerID == null) ? "" : users.FirstOrDefault(u => u.Id == auction.winnerID).Email
+                };
+                _context.ImageFiles.Where(i => i.AuctionId == auction.ID).ToList(); // lazy loading: wystarczy siê odwo³aæ do ImagesFiles ¿eby zosta³y za³adowane do aukcji
+                if (auction.imageFiles != null)
+                {
+                    string path = auction.imageFiles.ElementAt(0).ImagePath;
+                    int index = path.IndexOf(@"\images");
+                    tmp.ImageData = path.Substring(index);
+                }
+                else
+                {
+                    tmp.ImageData = @Url.Content("~/images/noimage.png");
+                }
+
+                if (auction.bids.Where(b => b.auctionId == auction.ID).ToList().Count > 0)
+                {
+                    tmp.highestBid = auction.bids.Where(b => b.auctionId == auction.ID).ToList().OrderByDescending(i => i.bid).ToList().FirstOrDefault().bid;
+                    tmp.currentPrice = tmp.highestBid;
+                }
+                else
+                {
+                    tmp.currentPrice = tmp.startPrice;
+                }
+                tmp.timeLeft = calculateTimeLeft(DateTime.Parse(auction.endDate));
+                list_mine.Add(tmp);
+            }
+            recordsFiltered = totalCount;
+            return new
+            {
+                draw = draw,
+                recordsTotal = totalCount,
+                recordsFiltered = recordsFiltered,
+                data = list_mine
+            };
+        }
+
+
+
+
+
+            /*
+            ////-------------------------
+
+            //STARE
+
+
             //Access to everybody
             // if (!User.IsSignedIn())   
             //     return new HttpStatusCodeResult(StatusCodes.Status403Forbidden);
@@ -444,7 +571,7 @@ namespace ApiAuctionShop.Controllers
                 recordsFiltered = recordsFiltered,
                 data = results
             };
-        }
+        }*/
 
         // utility
         private TimeLeft calculateTimeLeft(DateTime d)

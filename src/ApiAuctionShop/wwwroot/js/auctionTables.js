@@ -39,7 +39,7 @@ $('#archieveAuctionsTab').click(function () {
                 var titlestr = "<div class='col-md-9 auctionTitleAuthor'><b class='col-xs-12 auctionTitle'><a href='" + aData['url'] + "'>" + aData['title'] + "</a></b><div class='col-xs-12 auctionAuthor'>(Autor: " + aData['signupEmail'] + ")</div></div>"
                 var title = "<div class='row auctionTitleRow'>" + imagestr + titlestr + "</div>";
                 var bidCount = aData['bidCount'] ? aData['bidCount'] : '-';
-                var winnerEmail = aData['winnerEmail'] ? aData['winnerEmail'] : 'Brak ofert';
+                var winnerEmail = aData['winnerEmail'] ? aData['winnerEmail'] : '-';
 
                 $('td:eq(0)', nRow).html(title);
                 $('td:eq(1)', nRow).html(formatter.format(aData['currentPrice']));

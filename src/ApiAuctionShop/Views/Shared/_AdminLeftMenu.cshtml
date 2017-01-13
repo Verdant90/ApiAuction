@@ -1,5 +1,7 @@
 ﻿<!-- left, vertical navbar -->
 @using ApiAuctionShop.Helpers
+@using Microsoft.AspNet.Mvc.Localization
+@inject IViewLocalizer Loc
 
 @section scripts{
 <script type="text/javascript" src="~/js/twitter-bootstrap-hover-dropdown.js"></script>
@@ -13,28 +15,28 @@
 
 <div class="col-md-2 bootstrap-admin-col-left">
     <ul class="nav navbar-collapse collapse bootstrap-admin-navbar-side">
-        <li><a asp-controller="AdminPanel" asp-action="AdminPanel"><i class="glyphicon glyphicon-chevron-right"></i>O projekcie</a></li>
-        <li><a asp-controller="AdminPanel" asp-action="Auctions"><i class="glyphicon glyphicon-chevron-right"></i>Aukcje</a></li>
-        <li><a asp-controller="AdminPanel" asp-action="Users"><i class="glyphicon glyphicon-chevron-right"></i>Uzytkownicy</a></li>
-        <li><a asp-controller="AdminPanel" asp-action="Statistics"><i class="glyphicon glyphicon-chevron-right"></i>Statystyki</a></li>
-        <li><a asp-controller="AdminPanel" asp-action="Settings"><i class="glyphicon glyphicon-chevron-right"></i>Ustawienia</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="AdminPanel"><i class="glyphicon glyphicon-chevron-right"></i>@Loc["AboutProject"]</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Auctions"><i class="glyphicon glyphicon-chevron-right"></i>@Loc["Auctions"]</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Users"><i class="glyphicon glyphicon-chevron-right"></i>@Loc["Users"]</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Statistics"><i class="glyphicon glyphicon-chevron-right"></i>@Loc["Statistics"]</a></li>
+        <li><a asp-controller="AdminPanel" asp-action="Settings"><i class="glyphicon glyphicon-chevron-right"></i>@Loc["SiteSettings"]</a></li>
         <li>
-            <a>Liczby:<span class="badge pull-right"></span></a>
+            <a>@Loc["Numbers"]:<span class="badge pull-right"></span></a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">@Model.auctionsCount</span> Aukcje</a>
+            <a href="#"><span class="badge pull-right">@Model.auctionsCount</span> @Loc["Auctions"]</a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">@Model.activeAuctionCount</span> Aktywne aukcje</a>
+            <a href="#"><span class="badge pull-right">@Model.activeAuctionCount</span> @Loc["ActiveAuctions"]</a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">@Model.userCount</span> Uzytkownicy</a>
+            <a href="#"><span class="badge pull-right">@Model.userCount</span> @Loc["Users"]</a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">@Model.bidsCount</span> Oferty kupna</a>
+            <a href="#"><span class="badge pull-right">@Model.bidsCount</span> @Loc["Bids"]</a>
         </li>
         <li>
-            <a href="#"><span class="badge pull-right">@Model.auctionsWon</span> Sprzedaze</a>
+            <a href="#"><span class="badge pull-right">@Model.auctionsWon</span> @Loc["SoldItems"]</a>
         </li>
     </ul>
 </div>
