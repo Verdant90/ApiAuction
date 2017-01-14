@@ -27,19 +27,26 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group form-inline">
                 @Html.LabelFor(model => model.auction.startPrice, Loc["StartPrice"], new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.auction.startPrice, new { @class = "form-control", @maxlength = 6, style= "max-width:90px" })
+                    @Html.TextBoxFor(model => model.auction.startPrice, new { @class = "form-control", @maxlength = 6, style = "max-width:90px" })
+                    <label>zł</label>
+                </div>
+                <div class="col-md-10 col-md-offset-2">
                     @Html.ValidationMessageFor(model => model.auction.startPrice)
                 </div>
             </div>
             @if (Model.hasBuyNowGlobal)
             {
-                <div class="form-group">
+                <div class="form-group form-inline">
                     @Html.LabelFor(model => model.auction.buyPrice, Loc["BuyNowPrice"], new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.TextBoxFor(model => model.auction.buyPrice, new { @class = "form-control", @maxlength = 6, style = "max-width:90px" })
+                        <label>zł</label>
+
+                    </div>
+                    <div class="col-md-10 col-md-offset-2">
                         @Html.ValidationMessageFor(model => model.auction.buyPrice)
                     </div>
                 </div>
@@ -66,9 +73,11 @@
                             </label>
                         }
                     </div>
+                    
+                </div>
+                <div class="col-md-10 col-md-offset-2">
                     @Html.ValidationMessageFor(model => model.auction.duration)
                 </div>
-                
             </div>
             <div class="form-group">
                 @Html.LabelFor(model => model.auction.editable, Loc["EndPrematurely"], new { @class = "control-label col-md-2" })
