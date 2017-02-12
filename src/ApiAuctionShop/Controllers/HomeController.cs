@@ -26,7 +26,7 @@ namespace Projekt.Controllers
             _localizer = localizer;
         }
         
-
+        // zwraca strone glowna
         public ActionResult Index(string language)
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(language);
