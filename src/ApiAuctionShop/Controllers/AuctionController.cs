@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace Projekt.Controllers
 {
-    //kontroler dla aukcji 
+    // kontroler dla aukcji 
     public class AuctionController : Controller
     {
         public ApplicationDbContext _context;
@@ -39,7 +39,7 @@ namespace Projekt.Controllers
            
         }
 
-
+        // zwraca strone aukcji
         [AllowAnonymous]
         public ActionResult AuctionPage(int id, string language)
         {
@@ -63,6 +63,7 @@ namespace Projekt.Controllers
             return View(bvm);
         }
 
+        // zwraca stronę podglądu aukcji
         [Authorize]
         [HttpPost]
         public async Task<ActionResult> AuctionPreview(string language, AuctionCreateViewModel acvm, ICollection<IFormFile> files = null)
@@ -136,7 +137,7 @@ namespace Projekt.Controllers
             return View();
         }
 
-        //////////////////TEST /////////////////////////
+        // zwraca stronę dodawania aukcji
         [Authorize]
         public IActionResult AddAuction(string language)
         {
@@ -150,6 +151,7 @@ namespace Projekt.Controllers
             return View(model);
         }
 
+        // metoda tworzaca i wysylajaca nowo utworzona aukcje
         [Authorize]
         [HttpPost]
         public async Task<ActionResult> AddAuction(AuctionCreateViewModel acvm, string submit, ICollection<ImageFile> files)
@@ -343,6 +345,7 @@ namespace Projekt.Controllers
             }
             return RedirectToAction("AuctionList", "Auction");
         }
+        // dodawanie zdjec
         public async Task<ActionResult> AddImage(AuctionCreateViewModel acvm, IFormFile file = null)
         {
 
@@ -376,6 +379,7 @@ namespace Projekt.Controllers
             }
             return RedirectToAction("AuctionList", "Auction");
         }
+        // podmiana zdjec
         public async Task<ActionResult> EditImage(int id, IFormFile file = null)
         {
             var imageToChange = _context.ImageFiles.SingleOrDefault(i => i.ID == id);
@@ -405,6 +409,7 @@ namespace Projekt.Controllers
             }
             return RedirectToAction("AuctionList", "Auction");
         }
+        // usuwanie zdjec
         public async Task<ActionResult> DeleteImage(int id)
         {
             var imageToRemove = _context.ImageFiles.SingleOrDefault(i => i.ID == id);
@@ -413,6 +418,7 @@ namespace Projekt.Controllers
             return RedirectToAction("AuctionList", "Auction");
         }
 
+        // podbijanie aukcji
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -447,6 +453,7 @@ namespace Projekt.Controllers
             return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID } );
         }
 
+        // "kup teraz"
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -478,7 +485,7 @@ namespace Projekt.Controllers
             return RedirectToAction("AuctionPage", "Auction", new { id = bvm.auctionToSend.ID });
         }
 
-
+        // powiadomienie zalozyciela aukcji o aktualizacji licytacji
         public async void notifyWatchers(int auctionId)
         {
             string title ="", message = "" ; 
@@ -527,7 +534,7 @@ namespace Projekt.Controllers
             return RedirectToAction("AuctionList", "Auction");
         }   
         
-
+        // obliczanie pozostaly czas aukcji
         private TimeLeft calculateTimeLeft(DateTime d)
         {
             if (d < DateTime.Now) return new TimeLeft(-1, "minut");
@@ -544,6 +551,8 @@ namespace Projekt.Controllers
             }else return new TimeLeft((d - DateTime.Now).Minutes, "minut");
             
         }
+
+        // obliczenie date zakonczenia aukcji
         private DateTime calculateEndDate(DateTime d, string duration)
         {
             if(duration.Contains("h"))

@@ -22,6 +22,7 @@ using System.Linq;
 namespace Projekt.Controllers
 {
     
+    // Controller odpowiedzialny za zarzadzanie kontami uzytkownikow
     public class AccountController : Controller
     {
         private readonly UserManager<Signup> _userManager;
@@ -60,7 +61,7 @@ namespace Projekt.Controllers
             return RedirectToAction("Login", "Account");
         }
         
-        //zwroc view logowania
+        // zwroc view logowania
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
@@ -69,7 +70,7 @@ namespace Projekt.Controllers
             return View();
         }
 
-        //wysylanie maila
+        // wysylanie maila z tokenem identyfikujacym
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -95,7 +96,7 @@ namespace Projekt.Controllers
             return View();
         }
 
-
+        // tworzy nowego uzytkownika przypisujac rowniez role do tego uzytkownika
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -109,14 +110,13 @@ namespace Projekt.Controllers
                 int index = users.FindIndex(item => item.Email == user.Email);
                 if (index >= 0)
                 {
-                    //email already taken
+                    // email already taken
                     return View();
                 }
 
 
                 var result = await _userManager.CreateAsync(user, model.Email + "0D?");
                 
-                //////////////////TEST ROLES//////////////////////////////////////////
                 string name = "User";
                 bool roleExist = await _roleManager.RoleExistsAsync(name);
                 if (!roleExist)
@@ -124,7 +124,6 @@ namespace Projekt.Controllers
                     var roleresult = _roleManager.CreateAsync(new IdentityRole(name));
                 }
                 await _userManager.AddToRoleAsync(user, name);
-                //////////////////////////////////////////////////////////////////////
 
                 if (result.Succeeded)
                 {
@@ -139,7 +138,7 @@ namespace Projekt.Controllers
 
         
         
-
+        // wylogowanie
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]

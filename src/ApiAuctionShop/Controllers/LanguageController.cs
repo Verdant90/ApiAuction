@@ -12,6 +12,7 @@ namespace ApiAuctionShop.Controllers
         {
             return View();
         }
+        // zmiana jezyka
         public ActionResult Change(string LanguageAbbrevation)
         {
             if(LanguageAbbrevation != null)

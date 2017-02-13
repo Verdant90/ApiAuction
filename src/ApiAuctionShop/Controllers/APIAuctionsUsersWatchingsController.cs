@@ -12,6 +12,8 @@ using System;
 
 namespace ApiAuctionShop.Controllers
 {
+    // API do zapytan AJAXowych dotyczacych obserwowania aukcji poprzez uzytkownikow
+
     [Produces("application/json")]
     [Route("api/APIAuctionsUsersWatchings")]
     public class APIAuctionsUsersWatchingsController : Controller

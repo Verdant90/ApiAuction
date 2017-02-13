@@ -51,6 +51,8 @@ namespace ApiAuctionShop.Controllers
             return View("Index", model);
         }
 
+
+        // zwraca panel menu po lewej stronie w panelu administratora
         public AdminMenuModel GetAdminMenuModel()
         {
             var users = _context.Users.ToList();
@@ -63,6 +65,7 @@ namespace ApiAuctionShop.Controllers
 
         }
 
+        // zwraca widok aukcji w panelu administratora DO POPRAWKI
         [Authorize]
         [HttpGet]
         public async Task<ActionResult> Auctions(string language)
@@ -108,7 +111,7 @@ namespace ApiAuctionShop.Controllers
             return View(model);
         }
 
-
+        // widok statystyk w panelu administratora
         [Authorize]
         [HttpGet]
         public async Task<ActionResult> Statistics(string language)
@@ -147,6 +150,7 @@ namespace ApiAuctionShop.Controllers
             return View(model);
         }
 
+        // widok uzytkownikow w panelu administratora
         [Authorize]
         [HttpGet]
         public async Task<ActionResult> Users(string language)
@@ -177,6 +181,7 @@ namespace ApiAuctionShop.Controllers
             return View(model);
         }
 
+        // widok ustawien w panelu administratora
         [Authorize]
         [HttpGet]
         public async Task<ActionResult> Settings(string language)
@@ -196,7 +201,7 @@ namespace ApiAuctionShop.Controllers
 
         }
 
-
+        // zmiana ustawien strony
         [Authorize]
         [HttpPost]
         //[ValidateAntiForgeryToken]
