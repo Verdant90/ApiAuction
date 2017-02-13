@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "description": "ApiAuctionShop.Tests Class Library",
   "authors": [ "Michal-Lenovo" ],
@@ -12,8 +12,9 @@
     "xunit": "2.1.0",
     "xunit.runner.dnx": "2.1.0-rc1-build204",
     "ApiAuctionShop": {
-      "target": "project"
-    }
+        "target": "project"
+    },
+    "Moq": "4.5.30"
   },
   "commands": {
     "test": "xunit.runner.dnx"
